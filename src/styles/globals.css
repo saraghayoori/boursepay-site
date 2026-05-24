@@ -1,0 +1,184 @@
+@import 'tailwindcss';
+
+/* =====================================================================
+   Brand tokens — derived directly from Boorspay brand book v3
+   Tailwind v4 turns every --color-*, --font-*, --radius-* into utilities.
+   ===================================================================== */
+
+@theme {
+  /* ---- Navy / sky spectrum ---- */
+  --color-navy-1: #0a0e2e;
+  --color-navy-2: #1b1f66;
+  --color-indigo: #2a2d7e;
+  --color-blue:   #3d4fa6;
+  --color-sky:    #6f8fce;
+  --color-mist:   #c8d6ec;
+  --color-cloud:  #f2f5fb;
+  --color-paper:  #ffffff;
+  --color-paper-2:#fafbfe;
+
+  /* ---- Ink (text) ---- */
+  --color-ink:   #0a0e2e;
+  --color-ink-2: #2b3157;
+  --color-ink-3: #6c7290;
+  --color-ink-4: #a6ACC4;
+
+  /* ---- Special accents ---- */
+  --color-coral:   #e0744a;  /* B2C — gift card warmth */
+  --color-coral-2: #f59e7a;
+  --color-coral-soft: #fce4d6;
+  --color-emerald: #1f8a5b;
+
+  /* ---- Semantic accent — overridden by .theme-b2c at runtime ---- */
+  --color-accent:      #2a2d7e;  /* indigo by default */
+  --color-accent-soft: #c8d6ec;  /* mist by default */
+  --color-accent-fg:   #ffffff;
+
+  /* ---- Typography ---- */
+  --font-display:    'Vazirmatn Variable', 'DM Serif Display', serif;
+  --font-body:       'Vazirmatn Variable', 'DM Sans', sans-serif;
+  --font-en-display: 'DM Serif Display', 'Vazirmatn Variable', serif;
+  --font-en-body:    'DM Sans', 'Vazirmatn Variable', sans-serif;
+
+  /* ---- Radii ---- */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 36px;
+
+  /* ---- Layout ---- */
+  --container-content: 1200px;
+
+  /* ---- Hairlines ---- */
+  --color-hairline:   color-mix(in srgb, #1b1f66 10%, transparent);
+  --color-hairline-2: color-mix(in srgb, #1b1f66 5%,  transparent);
+}
+
+/* =====================================================================
+   B2C theme — wraps the Gift Card page. Same design system, warm accent.
+   ===================================================================== */
+.theme-b2c {
+  --color-accent:      #e0744a;
+  --color-accent-soft: #fce4d6;
+  --color-accent-fg:   #ffffff;
+}
+
+/* =====================================================================
+   Base reset / body
+   ===================================================================== */
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'ss01', 'ss02';
+}
+
+/* Persian numerals look better with this fallback chain — Vazirmatn
+   ships with proper Persian digits but we keep Latin digits in technical
+   contexts via the .latin helper below. */
+
+:lang(en),
+.latin {
+  font-family: var(--font-en-body);
+  /* isolates Latin runs inside Persian paragraphs */
+  unicode-bidi: isolate;
+}
+
+/* Element resets — wrapped in @layer base so utility classes win the cascade.
+   Unlayered rules would beat every Tailwind utility (which lives in
+   @layer utilities), so e.g. our `text-paper` class wouldn't override
+   the `a { color: inherit }` reset on a link-styled button. */
+@layer base {
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; }
+  img { display: block; max-width: 100%; height: auto; }
+}
+
+/* Focus rings — high contrast on both light and dark backgrounds */
+:where(a, button, [role='button']):focus-visible {
+  outline: 2px solid var(--color-sky);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Smooth horizontal scrollbars away on body in case of overflow during transitions */
+body { overflow-x: hidden; }
+
+/* =====================================================================
+   Surface utilities — dot grid texture (signature: Ramp-style) and
+   ambient soft-blob gradients (signature: Mercury-style background shifts).
+   Use these as decorative layers behind/under content.
+   ===================================================================== */
+
+/* Faint dot-grid texture. Apply to a positioned ::after layer or a
+   pointer-events-none absolute div for ambient backgrounds. */
+.dot-grid {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-ink) 14%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+}
+
+.dot-grid-soft {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-ink) 8%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 26px 26px;
+}
+
+.dot-grid-dense {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-ink) 10%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 14px 14px;
+}
+
+/* Mask helper — fades the dot pattern at the edges so it doesn't
+   cut sharply against neighboring sections. */
+.dot-mask-radial {
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+          mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+}
+
+/* Ambient soft-color blob backgrounds. Pair with absolute positioning,
+   `pointer-events-none`, and large blur. These give the "Mercury-style"
+   subtle background-color shift across sections. */
+.ambient-cool {
+  background:
+    radial-gradient(50% 60% at 70% 40%, color-mix(in srgb, var(--color-sky) 30%, transparent), transparent 70%),
+    radial-gradient(45% 55% at 25% 75%, color-mix(in srgb, var(--color-indigo) 18%, transparent), transparent 70%);
+}
+
+.ambient-warm {
+  background:
+    radial-gradient(55% 60% at 30% 35%, color-mix(in srgb, var(--color-coral) 22%, transparent), transparent 70%),
+    radial-gradient(50% 60% at 75% 65%, color-mix(in srgb, var(--color-sky) 22%, transparent), transparent 70%);
+}
+
+.ambient-mixed {
+  background:
+    radial-gradient(45% 55% at 80% 25%, color-mix(in srgb, var(--color-coral-2) 18%, transparent), transparent 65%),
+    radial-gradient(55% 60% at 20% 70%, color-mix(in srgb, var(--color-sky) 26%, transparent), transparent 70%),
+    radial-gradient(35% 40% at 60% 80%, color-mix(in srgb, var(--color-emerald) 12%, transparent), transparent 70%);
+}

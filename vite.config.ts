@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm'
 import path from 'node:path'
 
 export default defineConfig({
+  base: '/boursepay-site/',
   plugins: [
     {
       enforce: 'pre',

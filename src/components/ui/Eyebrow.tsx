@@ -3,7 +3,11 @@ import type { HTMLAttributes } from 'react'
 
 interface EyebrowProps extends HTMLAttributes<HTMLDivElement> {
   tone?: 'sky' | 'accent' | 'ink'
-  /** Hide the leading hairline mark (e.g. when centered or in tight spots) */
+  /**
+   * Opt-out of the v3 refinements (leading hairline + dot, wider
+   * tracking, inline-flex layout). Falls back to the original plain
+   * Eyebrow — used by the products pages.
+   */
   bare?: boolean
 }
 
@@ -14,6 +18,9 @@ interface EyebrowProps extends HTMLAttributes<HTMLDivElement> {
  * Refined: a tiny brand-mark composed of a 24px hairline + a 3px dot
  * leads the text. This is the same visual rhythm used on the brand book
  * page-meta rows and gives every section an instant editorial signature.
+ *
+ * `bare` produces exactly the original markup so pages that opted out
+ * are pixel-identical to the pre-refinement build.
  */
 export default function Eyebrow({
   tone = 'sky',
@@ -22,6 +29,23 @@ export default function Eyebrow({
   children,
   ...rest
 }: EyebrowProps) {
+  if (bare) {
+    return (
+      <div
+        className={cn(
+          'font-en-body text-[11px] uppercase tracking-[0.18em] font-medium',
+          tone === 'sky' && 'text-sky',
+          tone === 'accent' && 'text-accent',
+          tone === 'ink' && 'text-ink-3',
+          className,
+        )}
+        style={{ unicodeBidi: 'isolate' }}
+        {...rest}
+      >
+        {children}
+      </div>
+    )
+  }
   return (
     <div
       className={cn(
@@ -34,29 +58,24 @@ export default function Eyebrow({
       style={{ unicodeBidi: 'isolate' }}
       {...rest}
     >
-      {!bare && (
+      <span aria-hidden className="inline-flex items-center gap-1.5">
         <span
-          aria-hidden
-          className="inline-flex items-center gap-1.5"
-        >
-          <span
-            className={cn(
-              'h-px w-6',
-              tone === 'sky' && 'bg-sky/60',
-              tone === 'accent' && 'bg-accent/55',
-              tone === 'ink' && 'bg-ink-4/70',
-            )}
-          />
-          <span
-            className={cn(
-              'h-[3px] w-[3px] rounded-full',
-              tone === 'sky' && 'bg-sky',
-              tone === 'accent' && 'bg-accent',
-              tone === 'ink' && 'bg-ink-3',
-            )}
-          />
-        </span>
-      )}
+          className={cn(
+            'h-px w-6',
+            tone === 'sky' && 'bg-sky/60',
+            tone === 'accent' && 'bg-accent/55',
+            tone === 'ink' && 'bg-ink-4/70',
+          )}
+        />
+        <span
+          className={cn(
+            'h-[3px] w-[3px] rounded-full',
+            tone === 'sky' && 'bg-sky',
+            tone === 'accent' && 'bg-accent',
+            tone === 'ink' && 'bg-ink-3',
+          )}
+        />
+      </span>
       <span>{children}</span>
     </div>
   )

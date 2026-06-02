@@ -5,6 +5,8 @@ import Eyebrow from '@/components/ui/Eyebrow'
 import Section from '@/components/ui/Section'
 import Button from '@/components/ui/Button'
 import ArcMotif from '@/components/brand/ArcMotif'
+import OrnamentCurve from '@/components/brand/OrnamentCurve'
+import OrnamentDots from '@/components/brand/OrnamentDots'
 import { site } from '@/content/site'
 import { cn } from '@/lib/cn'
 
@@ -64,6 +66,29 @@ export default function ContactPage() {
         <div className="pointer-events-none absolute -top-32 right-[-180px] text-indigo/15">
           <ArcMotif count={5} size={620} anchor="top-right" />
         </div>
+
+        {/* Wave ornament on the left, draws in as the hero loads */}
+        <div className="pointer-events-none absolute left-6 top-1/2 hidden -translate-y-1/2 text-sky/55 lg:block">
+          <OrnamentCurve
+            variant="wave"
+            width={260}
+            strokeWidth={1.1}
+            dotTone="coral"
+            duration={2}
+            delay={0.4}
+          />
+        </div>
+
+        {/* Constellation in the lower-right of the hero */}
+        <div className="pointer-events-none absolute bottom-6 right-6 hidden text-sky/45 md:block">
+          <OrnamentDots
+            variant="constellation"
+            tone="sky"
+            opacity={0.55}
+            width={150}
+          />
+        </div>
+
         <Container className="relative grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Eyebrow tone="sky">تماس</Eyebrow>

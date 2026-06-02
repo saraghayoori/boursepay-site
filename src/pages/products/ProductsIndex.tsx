@@ -31,11 +31,12 @@ export default function ProductsIndex() {
           <ArcMotif count={5} size={680} anchor="top-left" />
         </div>
         <Container className="relative py-24 sm:py-32">
-          <Eyebrow tone="sky">۰۴ · معماری محصول</Eyebrow>
+          <Eyebrow tone="sky" bare>۰۴ · معماری محصول</Eyebrow>
           <Heading
             fa="یک ریل، چهار سناریو"
             en="One rail · four scenarios"
             level={1}
+            bare
             className="mt-4 max-w-3xl"
           />
           <p className="mt-7 max-w-2xl text-[17px] leading-[1.85] text-ink-2">
@@ -68,7 +69,7 @@ export default function ProductsIndex() {
                   )}
 
                   <div className="flex items-start justify-between">
-                    <Pill tone={isB2C ? 'b2c' : 'b2b'}>
+                    <Pill tone={isB2C ? 'b2c' : 'b2b'} bare>
                       {isB2C ? 'B2C' : 'B2B'} · {p.category}
                     </Pill>
                     <span
@@ -121,11 +122,12 @@ export default function ProductsIndex() {
       <Section tone="tint" spacing="normal">
         <Container>
           <div className="max-w-2xl">
-            <Eyebrow tone="accent">معماری</Eyebrow>
+            <Eyebrow tone="accent" bare>معماری</Eyebrow>
             <Heading
               fa="چابک، در زیر؛ سه محصول، در رو"
               en="Chabok below · three products above"
               level={2}
+              bare
               className="mt-3"
             />
             <p className="mt-5 max-w-xl text-[15.5px] leading-[1.85] text-ink-2">
@@ -153,7 +155,7 @@ export default function ProductsIndex() {
                         />
                       )}
                       <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-ink-3">
-                        <Pill tone={isB2C ? 'b2c' : 'b2b'}>
+                        <Pill tone={isB2C ? 'b2c' : 'b2b'} bare>
                           {isB2C ? 'B2C' : 'B2B'}
                         </Pill>
                       </div>

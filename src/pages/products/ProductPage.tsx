@@ -52,7 +52,7 @@ export default function ProductPage({ product }: Props) {
               />
             )}
 
-            <Pill tone={isB2C ? 'b2c' : 'b2b'}>
+            <Pill tone={isB2C ? 'b2c' : 'b2b'} bare>
               {isB2C ? 'B2C' : 'B2B'} · {product.category}
             </Pill>
 
@@ -74,11 +74,12 @@ export default function ProductPage({ product }: Props) {
                 as="link"
                 to="/contact"
                 size="lg"
+                bare
                 className="bg-navy-1 text-paper hover:bg-navy-2"
               >
                 {isB2C ? 'دریافتِ کارت هدیه' : 'گفت‌وگو با تیمِ فنی'}
               </Button>
-              <Button as="link" to="/products" size="lg" variant="secondary">
+              <Button as="link" to="/products" size="lg" variant="secondary" bare>
                 مرورِ همه‌ی محصولات
               </Button>
             </div>
@@ -86,7 +87,7 @@ export default function ProductPage({ product }: Props) {
 
           <aside className="lg:col-span-5">
             <div className="rounded-2xl border border-hairline bg-paper p-7 backdrop-blur-sm">
-              <Eyebrow tone="sky">در یک نگاه</Eyebrow>
+              <Eyebrow tone="sky" bare>در یک نگاه</Eyebrow>
               <dl className="mt-5 space-y-4">
                 <Row term="مخاطب" value={product.audience} />
                 <Row term="زمانِ تسویه" value={product.timing} />
@@ -123,11 +124,12 @@ export default function ProductPage({ product }: Props) {
       <Section tone="paper">
         <Container className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <Eyebrow>محصول</Eyebrow>
+            <Eyebrow bare>محصول</Eyebrow>
             <Heading
               fa={`چرا ${product.name}؟`}
               en={`Why ${product.latin}?`}
               level={2}
+              bare
               className="mt-3"
             />
             <p className="mt-6 text-[16.5px] leading-[1.95] text-ink-2">
@@ -163,8 +165,8 @@ export default function ProductPage({ product }: Props) {
       {/* OTHER PRODUCTS */}
       <Section tone="tint" spacing="normal">
         <Container>
-          <Eyebrow>سایرِ محصولات</Eyebrow>
-          <Heading fa="در همین خانواده" en="Same family" level={3} className="mt-3" />
+          <Eyebrow bare>سایرِ محصولات</Eyebrow>
+          <Heading fa="در همین خانواده" en="Same family" level={3} bare className="mt-3" />
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {others.map((p) => {
               const otherB2C = p.role === 'b2c'
@@ -181,7 +183,7 @@ export default function ProductPage({ product }: Props) {
                     />
                   )}
                   <div className="flex items-center justify-between">
-                    <Pill tone={otherB2C ? 'b2c' : 'b2b'}>
+                    <Pill tone={otherB2C ? 'b2c' : 'b2b'} bare>
                       {otherB2C ? 'B2C' : 'B2B'}
                     </Pill>
                     <span className="text-[11px] text-ink-3">{p.category}</span>

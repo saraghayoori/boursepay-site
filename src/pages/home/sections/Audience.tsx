@@ -3,6 +3,8 @@ import Heading from '@/components/ui/Heading'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Pill from '@/components/ui/Pill'
 import Section from '@/components/ui/Section'
+import OrnamentCurve from '@/components/brand/OrnamentCurve'
+import OrnamentDots from '@/components/brand/OrnamentDots'
 
 /**
  * Audience — three real personas we sit at the table with.
@@ -50,8 +52,25 @@ const audiences: AudienceCard[] = [
 export default function Audience() {
   return (
     <Section tone="none" spacing="normal">
-      <Container>
-        <div className="max-w-2xl">
+      <Container className="relative">
+        {/* Wave ornament beside the header text — quiet motion accent */}
+        <div className="pointer-events-none absolute left-0 top-4 hidden text-sky/45 lg:block">
+          <OrnamentCurve
+            variant="wave"
+            width={220}
+            strokeWidth={1.1}
+            dotTone="indigo"
+            duration={1.7}
+            delay={0.2}
+          />
+        </div>
+
+        {/* Tiny trail of dots in the upper-right negative space */}
+        <div className="pointer-events-none absolute right-2 top-0 hidden text-indigo/40 md:block">
+          <OrnamentDots variant="trail" tone="indigo" opacity={0.5} width={140} />
+        </div>
+
+        <div className="relative max-w-2xl">
           <Eyebrow>۰۳ · مخاطبین</Eyebrow>
           <Heading
             fa="مخاطبینِ بورس‌پی"

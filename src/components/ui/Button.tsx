@@ -29,6 +29,13 @@ const base =
   'focus-visible:ring-2 focus-visible:ring-sky focus-visible:ring-offset-2 ' +
   'focus-visible:ring-offset-paper disabled:opacity-50 disabled:cursor-not-allowed'
 
+// Original (legacy) base + variants — used when `bare` prop is set.
+const baseLegacy =
+  'inline-flex items-center justify-center gap-2 rounded-md font-medium ' +
+  'transition-all duration-200 focus-visible:outline-none ' +
+  'focus-visible:ring-2 focus-visible:ring-sky focus-visible:ring-offset-2 ' +
+  'focus-visible:ring-offset-paper disabled:opacity-50 disabled:cursor-not-allowed'
+
 const variants: Record<Variant, string> = {
   primary:
     // gradient surface + dual shadow + crisp hairline highlight on top
@@ -47,6 +54,16 @@ const variants: Record<Variant, string> = {
     'bg-transparent text-ink hover:bg-ink/[0.04]',
 }
 
+const variantsLegacy: Record<Variant, string> = {
+  primary:
+    'bg-accent text-accent-fg hover:bg-navy-2 active:translate-y-px ' +
+    'shadow-[0_1px_0_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(10,14,46,0.4)]',
+  secondary:
+    'bg-cloud text-ink border border-hairline hover:bg-mist',
+  ghost:
+    'bg-transparent text-ink hover:bg-cloud',
+}
+
 const sizes: Record<Size, string> = {
   md: 'h-10 px-5 text-[14.5px]',
   lg: 'h-12 px-7 text-[15.5px]',
@@ -57,6 +74,12 @@ interface CommonProps {
   size?: Size
   className?: string
   children?: ReactNode
+  /**
+   * Opt-out of the v3 refinements (gradient surface, dual-shadow,
+   * tracking tweak). Falls back to the original flat Button — used by
+   * the products pages.
+   */
+  bare?: boolean
 }
 
 type ButtonProps = CommonProps & ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -76,11 +99,16 @@ type RouterLinkProps = CommonProps & Omit<LinkProps, 'children'> & {
 type Props = ButtonProps | AnchorProps | RouterLinkProps
 
 export default function Button(props: Props) {
-  const { variant = 'primary', size = 'md', className, children, as = 'button' } = props
-  const classes = cn(base, variants[variant], sizes[size], className)
+  const { variant = 'primary', size = 'md', bare = false, className, children, as = 'button' } = props
+  const classes = cn(
+    bare ? baseLegacy : base,
+    bare ? variantsLegacy[variant] : variants[variant],
+    sizes[size],
+    className,
+  )
 
   if (as === 'a') {
-    const { as: _a, variant: _v, size: _s, className: _c, children: _ch, ...rest } =
+    const { as: _a, variant: _v, size: _s, bare: _b, className: _c, children: _ch, ...rest } =
       props as AnchorProps
     return (
       <a className={classes} {...rest}>
@@ -90,7 +118,7 @@ export default function Button(props: Props) {
   }
 
   if (as === 'link') {
-    const { as: _a, variant: _v, size: _s, className: _c, children: _ch, to, ...rest } =
+    const { as: _a, variant: _v, size: _s, bare: _b, className: _c, children: _ch, to, ...rest } =
       props as RouterLinkProps
     return (
       <Link to={to} className={classes} {...rest}>
@@ -99,7 +127,7 @@ export default function Button(props: Props) {
     )
   }
 
-  const { as: _a, variant: _v, size: _s, className: _c, children: _ch, ...rest } =
+  const { as: _a, variant: _v, size: _s, bare: _b, className: _c, children: _ch, ...rest } =
     props as ButtonProps
   return (
     <button className={classes} {...rest}>

@@ -2,6 +2,8 @@ import { motion } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Section from '@/components/ui/Section'
 import ArcMotif from '@/components/brand/ArcMotif'
+import OrnamentCurve from '@/components/brand/OrnamentCurve'
+import OrnamentDots from '@/components/brand/OrnamentDots'
 
 /**
  * Manifesto — a big editorial pull-quote that breaks the page rhythm.
@@ -23,6 +25,39 @@ export default function Manifesto() {
         {/* Faint arc, far corner, no animation */}
         <div className="pointer-events-none absolute -bottom-20 right-[-100px] hidden text-indigo/8 sm:block">
           <ArcMotif count={4} size={420} anchor="bottom-right" dot={false} animate={false} />
+        </div>
+
+        {/* Top-center ornament arc — bridges the products section
+            to the manifesto, draws in as the quote enters view */}
+        <div className="pointer-events-none absolute left-1/2 top-6 hidden -translate-x-1/2 text-indigo/30 sm:block">
+          <OrnamentCurve
+            variant="arch"
+            width={200}
+            strokeWidth={1.1}
+            dotTone="coral"
+            duration={1.6}
+            delay={0.2}
+          />
+        </div>
+
+        {/* Constellation of dots on the right side, atmospheric */}
+        <div className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 text-sky/55 md:block">
+          <OrnamentDots
+            variant="constellation"
+            tone="sky"
+            opacity={0.55}
+            width={140}
+          />
+        </div>
+
+        {/* Trail of dots on the left side, suggesting motion into the quote */}
+        <div className="pointer-events-none absolute left-2 bottom-12 hidden md:block">
+          <OrnamentDots
+            variant="trail"
+            tone="indigo"
+            opacity={0.45}
+            width={160}
+          />
         </div>
 
         <div className="relative mx-auto max-w-3xl text-center">

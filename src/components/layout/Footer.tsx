@@ -40,7 +40,7 @@ export default function Footer() {
         <div className="md:col-span-5">
           <Logo variant="dark" size={44} />
           <p className="mt-6 max-w-md text-[14.5px] leading-[1.85] text-paper/72">
-            بورس‌پی · ریل‌های پرداختِ بازار سرمایه. تسویه‌ی آنی، تخصصی، با مجوز
+            بورس‌پی · ریل‌های پرداختِ بازار سرمایه. تسویه‌ی سریع، تخصصی، با مجوز
             سازمان بورس.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-3 text-[13px] text-paper/60">
@@ -118,7 +118,7 @@ export default function Footer() {
             className="font-en-body uppercase tracking-[0.18em]"
             style={{ unicodeBidi: 'isolate' }}
           >
-            Instant · Secure · Specialist
+            Fast · Secure · Specialist
           </div>
         </Container>
       </div>

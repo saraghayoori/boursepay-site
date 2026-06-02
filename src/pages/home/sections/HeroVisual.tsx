@@ -8,7 +8,7 @@ import ArcMotif from '@/components/brand/ArcMotif'
  *  1. Soft warm ambient blob (coral + sky gradient, blurred)
  *  2. Faint Boorspay arc-motif as background signature
  *  3. Main "payment card" — tilted, gradient-filled, floating
- *  4. Floating T+0 settlement badge (coral — the cheerful accent)
+ *  4. Floating fast-settlement badge (coral — the cheerful accent)
  *  5. Floating chart card with sparkline + percent (emerald — "up")
  *  6. Three floating accent dots for atmosphere
  *
@@ -71,7 +71,7 @@ export default function HeroVisual() {
         </div>
       </motion.div>
 
-      {/* 4 — floating T+0 badge */}
+      {/* 4 — floating fast-settlement badge */}
       <motion.div
         initial={{ y: 0 }}
         animate={{ y: [0, -12, 0] }}
@@ -85,10 +85,10 @@ export default function HeroVisual() {
           settlement
         </div>
         <div
-          className="mt-1 font-display text-[30px] leading-none font-bold"
+          className="mt-1 font-display text-[24px] leading-none font-bold"
           style={{ unicodeBidi: 'isolate' }}
         >
-          T+0
+          FAST
         </div>
       </motion.div>
 

@@ -1,8 +1,8 @@
 export const site = {
   name: 'بورس‌پی',
   latin: 'boursepayment',
-  tagline: 'آنی، امن، تخصصی',
-  taglineLatin: 'Instant · Secure · Specialist',
+  tagline: 'سریع، امن، تخصصی',
+  taglineLatin: 'Fast · Secure · Specialist',
   description: 'ریل‌های پرداختِ بازار سرمایه',
   contact: {
     email: 'hello@boursepayment.com',

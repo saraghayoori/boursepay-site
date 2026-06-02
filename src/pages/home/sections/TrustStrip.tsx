@@ -19,7 +19,7 @@ interface Fact {
   value: number | null
   /** Suffix shown right after the number (٪، +، —). */
   suffix?: string
-  /** Prefix shown before the number (e.g. T+). */
+  /** Prefix shown before the number. */
   prefix?: string
   /** Literal label for static facts that aren't numeric. */
   literal?: string
@@ -33,9 +33,9 @@ const facts: Fact[] = [
   { value: 21, suffix: '+', label: 'بانکِ متصل', sub: 'banking partners' },
   {
     value: null,
-    literal: 'T+۰',
+    literal: 'سریع',
     label: 'سرعتِ تسویه',
-    sub: 'sub-second finality',
+    sub: 'fast finality',
   },
   { value: 99.9, suffix: '٪', label: 'پایداریِ سوییچ', sub: 'monthly uptime' },
   { value: 50, suffix: '+', label: 'صندوقِ فعال', sub: 'institutional clients' },
@@ -70,7 +70,7 @@ export default function TrustStrip() {
  * Single counter cell — animates from 0 → fact.value when in view.
  * Uses requestAnimationFrame to keep rendering smooth at 60fps.
  * Skips animation entirely for facts that don't have a numeric value
- * (e.g. "T+۰") and just shows the literal.
+ * (e.g. "سریع") and just shows the literal.
  */
 function Counter({ fact }: { fact: Fact }) {
   const ref = useRef<HTMLDivElement>(null)

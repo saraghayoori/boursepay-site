@@ -92,7 +92,7 @@ export default function HomePage() {
   return (
     <div ref={wrapRef} style={{ backgroundColor: 'rgb(242, 245, 251)' }}>
       <title>بورس‌پی · ریل‌های پرداختِ بازار سرمایه</title>
-      <meta name="description" content="پرداختِ آنی، امن، تخصصی برای صندوق‌ها، کارگزاری‌ها و بانک‌ها." />
+      <meta name="description" content="پرداختِ سریع، امن، تخصصی برای صندوق‌ها، کارگزاری‌ها و بانک‌ها." />
       <Hero />
       <TrustStrip />
       <ProductsGrid />

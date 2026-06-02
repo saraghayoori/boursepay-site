@@ -51,7 +51,7 @@ export default function Hero() {
             className="mt-6 font-display text-[44px] font-bold leading-[1.05] tracking-tight text-ink sm:text-[60px] lg:text-[74px]"
           >
             <span className="block">پرداختِ تخصصی،</span>
-            <span className="block text-indigo">آنی و قطعی</span>
+            <span className="block text-indigo">سریع و قطعی</span>
           </motion.h1>
 
           <motion.p
@@ -62,8 +62,7 @@ export default function Hero() {
           >
             بورس‌پی، ریلِ پرداختِ تخصصیِ بازارِ سرمایه است.{' '}
             <em className="not-italic font-medium text-indigo">
-              ۲۱ بانک، مجوزِ سازمانِ بورس، تسویه‌ی{' '}
-              <span style={{ unicodeBidi: 'isolate' }}>T+۰</span>.
+              ۲۱ بانک، مجوزِ سازمانِ بورس، تسویه‌ی سریع.
             </em>{' '}
             پشتِ صندوق‌ها، کارگزاری‌ها و پلتفرم‌هایی که تخصصی فکر می‌کنند.
           </motion.p>
@@ -113,7 +112,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mt-14 grid max-w-xl grid-cols-3 gap-6 border-t border-hairline pt-8"
           >
-            <Pillar value="آنی" proof="تسویه در زیرِ یک ثانیه" />
+            <Pillar value="سریع" proof="تسویه در کوتاه‌ترین زمان" />
             <Pillar value="امن" proof="با مجوزِ سازمانِ بورس" />
             <Pillar value="تخصصی" proof="فقط بازارِ سرمایه" />
           </motion.div>

@@ -48,7 +48,7 @@ const steps: Step[] = [
     title: 'تسویه',
     latin: 'Settlement',
     body:
-      'پولِ گیرنده در زیرِ یک ثانیه قابلِ برداشت است. سامانه‌ی شما webhook را دریافت می‌کند، گزارشِ مالیاتی آماده می‌شود.',
+      'پولِ گیرنده در کوتاه‌ترین زمان قابلِ برداشت است. سامانه‌ی شما webhook را دریافت می‌کند، گزارشِ مالیاتی آماده می‌شود.',
   },
 ]
 
@@ -59,8 +59,8 @@ export default function HowItWorks() {
         <div className="max-w-2xl">
           <Eyebrow>۰۲ · ساختار</Eyebrow>
           <Heading
-            fa="سه گام، یک ثانیه"
-            en="Three steps · one second"
+            fa="سه گام، سریع و قطعی"
+            en="Three steps · fast and final"
             level={2}
             className="mt-3"
           />

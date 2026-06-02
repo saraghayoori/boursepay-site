@@ -64,10 +64,10 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 transition-all duration-300',
+        'sticky top-0 z-50 transition-all duration-500 ease-out',
         scrolled
-          ? 'bg-paper/85 backdrop-blur-md border-b border-hairline'
-          : 'bg-transparent',
+          ? 'bg-paper/80 backdrop-blur-xl backdrop-saturate-150 border-b border-hairline-2 shadow-[0_1px_0_rgba(10,14,46,0.02)]'
+          : 'bg-transparent border-b border-transparent',
       )}
     >
       <Container className="flex h-16 items-center justify-between sm:h-20">
@@ -88,7 +88,7 @@ export default function Header() {
                   to={link.to}
                   className={({ isActive }) =>
                     cn(
-                      'relative inline-flex items-center gap-1 rounded-md px-4 py-2 text-[14.5px] transition-colors',
+                      'relative inline-flex items-center gap-1 rounded-md px-4 py-2 text-[14.5px] tracking-[-0.005em] transition-colors duration-200',
                       isActive ? 'text-ink' : 'text-ink-3 hover:text-ink',
                     )
                   }
@@ -105,7 +105,7 @@ export default function Header() {
                         viewBox="0 0 12 12"
                         fill="none"
                         className={cn(
-                          'transition-transform',
+                          'transition-transform duration-300 ease-out',
                           productsOpen && 'rotate-180',
                         )}
                         aria-hidden
@@ -119,7 +119,11 @@ export default function Header() {
                         />
                       </svg>
                       {isActive && (
-                        <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-accent" />
+                        <motion.span
+                          layoutId="nav-underline"
+                          className="absolute inset-x-3 -bottom-[3px] h-px rounded-full bg-accent"
+                          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                        />
                       )}
                     </>
                   )}
@@ -128,11 +132,11 @@ export default function Header() {
                 <AnimatePresence>
                   {productsOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
-                      className="absolute right-0 top-full z-50 mt-2 w-[520px] origin-top rounded-2xl border border-hairline bg-paper p-3 shadow-[0_30px_80px_-30px_rgba(10,14,46,0.35)]"
+                      initial={{ opacity: 0, y: -8, scale: 0.985 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.99 }}
+                      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute right-0 top-full z-50 mt-3 w-[540px] origin-top rounded-2xl border border-hairline-2 bg-paper/95 p-3 backdrop-blur-xl shadow-[0_1px_0_rgba(255,255,255,0.8)_inset,0_24px_60px_-24px_rgba(10,14,46,0.28),0_8px_24px_-12px_rgba(10,14,46,0.12)]"
                       role="menu"
                     >
                       <div className="grid grid-cols-2 gap-1.5">
@@ -199,7 +203,7 @@ export default function Header() {
                 end={link.to === '/'}
                 className={({ isActive }) =>
                   cn(
-                    'relative rounded-md px-4 py-2 text-[14.5px] transition-colors',
+                    'relative rounded-md px-4 py-2 text-[14.5px] tracking-[-0.005em] transition-colors duration-200',
                     isActive ? 'text-ink' : 'text-ink-3 hover:text-ink',
                   )
                 }
@@ -208,7 +212,11 @@ export default function Header() {
                   <>
                     {link.label}
                     {isActive && (
-                      <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-accent" />
+                      <motion.span
+                        layoutId="nav-underline"
+                        className="absolute inset-x-3 -bottom-[3px] h-px rounded-full bg-accent"
+                        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                      />
                     )}
                   </>
                 )}

@@ -5,20 +5,46 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'reac
 type Variant = 'primary' | 'secondary' | 'ghost'
 type Size = 'md' | 'lg'
 
+/**
+ * Brand button.
+ *
+ * Refined per brand book v3:
+ * - Primary: indigo→navy gradient with a two-layer shadow (1px hairline
+ *   highlight on top, soft drop on bottom). On hover the gradient
+ *   shifts darker and the shadow deepens; the active state pushes down
+ *   1px for tactile feedback. The arrow icon (if any) slides 2px on
+ *   hover.
+ * - Secondary: paper-2 surface with a hairline border. A subtle inner
+ *   shadow on hover hints at "lift", not a heavy press.
+ * - Ghost: cleanest. Just a colour change on hover with no surface.
+ *
+ * Letter-spacing is slightly tightened on the body text — the brand
+ * uses Vazirmatn for Persian, which benefits from -0.005em tracking
+ * at button sizes to avoid feeling loose.
+ */
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-md font-medium ' +
-  'transition-all duration-200 focus-visible:outline-none ' +
+  'group relative inline-flex items-center justify-center gap-2 rounded-md font-medium ' +
+  'tracking-[-0.005em] ' +
+  'transition-all duration-200 ease-out focus-visible:outline-none ' +
   'focus-visible:ring-2 focus-visible:ring-sky focus-visible:ring-offset-2 ' +
   'focus-visible:ring-offset-paper disabled:opacity-50 disabled:cursor-not-allowed'
 
 const variants: Record<Variant, string> = {
   primary:
-    'bg-accent text-accent-fg hover:bg-navy-2 active:translate-y-px ' +
-    'shadow-[0_1px_0_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(10,14,46,0.4)]',
+    // gradient surface + dual shadow + crisp hairline highlight on top
+    'text-accent-fg ' +
+    'bg-[linear-gradient(180deg,var(--color-indigo)_0%,var(--color-navy-2)_100%)] ' +
+    'hover:bg-[linear-gradient(180deg,var(--color-navy-2)_0%,var(--color-navy-1)_100%)] ' +
+    'shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_1px_0_rgba(10,14,46,0.04),0_10px_28px_-14px_rgba(10,14,46,0.55)] ' +
+    'hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_1px_0_rgba(10,14,46,0.06),0_14px_36px_-14px_rgba(10,14,46,0.7)] ' +
+    'active:translate-y-px active:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_4px_14px_-10px_rgba(10,14,46,0.5)]',
   secondary:
-    'bg-cloud text-ink border border-hairline hover:bg-mist',
+    'bg-paper-2 text-ink border border-hairline ' +
+    'hover:bg-cloud hover:border-hairline ' +
+    'shadow-[0_1px_0_rgba(10,14,46,0.02)] ' +
+    'hover:shadow-[0_2px_8px_-4px_rgba(10,14,46,0.12)]',
   ghost:
-    'bg-transparent text-ink hover:bg-cloud',
+    'bg-transparent text-ink hover:bg-ink/[0.04]',
 }
 
 const sizes: Record<Size, string> = {

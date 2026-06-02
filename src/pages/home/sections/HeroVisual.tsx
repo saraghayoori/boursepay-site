@@ -71,24 +71,40 @@ export default function HeroVisual() {
         </div>
       </motion.div>
 
-      {/* 4 — floating fast-settlement badge */}
+      {/* 4 — floating settlement badge (refined as a "stamp") */}
       <motion.div
-        initial={{ y: 0 }}
-        animate={{ y: [0, -12, 0] }}
+        initial={{ y: 0, rotate: 2 }}
+        animate={{ y: [0, -12, 0], rotate: 2 }}
         transition={{ duration: 6, delay: 0.6, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[6%] right-[4%] rounded-2xl bg-coral px-4 py-3 text-paper shadow-[0_20px_50px_-15px_rgba(224,116,74,0.6)]"
+        className="absolute top-[6%] right-[4%] origin-center"
       >
         <div
-          className="font-en-body text-[9px] tracking-[0.22em] uppercase opacity-90"
-          style={{ unicodeBidi: 'isolate' }}
+          className="relative rounded-2xl bg-gradient-to-br from-coral-2 to-coral px-5 py-3.5 text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_24px_55px_-18px_rgba(224,116,74,0.65),0_4px_12px_-4px_rgba(224,116,74,0.4)]"
         >
-          settlement
-        </div>
-        <div
-          className="mt-1 font-display text-[24px] leading-none font-bold"
-          style={{ unicodeBidi: 'isolate' }}
-        >
-          FAST
+          {/* inner hairline ring for stamp/seal character */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-1.5 rounded-xl border border-paper/20"
+          />
+          <div className="relative">
+            <div
+              className="font-en-body text-[9px] tracking-[0.28em] uppercase text-paper/90"
+              style={{ unicodeBidi: 'isolate' }}
+            >
+              settlement
+            </div>
+            <div className="mt-1.5 flex items-baseline gap-1.5">
+              <div className="font-display text-[22px] leading-none font-bold tracking-tight">
+                سریع
+              </div>
+              <div
+                className="font-en-body text-[10px] tracking-[0.2em] uppercase text-paper/70"
+                style={{ unicodeBidi: 'isolate' }}
+              >
+                · fast
+              </div>
+            </div>
+          </div>
         </div>
       </motion.div>
 

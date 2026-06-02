@@ -180,7 +180,7 @@ export default function ProductsGrid() {
                   {product.audience}
                 </span>
                 <Link
-                  to={`/products/${product.slug}`}
+                  to={`/products#${product.slug}`}
                   className="flex items-center gap-1.5 text-[14px] font-medium text-mist transition-transform hover:-translate-x-1"
                 >
                   <span>صفحه‌ی {product.name}</span>

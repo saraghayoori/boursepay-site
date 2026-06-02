@@ -60,7 +60,7 @@ export default function Footer() {
             {products.map((p) => (
               <li key={p.slug}>
                 <Link
-                  to={`/products/${p.slug}`}
+                  to={`/products#${p.slug}`}
                   className="text-paper/85 transition-colors hover:text-sky"
                 >
                   {p.name}{' '}

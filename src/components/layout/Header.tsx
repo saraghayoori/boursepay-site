@@ -145,7 +145,7 @@ export default function Header() {
                           return (
                             <Link
                               key={p.slug}
-                              to={`/products/${p.slug}`}
+                              to={`/products#${p.slug}`}
                               role="menuitem"
                               className="group relative flex flex-col rounded-xl px-4 py-3.5 transition-colors hover:bg-cloud"
                               onClick={() => setProductsOpen(false)}
@@ -277,7 +277,7 @@ export default function Header() {
                         return (
                           <li key={p.slug}>
                             <NavLink
-                              to={`/products/${p.slug}`}
+                              to={`/products#${p.slug}`}
                               className={({ isActive }) =>
                                 cn(
                                   'relative block rounded-md px-3 py-2.5 text-[14px]',

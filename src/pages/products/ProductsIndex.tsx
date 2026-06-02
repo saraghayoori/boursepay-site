@@ -1,32 +1,79 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Heading from '@/components/ui/Heading'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Pill from '@/components/ui/Pill'
 import Section from '@/components/ui/Section'
+import Button from '@/components/ui/Button'
 import ArcMotif from '@/components/brand/ArcMotif'
-import { products, productsBySlug } from '@/content/products'
+import {
+  products,
+  productsBySlug,
+  type ProductSlug,
+} from '@/content/products'
 import { cn } from '@/lib/cn'
 
 /**
- * Products index — overview of the four-product family.
+ * Products index — the *only* product surface.
  *
- * Per Sara's restored design: instead of a 2×2 card grid, the four
- * products live behind a horizontal tab strip. The active-tab indicator
- * is a single 2px bar that uses motion's `layoutId` so it physically
- * slides from one tab to the next when you click. Below the tabs sits
- * the detailed view of the selected product — pill, heading, copy,
- * highlights, pain point, audience and a link to the product page.
+ * There are no dedicated /products/{slug} subpages. Every product
+ * lives inside its own tab on this single page: its pill, name,
+ * one-liner, pain-point quote, description, optional detail
+ * paragraph, highlights, audience, and CTAs.
  *
- * The architecture diagram (Chabok-as-foundation) stays at the bottom
- * unchanged.
+ * Tab state is synced with the URL hash, so:
+ *   /products#chabok    → opens the چابک tab on load
+ *   /products#tiam      → opens the تیام tab
+ *   …etc.
+ *
+ * This means in-banner carousel links elsewhere on the site
+ * (Header dropdown, home-page ProductsGrid banner footer) can
+ * deep-link directly to a tab via `/products#${slug}`.
+ *
+ * The active-tab indicator is a 2px bar that physically slides
+ * between tabs via motion `layoutId`.
  */
 const easeOut = [0.22, 1, 0.36, 1] as const
 
+const isProductSlug = (s: string): s is ProductSlug =>
+  s === 'chabok' || s === 'tiam' || s === 'hamta' || s === 'gift-card'
+
 export default function ProductsIndex() {
-  const [activeSlug, setActiveSlug] = useState(products[0].slug)
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  // Initial tab from URL hash (#chabok, #tiam, ...) — default to first.
+  const hashSlug = location.hash.replace(/^#/, '')
+  const initial = isProductSlug(hashSlug) ? hashSlug : products[0].slug
+
+  const [activeSlug, setActiveSlug] = useState<ProductSlug>(initial)
+
+  // Keep the hash in sync with the active tab without triggering a
+  // navigation spinner. `replace: true` avoids polluting history with
+  // every tab switch.
+  useEffect(() => {
+    const desiredHash = `#${activeSlug}`
+    if (location.hash !== desiredHash) {
+      navigate({ pathname: '/products', hash: desiredHash }, { replace: true })
+    }
+    // We intentionally don't depend on `location.hash` here — that
+    // would cause a feedback loop with navigate(). We re-run only when
+    // the user changes the tab.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSlug])
+
+  // Listen for external hash changes (e.g. a Link from another page
+  // landing here with a different #slug).
+  useEffect(() => {
+    const slug = location.hash.replace(/^#/, '')
+    if (isProductSlug(slug) && slug !== activeSlug) {
+      setActiveSlug(slug)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.hash])
+
   const active = productsBySlug[activeSlug]
   const isB2C = active.role === 'b2c'
 
@@ -72,7 +119,7 @@ export default function ProductsIndex() {
             aria-label="محصولات"
             className="relative flex items-stretch gap-1 overflow-x-auto border-b border-hairline -mx-4 px-4 sm:mx-0 sm:px-0"
           >
-            {products.map((p) => {
+            {products.map((p, i) => {
               const isActive = p.slug === activeSlug
               const tabIsB2C = p.role === 'b2c'
               return (
@@ -101,7 +148,7 @@ export default function ProductsIndex() {
                       )}
                       style={{ unicodeBidi: 'isolate' }}
                     >
-                      {`0${products.indexOf(p) + 1}`}
+                      {`0${i + 1}`}
                     </span>
                     <span className="font-display text-[18px] font-bold sm:text-[20px]">
                       {p.name}
@@ -126,18 +173,35 @@ export default function ProductsIndex() {
             })}
           </div>
 
-          {/* Active product detail panel */}
+          {/* Active product detail panel — contains everything that
+              used to live on the per-product page */}
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={active.slug}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.4, ease: easeOut }}
-              className="relative mt-10 grid gap-10 rounded-2xl border border-hairline bg-paper-2 p-10 lg:grid-cols-12 sm:p-12"
+              transition={{ duration: 0.42, ease: easeOut }}
+              className="relative mt-10 grid gap-12 rounded-2xl border border-hairline bg-paper-2 p-8 lg:grid-cols-12 sm:p-12"
             >
-              {/* Left column (RTL → right): meta + name + description */}
-              <div className="lg:col-span-7">
+              {/* Soft brand arc decoration in the far corner of the
+                  panel — quiet, matches the brand book chapter pages */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -bottom-20 -left-20 text-indigo/8"
+              >
+                <ArcMotif
+                  count={4}
+                  size={320}
+                  anchor="bottom-left"
+                  dot={false}
+                  animate={false}
+                />
+              </div>
+
+              {/* Primary column (RTL → right): name, copy, pain point,
+                  description + detail, CTAs */}
+              <div className="relative lg:col-span-7">
                 <div className="flex items-center gap-3">
                   <Pill tone={isB2C ? 'b2c' : 'b2b'} bare>
                     {isB2C ? 'B2C' : 'B2B'} · {active.category}
@@ -150,73 +214,123 @@ export default function ProductsIndex() {
                   </span>
                 </div>
 
-                <h2 className="mt-6 font-display text-[44px] font-bold leading-none text-ink sm:text-[56px]">
+                <h2 className="mt-6 font-display text-[44px] font-bold leading-none tracking-tight text-ink sm:text-[60px]">
                   {active.name}
                 </h2>
                 <div
-                  className="mt-2 font-en-display italic text-[16px] text-ink-3"
+                  className="mt-2 font-en-display italic text-[17px] text-ink-3"
                   style={{ unicodeBidi: 'isolate' }}
                 >
                   {active.latin} · {active.kicker}
                 </div>
 
-                <p className="mt-6 max-w-xl text-[16px] leading-[1.9] text-ink-2">
-                  {active.description}
+                <p className="mt-7 max-w-xl text-[17px] leading-[1.85] text-ink-2 sm:text-[18px]">
+                  {active.oneLiner}
                 </p>
 
+                {/* Pain-point pull-quote — replaces the dark editorial
+                    strip from the old per-product page */}
                 {active.painPoint && (
-                  <div className="mt-6 max-w-xl rounded-lg border-r-2 border-accent/40 bg-cloud/80 px-4 py-3 text-[13.5px] leading-[1.7] text-ink-2">
-                    {active.painPoint}
+                  <div className="mt-8 max-w-xl border-r-2 border-accent/45 bg-cloud/85 px-5 py-4">
+                    <div
+                      className="font-en-body text-[10px] uppercase tracking-[0.22em] text-accent/80"
+                      style={{ unicodeBidi: 'isolate' }}
+                    >
+                      the problem we solve
+                    </div>
+                    <p className="mt-2 font-display text-[16.5px] font-medium leading-[1.65] text-ink sm:text-[18px]">
+                      «{active.painPoint}»
+                    </p>
                   </div>
                 )}
 
-                <div className="mt-8 flex items-center justify-between border-t border-hairline-2 pt-6">
-                  <span className="text-[12.5px] text-ink-3">
-                    {active.audience}
-                  </span>
-                  <Link
-                    to={`/products/${active.slug}`}
-                    className="flex items-center gap-1.5 text-[14px] font-medium text-accent transition-transform hover:-translate-x-1"
+                {/* Description heading + body */}
+                <div className="mt-10">
+                  <div
+                    className="font-en-body text-[11px] font-medium tracking-[0.18em] uppercase text-ink-3"
+                    style={{ unicodeBidi: 'isolate' }}
                   >
-                    <span>صفحه‌ی {active.name}</span>
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="rotate-180"
-                    >
-                      <path d="M5 12h14" />
-                      <path d="M12 5l7 7-7 7" />
-                    </svg>
-                  </Link>
+                    Why {active.latin}?
+                  </div>
+                  <h3 className="mt-2 font-display text-[22px] font-bold text-ink sm:text-[26px]">
+                    چرا {active.name}؟
+                  </h3>
+                  <p className="mt-4 max-w-xl text-[15.5px] leading-[1.9] text-ink-2 sm:text-[16.5px]">
+                    {active.description}
+                  </p>
+                  {active.detail && (
+                    <p className="mt-4 max-w-xl text-[14.5px] leading-[1.9] text-ink-2 sm:text-[15.5px]">
+                      {active.detail}
+                    </p>
+                  )}
+                </div>
+
+                {/* CTAs */}
+                <div className="mt-9 flex flex-wrap gap-3">
+                  <Button
+                    as="link"
+                    to="/contact"
+                    size="lg"
+                    bare
+                    className="bg-navy-1 text-paper hover:bg-navy-2"
+                  >
+                    {isB2C ? 'دریافتِ کارت هدیه' : 'گفت‌وگو با تیمِ فنی'}
+                  </Button>
+                  <Button as="a" href="mailto:hello@boursepayment.com" size="lg" variant="ghost" bare>
+                    <span className="font-en-body" style={{ unicodeBidi: 'isolate' }}>
+                      hello@boursepayment.com
+                    </span>
+                  </Button>
                 </div>
               </div>
 
-              {/* Right column (RTL → left): highlights list */}
-              <div className="lg:col-span-5">
-                <div
-                  className="font-en-body text-[11px] font-medium tracking-[0.18em] uppercase text-ink-3"
-                  style={{ unicodeBidi: 'isolate' }}
-                >
-                  highlights
+              {/* Secondary column (RTL → left): in-one-glance card +
+                  highlights checklist */}
+              <aside className="relative lg:col-span-5">
+                <div className="rounded-2xl border border-hairline bg-paper p-6">
+                  <div
+                    className="font-en-body text-[11px] font-medium tracking-[0.2em] uppercase text-sky"
+                    style={{ unicodeBidi: 'isolate' }}
+                  >
+                    at a glance
+                  </div>
+                  <div className="mt-2 font-display text-[16px] font-bold text-ink">
+                    در یک نگاه
+                  </div>
+                  <dl className="mt-5 space-y-4">
+                    <GlanceRow term="مخاطب" value={active.audience} />
+                    <GlanceRow term="زمانِ تسویه" value={active.timing} />
+                    <GlanceRow term="دسته" value={active.category} />
+                  </dl>
                 </div>
-                <ul className="mt-4 space-y-3">
-                  {active.highlights.map((h) => (
-                    <li
-                      key={h}
-                      className="flex items-start gap-3 rounded-xl border border-hairline-2 bg-paper p-4 text-[14px] leading-[1.7] text-ink-2"
-                    >
-                      <span className="mt-1.5 h-1 w-3 shrink-0 rounded-full bg-accent" />
-                      <span>{h}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+
+                <div className="mt-6">
+                  <div
+                    className="font-en-body text-[11px] font-medium tracking-[0.2em] uppercase text-ink-3"
+                    style={{ unicodeBidi: 'isolate' }}
+                  >
+                    highlights
+                  </div>
+                  <div className="mt-2 font-display text-[16px] font-bold text-ink">
+                    نکاتِ کلیدی
+                  </div>
+                  <ul className="mt-4 space-y-2.5">
+                    {active.highlights.map((h) => (
+                      <li
+                        key={h}
+                        className="flex items-start gap-3 rounded-xl border border-hairline-2 bg-paper p-4 text-[14px] leading-[1.7] text-ink-2"
+                      >
+                        <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/12 text-accent">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M5 12l4 4 10-10" />
+                          </svg>
+                        </span>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </aside>
             </motion.div>
           </AnimatePresence>
         </Container>
@@ -241,16 +355,17 @@ export default function ProductsIndex() {
           </div>
 
           <div className="mt-12 grid gap-4">
-            {/* Top tier: three product chips */}
+            {/* Top tier: three product chips, each links to its tab */}
             <div className="grid gap-4 sm:grid-cols-3">
               {products
                 .filter((p) => p.slug !== 'chabok')
                 .map((p) => {
                   const tileB2C = p.role === 'b2c'
                   return (
-                    <div
+                    <Link
                       key={p.slug}
-                      className="relative rounded-xl border border-hairline bg-paper p-5"
+                      to={`/products#${p.slug}`}
+                      className="group relative rounded-xl border border-hairline bg-paper p-5 transition-all hover:border-indigo/30 hover:shadow-[0_18px_50px_-30px_rgba(10,14,46,0.4)]"
                     >
                       {tileB2C && (
                         <span
@@ -272,7 +387,7 @@ export default function ProductsIndex() {
                       >
                         {p.latin}
                       </div>
-                    </div>
+                    </Link>
                   )
                 })}
             </div>
@@ -294,9 +409,9 @@ export default function ProductsIndex() {
               ))}
             </div>
 
-            {/* Bottom tier: Chabok foundation */}
+            {/* Bottom tier: Chabok foundation — links to chabok tab */}
             <Link
-              to="/products/chabok"
+              to="/products#chabok"
               className="group relative block overflow-hidden rounded-2xl bg-navy-1 px-8 py-7 text-paper transition-colors hover:bg-navy-2"
             >
               <div className="pointer-events-none absolute -bottom-12 -left-12 text-sky/20">
@@ -329,5 +444,19 @@ export default function ProductsIndex() {
         </Container>
       </Section>
     </>
+  )
+}
+
+function GlanceRow({ term, value }: { term: string; value: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 border-b border-hairline-2 pb-3 last:border-b-0 last:pb-0">
+      <dt
+        className="font-en-body text-[11px] uppercase tracking-[0.16em] text-ink-3"
+        style={{ unicodeBidi: 'isolate' }}
+      >
+        {term}
+      </dt>
+      <dd className="text-[14px] font-medium text-ink">{value}</dd>
+    </div>
   )
 }

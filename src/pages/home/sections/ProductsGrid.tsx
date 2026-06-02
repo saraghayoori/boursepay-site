@@ -2,9 +2,6 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import Container from '@/components/ui/Container'
-import Heading from '@/components/ui/Heading'
-import Eyebrow from '@/components/ui/Eyebrow'
-import Pill from '@/components/ui/Pill'
 import Section from '@/components/ui/Section'
 import ArcMotif from '@/components/brand/ArcMotif'
 import { products } from '@/content/products'
@@ -50,16 +47,27 @@ export default function ProductsGrid() {
   return (
     <Section tone="none" spacing="normal">
       <Container>
-        {/* Header */}
+        {/* Header — legacy styling (inline, intentionally not using
+            the refined Eyebrow/Heading primitives) */}
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
-            <Eyebrow>۰۲ · محصولات</Eyebrow>
-            <Heading
-              fa="چهار محصول، یک ریل"
-              en="Four products · one rail"
-              level={2}
-              className="mt-3"
-            />
+            <div
+              className="font-en-body text-[11px] uppercase tracking-[0.18em] font-medium text-sky"
+              style={{ unicodeBidi: 'isolate' }}
+            >
+              ۰۲ · محصولات
+            </div>
+            <div className="mt-3 flex flex-col gap-1.5">
+              <h2 className="font-display font-bold text-ink text-[30px] sm:text-[40px] leading-[1.1] tracking-tight">
+                چهار محصول، یک ریل
+              </h2>
+              <div
+                className="font-en-display italic text-[14px] sm:text-[16px] text-ink-3"
+                style={{ unicodeBidi: 'isolate' }}
+              >
+                Four products · one rail
+              </div>
+            </div>
             <p className="mt-5 max-w-xl text-[15.5px] leading-[1.85] text-ink-2">
               هر محصول، یک سناریوی پرداختِ بازارِ سرمایه را حل می‌کند. ورق بزنید.
             </p>
@@ -115,16 +123,18 @@ export default function ProductsGrid() {
               <div className="relative grid items-end gap-10 lg:grid-cols-12">
                 <div className="lg:col-span-7">
                   <div className="flex items-center gap-2">
-                    <Pill
-                      tone={isB2C ? 'b2c' : 'b2b'}
+                    <span
                       className={cn(
+                        'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5',
+                        'text-[11px] font-en-body font-semibold tracking-wider uppercase',
                         isB2C
                           ? 'bg-coral/20 text-coral-2'
                           : 'bg-sky/20 text-mist',
                       )}
+                      style={{ unicodeBidi: 'isolate' }}
                     >
                       {isB2C ? 'B2C' : 'B2B'} · {product.category}
-                    </Pill>
+                    </span>
                     <span
                       className="font-en-body text-[10.5px] uppercase tracking-[0.18em] text-paper/55"
                       style={{ unicodeBidi: 'isolate' }}

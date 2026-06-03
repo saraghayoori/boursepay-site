@@ -34,9 +34,14 @@ interface LogoProps {
  * and remove the `dark && <wordmark>` block below.
  */
 
+// Prefix asset paths with Vite's BASE_URL so they resolve correctly
+// when the site is served under a subpath (e.g. /boursepay-site/ on
+// GitHub Pages). BASE_URL always ends with a slash, so we don't add
+// another one between it and the filename.
+const base = import.meta.env.BASE_URL
 const markSrc = {
-  light: '/logo.png',
-  dark: '/logo-dark.svg',
+  light: `${base}logo.png`,
+  dark: `${base}logo-dark.svg`,
 } as const
 
 export default function Logo({

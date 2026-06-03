@@ -4,7 +4,6 @@ import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
 import ArcMotif from '@/components/brand/ArcMotif'
 import OrnamentDots from '@/components/brand/OrnamentDots'
-import OrnamentCurve from '@/components/brand/OrnamentCurve'
 import HeroVisual from './HeroVisual'
 
 const easeOut = [0.22, 1, 0.36, 1] as const
@@ -32,25 +31,8 @@ export default function Hero() {
         <ArcMotif count={5} size={620} anchor="top-right" dot={false} />
       </div>
 
-      {/* Layer 3b — quiet sweep curve along the bottom-left, draws in
-          on initial load. Lands a small coral dot that echoes the
-          floating "settlement" stamp in HeroVisual. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-10 left-6 hidden text-sky/55 lg:block"
-      >
-        <OrnamentCurve
-          variant="sweep"
-          width={300}
-          strokeWidth={1.1}
-          dotTone="coral"
-          duration={2.4}
-          delay={0.9}
-        />
-      </div>
-
-      {/* Layer 3c — scatter of dots on the far-left mid-height,
-          atmospheric without competing for attention */}
+      {/* Scatter of dots on the far-left mid-height, atmospheric
+          without competing for attention */}
       <div
         aria-hidden
         className="pointer-events-none absolute top-1/3 -left-2 hidden text-indigo/35 lg:block"

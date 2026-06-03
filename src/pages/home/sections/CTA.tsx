@@ -2,7 +2,6 @@ import Container from '@/components/ui/Container'
 import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
 import ArcMotif from '@/components/brand/ArcMotif'
-import OrnamentCurve from '@/components/brand/OrnamentCurve'
 import OrnamentDots from '@/components/brand/OrnamentDots'
 
 /**
@@ -20,20 +19,6 @@ export default function CTA() {
     <section className="relative isolate overflow-hidden text-ink">
       <div className="pointer-events-none absolute -bottom-32 -left-32 text-indigo/14">
         <ArcMotif count={5} size={620} anchor="bottom-left" dot />
-      </div>
-
-      {/* Sweep curve in the top-right corner — quiet flourish that
-          draws in as the CTA scrolls into view. Lands a coral dot at
-          its endpoint to echo the Hero settlement badge. */}
-      <div className="pointer-events-none absolute right-4 top-10 hidden text-sky/55 lg:block">
-        <OrnamentCurve
-          variant="sweep"
-          width={260}
-          strokeWidth={1.1}
-          dotTone="coral"
-          duration={1.9}
-          delay={0.15}
-        />
       </div>
 
       {/* Scatter of dots in the top-left, atmospheric weight balance */}

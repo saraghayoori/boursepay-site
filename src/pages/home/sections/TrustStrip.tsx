@@ -74,19 +74,13 @@ export default function TrustStrip() {
   return (
     <Section tone="none" spacing="normal">
       <Container>
-        {/* Header row */}
-        <div className="grid items-end gap-8 md:grid-cols-12">
-          <div className="md:col-span-5">
-            <Eyebrow tone="sky">در نگاهِ عدد</Eyebrow>
-            <h2 className="mt-3 font-display text-[28px] font-bold leading-tight tracking-tight text-ink sm:text-[34px]">
-              دستاوردهای عینی
-              <span className="text-indigo"> بورس‌پی </span>
-            </h2>
-          </div>
-          <p className="md:col-span-6 md:col-start-7 max-w-md text-[14.5px] leading-[1.85] text-ink-3">
-            چهار عدد، چهار حرف. این اعدادی است که هر روز در پنل‌های
-            عملیات‌مان می‌بینیم — نه آماری برای تبلیغات.
-          </p>
+        {/* Header */}
+        <div className="max-w-2xl">
+          <Eyebrow tone="sky">در نگاهِ عدد</Eyebrow>
+          <h2 className="mt-3 font-display text-[28px] font-bold leading-tight tracking-tight text-ink sm:text-[34px]">
+            دستاوردهای عینی
+            <span className="text-indigo"> بورس‌پی </span>
+          </h2>
         </div>
 
         {/* Cards row */}
@@ -144,25 +138,26 @@ function FactCard({ fact, index }: { fact: Fact; index: number }) {
       transition={{ duration: 0.6, delay: index * 0.08, ease: easeOut }}
       className="group relative flex flex-col overflow-hidden rounded-2xl border border-hairline bg-paper-2 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-indigo/25 hover:shadow-[0_28px_60px_-30px_rgba(10,14,46,0.4)]"
     >
-      {/* Top-right corner mark — small Latin index */}
-      <div
-        className="absolute right-5 top-5 font-en-display text-[11px] font-bold tracking-[0.2em] text-ink-4 transition-colors group-hover:text-indigo/55"
-        style={{ unicodeBidi: 'isolate' }}
-        aria-hidden
-      >
-        0{index + 1}
-      </div>
-
-      {/* Inline sparkline / glyph in the top-left of the card */}
-      <div
-        className="h-7 w-16 text-sky transition-colors group-hover:text-indigo"
-        aria-hidden
-      >
-        <Spark variant={fact.spark} />
+      {/* Top row — Latin index on right, sparkline on left, flex-between
+          so they never overlap regardless of card width */}
+      <div className="flex items-center justify-between">
+        <div
+          className="h-6 w-14 text-sky transition-colors group-hover:text-indigo"
+          aria-hidden
+        >
+          <Spark variant={fact.spark} />
+        </div>
+        <div
+          className="font-en-display text-[11px] font-bold tracking-[0.2em] text-ink-4 transition-colors group-hover:text-indigo/55"
+          style={{ unicodeBidi: 'isolate' }}
+          aria-hidden
+        >
+          0{index + 1}
+        </div>
       </div>
 
       {/* Big number/literal */}
-      <div className="mt-6 font-display text-[38px] font-bold leading-none tracking-tight text-ink sm:text-[44px]">
+      <div className="mt-8 font-display text-[38px] font-bold leading-none tracking-tight text-ink sm:text-[44px]">
         {fact.prefix}
         {display}
         {fact.suffix}

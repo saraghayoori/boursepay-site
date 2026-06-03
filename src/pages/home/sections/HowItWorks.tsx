@@ -5,7 +5,6 @@ import Eyebrow from '@/components/ui/Eyebrow'
 import Heading from '@/components/ui/Heading'
 import Section from '@/components/ui/Section'
 import OrnamentDots from '@/components/brand/OrnamentDots'
-import OrnamentCurve from '@/components/brand/OrnamentCurve'
 
 /**
  * "How it works" — a three-step editorial diagram.
@@ -61,18 +60,6 @@ export default function HowItWorks() {
         {/* Orbit ornament on the far-left, beside the section header */}
         <div className="pointer-events-none absolute -left-2 top-2 hidden text-indigo/35 lg:block">
           <OrnamentDots variant="orbit" tone="indigo" opacity={0.5} width={110} />
-        </div>
-
-        {/* Quarter-arc rising on the right edge, brand-book echo */}
-        <div className="pointer-events-none absolute right-0 top-0 hidden text-sky/40 lg:block">
-          <OrnamentCurve
-            variant="rise"
-            width={120}
-            strokeWidth={1}
-            dotTone="sky"
-            duration={2.1}
-            delay={0.3}
-          />
         </div>
 
         <div className="relative max-w-2xl">

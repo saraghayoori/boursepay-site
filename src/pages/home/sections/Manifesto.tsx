@@ -2,7 +2,6 @@ import { motion } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Section from '@/components/ui/Section'
 import ArcMotif from '@/components/brand/ArcMotif'
-import OrnamentCurve from '@/components/brand/OrnamentCurve'
 import OrnamentDots from '@/components/brand/OrnamentDots'
 
 /**
@@ -25,19 +24,6 @@ export default function Manifesto() {
         {/* Faint arc, far corner, no animation */}
         <div className="pointer-events-none absolute -bottom-20 right-[-100px] hidden text-indigo/8 sm:block">
           <ArcMotif count={4} size={420} anchor="bottom-right" dot={false} animate={false} />
-        </div>
-
-        {/* Top-center ornament arc — bridges the products section
-            to the manifesto, draws in as the quote enters view */}
-        <div className="pointer-events-none absolute left-1/2 top-6 hidden -translate-x-1/2 text-indigo/30 sm:block">
-          <OrnamentCurve
-            variant="arch"
-            width={200}
-            strokeWidth={1.1}
-            dotTone="coral"
-            duration={1.6}
-            delay={0.2}
-          />
         </div>
 
         {/* Constellation of dots on the right side, atmospheric */}

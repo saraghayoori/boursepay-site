@@ -4,7 +4,6 @@ import Container from '@/components/ui/Container'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Heading from '@/components/ui/Heading'
 import Section from '@/components/ui/Section'
-import OrnamentCurve from '@/components/brand/OrnamentCurve'
 
 /**
  * Testimonials — short pull-quotes from named contacts at customer
@@ -58,17 +57,6 @@ export default function Testimonials() {
   return (
     <Section tone="none" spacing="normal">
       <Container className="relative">
-        {/* Right-side ornament — wave drawing in on scroll */}
-        <div className="pointer-events-none absolute right-2 -top-8 hidden text-sky/45 lg:block">
-          <OrnamentCurve
-            variant="wave"
-            width={220}
-            strokeWidth={1.1}
-            dotTone="coral"
-            duration={1.8}
-          />
-        </div>
-
         <div className="relative max-w-2xl">
           <Eyebrow>۰۵ · صدای مشتری</Eyebrow>
           <Heading

@@ -5,7 +5,6 @@ import Eyebrow from '@/components/ui/Eyebrow'
 import Section from '@/components/ui/Section'
 import Button from '@/components/ui/Button'
 import ArcMotif from '@/components/brand/ArcMotif'
-import OrnamentCurve from '@/components/brand/OrnamentCurve'
 import OrnamentDots from '@/components/brand/OrnamentDots'
 import { site } from '@/content/site'
 import { cn } from '@/lib/cn'
@@ -65,18 +64,6 @@ export default function ContactPage() {
       <section className="relative isolate overflow-hidden bg-cloud text-ink">
         <div className="pointer-events-none absolute -top-32 right-[-180px] text-indigo/15">
           <ArcMotif count={5} size={620} anchor="top-right" />
-        </div>
-
-        {/* Wave ornament on the left, draws in as the hero loads */}
-        <div className="pointer-events-none absolute left-6 top-1/2 hidden -translate-y-1/2 text-sky/55 lg:block">
-          <OrnamentCurve
-            variant="wave"
-            width={260}
-            strokeWidth={1.1}
-            dotTone="coral"
-            duration={2}
-            delay={0.4}
-          />
         </div>
 
         {/* Constellation in the lower-right of the hero */}

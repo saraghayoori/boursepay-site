@@ -3,6 +3,7 @@ import { motion, useInView } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Section from '@/components/ui/Section'
 import Eyebrow from '@/components/ui/Eyebrow'
+import FlourishLine from '@/components/brand/FlourishLine'
 
 /**
  * Trust strip — the second "voice" of the page.
@@ -156,11 +157,25 @@ function FactCard({ fact, index }: { fact: Fact; index: number }) {
         </div>
       </div>
 
-      {/* Big number/literal */}
-      <div className="mt-8 font-display text-[38px] font-bold leading-none tracking-tight text-ink sm:text-[44px]">
-        {fact.prefix}
-        {display}
-        {fact.suffix}
+      {/* Big number/literal — with a soft tide wave behind it */}
+      <div className="relative mt-8">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -bottom-3 right-0 text-sky/25 transition-colors duration-500 group-hover:text-indigo/35"
+        >
+          <FlourishLine
+            variant="tide"
+            width={170}
+            strokeWidth={1}
+            duration={1.4}
+            delay={0.15 + index * 0.06}
+          />
+        </span>
+        <div className="relative font-display text-[38px] font-bold leading-none tracking-tight text-ink sm:text-[44px]">
+          {fact.prefix}
+          {display}
+          {fact.suffix}
+        </div>
       </div>
 
       {/* Persian label */}

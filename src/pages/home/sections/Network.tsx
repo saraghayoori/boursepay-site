@@ -1,4 +1,5 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, useInView } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Eyebrow from '@/components/ui/Eyebrow'
@@ -7,30 +8,24 @@ import Section from '@/components/ui/Section'
 import { products } from '@/content/products'
 
 /**
- * Network — a brand-aligned visualization of the payment rail.
+ * Network — the home page's centrepiece visual + product gateway.
  *
- * Composition (top to bottom):
- *   1. 21 bank dots arranged across the top edge in a slight upward
- *      curve. They fade in with stagger, then keep a slow pulse so
- *      the network feels alive.
- *   2. Soft hairline lines flow from each bank dot down toward the
- *      centre, converging on a single «بورس‌پی» node that sits inside
- *      a concentric-arc halo (the signature ArcMotif).
- *   3. From the centre node, four lines branch out to the four
- *      product chips along the bottom edge — چابک, تیام, همتا,
- *      کارت هدیه.
+ * What it shows, in a single frame:
+ *   - 21 bank dots arranged in a gentle arch across the top edge
+ *   - Hairline lines flowing from each bank into the centre, where
+ *     the «بورس‌پی» node sits inside a concentric-arc halo
+ *   - From the centre, four lines branch out to the four product
+ *     chips along the bottom edge. **Each chip is clickable** and
+ *     navigates to the matching tab on /products.
  *
- * Visually says, in one frame: *every transaction from any of 21
- * banks flows through Boorspay into one of the four products.*
+ * On hover, the active product chip lifts subtly and its in-bound
+ * line brightens, so the diagram doubles as a product launcher,
+ * not just a decoration.
  *
- * Implementation notes:
- * - The drawing happens in a single inline SVG so the lines and dots
- *   share a coordinate space and animate together when scrolled into
- *   view. Brand-book draw easing (0.16, 1, 0.3, 1) keeps the motion
- *   slow and editorial — not zippy.
- * - The composition is responsive via viewBox; mobile layout collapses
- *   the bank row into a 3-line stack via CSS grid, with the SVG
- *   visualization swapped for a simpler stacked diagram.
+ * The whole composition lives in one inline SVG so the dots, lines,
+ * halo and chips share a single coordinate space and animate
+ * together when the section scrolls into view. Brand-book draw
+ * easing (0.16, 1, 0.3, 1) keeps the formation slow and editorial.
  */
 const BANK_COUNT = 21
 const ease = [0.16, 1, 0.3, 1] as const
@@ -38,26 +33,25 @@ const ease = [0.16, 1, 0.3, 1] as const
 export default function Network() {
   const ref = useRef<SVGSVGElement>(null)
   const inView = useInView(ref, { once: true, amount: 0.2 })
+  const navigate = useNavigate()
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null)
 
-  // Build coordinates once. The SVG canvas is 1200×600.
   const W = 1200
   const H = 600
   const centerX = W / 2
   const centerY = H * 0.58
 
-  // Banks: 21 dots distributed along the top edge with a slight upward
-  // curve so the row feels organic, not mechanical. Spread from
-  // x=80 to x=W-80 along a gentle parabola.
+  // 21 bank dots distributed along the top edge with a slight upward
+  // arch so the row feels organic, not mechanical.
   const banks = Array.from({ length: BANK_COUNT }, (_, i) => {
-    const t = i / (BANK_COUNT - 1) // 0..1
+    const t = i / (BANK_COUNT - 1)
     const x = 80 + t * (W - 160)
-    // y dips slightly in the middle (forms an arch)
     const arch = Math.sin(t * Math.PI) * 14
     const y = 70 - arch
     return { x, y }
   })
 
-  // Products: 4 chips on the bottom edge, evenly distributed
+  // 4 product chips along the bottom edge
   const productPoints = products.map((_, i) => {
     const t = (i + 0.5) / products.length
     return { x: 120 + t * (W - 240), y: H - 80 }
@@ -80,13 +74,12 @@ export default function Network() {
           <p className="mx-auto mt-5 max-w-xl text-[15.5px] leading-[1.85] text-ink-2">
             هر تراکنشی که از مشتری‌های ما عبور می‌کند، از یکی از این بانک‌ها
             وارد می‌شود، از قلبِ بورس‌پی می‌گذرد، و در یکی از این چهار محصول
-            می‌نشیند. این تنها معماریِ شرکت ماست.
+            می‌نشیند. روی هر محصول کلیک کنید تا واردِ آن شوید.
           </p>
         </div>
 
         {/* Desktop diagram */}
         <div className="relative mt-14 hidden md:block">
-          {/* Ambient soft blob behind the whole diagram */}
           <div
             aria-hidden
             className="ambient-cool pointer-events-none absolute inset-0 opacity-50 blur-3xl"
@@ -109,9 +102,17 @@ export default function Network() {
                 <stop offset="0%" stopColor="var(--color-sky)" stopOpacity="0.5" />
                 <stop offset="100%" stopColor="var(--color-indigo)" stopOpacity="0.25" />
               </linearGradient>
+              <linearGradient id="productLine" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="var(--color-indigo)" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="var(--color-indigo)" stopOpacity="0.2" />
+              </linearGradient>
+              <linearGradient id="productLineHover" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="var(--color-indigo)" stopOpacity="0.95" />
+                <stop offset="100%" stopColor="var(--color-coral)" stopOpacity="0.65" />
+              </linearGradient>
             </defs>
 
-            {/* Glow halo behind the centre node */}
+            {/* Halo behind centre */}
             <motion.circle
               cx={centerX}
               cy={centerY}
@@ -122,9 +123,7 @@ export default function Network() {
               transition={{ duration: 1.4, delay: 0.6, ease }}
             />
 
-            {/* Concentric arc halo around centre — using the brand
-                motif. Drawn with three full circles at decreasing
-                opacity. */}
+            {/* Concentric arcs — brand motif */}
             {[180, 130, 90].map((r, i) => (
               <motion.circle
                 key={r}
@@ -141,7 +140,7 @@ export default function Network() {
               />
             ))}
 
-            {/* Lines from each bank dot down to the centre */}
+            {/* Bank → centre lines */}
             {banks.map((b, i) => (
               <motion.line
                 key={`bank-line-${i}`}
@@ -162,7 +161,7 @@ export default function Network() {
               />
             ))}
 
-            {/* Bank dots with pulsing animation */}
+            {/* Bank dots — pulsing halo + solid centre */}
             {banks.map((b, i) => (
               <g key={`bank-dot-${i}`}>
                 <motion.circle
@@ -207,25 +206,30 @@ export default function Network() {
               </g>
             ))}
 
-            {/* Lines from centre to each product node */}
-            {productPoints.map((p, i) => (
-              <motion.line
-                key={`product-line-${i}`}
-                x1={centerX}
-                y1={centerY + 30}
-                x2={p.x}
-                y2={p.y - 25}
-                stroke="var(--color-indigo)"
-                strokeOpacity={0.35}
-                strokeWidth={1.1}
-                strokeLinecap="round"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={inView ? { pathLength: 1, opacity: 1 } : {}}
-                transition={{ duration: 1.4, delay: 1.6 + i * 0.1, ease }}
-              />
-            ))}
+            {/* Centre → product lines — highlight when product hovered */}
+            {productPoints.map((p, i) => {
+              const isHover = hoverIdx === i
+              return (
+                <motion.line
+                  key={`product-line-${i}`}
+                  x1={centerX}
+                  y1={centerY + 30}
+                  x2={p.x}
+                  y2={p.y - 25}
+                  stroke={
+                    isHover ? 'url(#productLineHover)' : 'url(#productLine)'
+                  }
+                  strokeWidth={isHover ? 1.6 : 1.1}
+                  strokeLinecap="round"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={inView ? { pathLength: 1, opacity: 1 } : {}}
+                  transition={{ duration: 1.4, delay: 1.6 + i * 0.1, ease }}
+                  style={{ transition: 'stroke-width 0.25s ease' }}
+                />
+              )
+            })}
 
-            {/* Centre Boorspay node — a soft rounded rectangle */}
+            {/* Centre Boorspay node */}
             <motion.g
               initial={{ opacity: 0, scale: 0.85 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
@@ -275,17 +279,51 @@ export default function Network() {
               </text>
             </motion.g>
 
-            {/* Product node chips */}
+            {/* Product chips — interactive, clickable */}
             {productPoints.map((p, i) => {
               const product = products[i]
               const isB2C = product.role === 'b2c'
+              const isHover = hoverIdx === i
               return (
                 <motion.g
                   key={`product-node-${i}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.6, delay: 2 + i * 0.12, ease }}
+                  role="link"
+                  tabIndex={0}
+                  aria-label={`صفحه‌ی ${product.name}`}
+                  onClick={() => navigate(`/products#${product.slug}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      navigate(`/products#${product.slug}`)
+                    }
+                  }}
+                  onMouseEnter={() => setHoverIdx(i)}
+                  onMouseLeave={() => setHoverIdx(null)}
+                  onFocus={() => setHoverIdx(i)}
+                  onBlur={() => setHoverIdx(null)}
+                  style={{
+                    cursor: 'pointer',
+                    transform: isHover ? 'translateY(-4px)' : 'translateY(0)',
+                    transition: 'transform 0.3s cubic-bezier(0.22,1,0.36,1)',
+                    outline: 'none',
+                  }}
                 >
+                  {/* Chip shadow when hovered */}
+                  {isHover && (
+                    <rect
+                      x={p.x - 60}
+                      y={p.y - 20}
+                      width={120}
+                      height={48}
+                      rx={12}
+                      fill="var(--color-indigo)"
+                      opacity={0.18}
+                      filter="blur(10px)"
+                    />
+                  )}
                   <rect
                     x={p.x - 56}
                     y={p.y - 22}
@@ -296,7 +334,11 @@ export default function Network() {
                     stroke={
                       isB2C ? 'var(--color-coral)' : 'var(--color-indigo)'
                     }
-                    strokeOpacity={isB2C ? 0.45 : 0.2}
+                    strokeOpacity={isHover ? 0.8 : isB2C ? 0.45 : 0.25}
+                    strokeWidth={isHover ? 1.4 : 1}
+                    style={{
+                      transition: 'all 0.25s ease',
+                    }}
                   />
                   {isB2C && (
                     <circle
@@ -313,7 +355,8 @@ export default function Network() {
                     className="font-display"
                     fontSize={16}
                     fontWeight={700}
-                    fill="var(--color-ink)"
+                    fill={isHover ? 'var(--color-indigo)' : 'var(--color-ink)'}
+                    style={{ transition: 'fill 0.25s ease' }}
                   >
                     {product.name}
                   </text>
@@ -329,11 +372,29 @@ export default function Network() {
                   >
                     {product.latin}
                   </text>
+
+                  {/* "Click to enter" hint when hovered */}
+                  {isHover && (
+                    <motion.text
+                      x={p.x}
+                      y={p.y + 36}
+                      textAnchor="middle"
+                      className="font-en-body"
+                      fontSize={8}
+                      letterSpacing="0.22em"
+                      fill="var(--color-indigo)"
+                      style={{ textTransform: 'uppercase' }}
+                      initial={{ opacity: 0, y: p.y + 32 }}
+                      animate={{ opacity: 1, y: p.y + 36 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      open ↗
+                    </motion.text>
+                  )}
                 </motion.g>
               )
             })}
 
-            {/* Tiny labels under the bank row */}
             <text
               x={W / 2}
               y={120}
@@ -357,12 +418,12 @@ export default function Network() {
               fill="var(--color-ink-3)"
               style={{ textTransform: 'uppercase' }}
             >
-              4 product surfaces
+              4 product surfaces · click to explore
             </text>
           </svg>
         </div>
 
-        {/* Mobile fallback — simpler stacked layout */}
+        {/* Mobile fallback — same data, simpler layout */}
         <div className="mt-12 md:hidden">
           <div className="rounded-2xl border border-hairline bg-paper p-6">
             <div className="text-center">
@@ -425,15 +486,17 @@ export default function Network() {
                 className="font-en-body text-[9.5px] uppercase tracking-[0.22em] text-ink-3"
                 style={{ unicodeBidi: 'isolate' }}
               >
-                4 product surfaces
+                4 product surfaces — tap to enter
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {products.map((p) => {
                   const isB2C = p.role === 'b2c'
                   return (
-                    <div
+                    <button
                       key={p.slug}
-                      className="relative rounded-lg border border-hairline bg-paper-2 px-3 py-2 text-center"
+                      type="button"
+                      onClick={() => navigate(`/products#${p.slug}`)}
+                      className="group relative rounded-lg border border-hairline bg-paper-2 px-3 py-2.5 text-center transition-all hover:border-indigo/40 hover:bg-paper hover:shadow-[0_10px_30px_-15px_rgba(10,14,46,0.3)]"
                     >
                       {isB2C && (
                         <span
@@ -444,7 +507,13 @@ export default function Network() {
                       <div className="font-display text-[14px] font-bold text-ink">
                         {p.name}
                       </div>
-                    </div>
+                      <div
+                        className="mt-0.5 font-en-body text-[9px] tracking-[0.18em] text-ink-3"
+                        style={{ unicodeBidi: 'isolate', textTransform: 'uppercase' }}
+                      >
+                        {p.latin}
+                      </div>
+                    </button>
                   )
                 })}
               </div>

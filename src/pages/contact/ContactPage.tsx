@@ -6,6 +6,7 @@ import Section from '@/components/ui/Section'
 import Button from '@/components/ui/Button'
 import ArcMotif from '@/components/brand/ArcMotif'
 import OrnamentDots from '@/components/brand/OrnamentDots'
+import FlourishLine from '@/components/brand/FlourishLine'
 import { site } from '@/content/site'
 import { cn } from '@/lib/cn'
 
@@ -79,12 +80,23 @@ export default function ContactPage() {
         <Container className="relative grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Eyebrow tone="sky">تماس</Eyebrow>
-            <Heading
-              fa="بیایید گفت‌وگو کنیم."
-              en="Let's talk"
-              level={1}
-              className="mt-4"
-            />
+            <div className="relative mt-4 inline-block">
+              <Heading
+                fa="بیایید گفت‌وگو کنیم."
+                en="Let's talk"
+                level={1}
+              />
+              {/* Hand-drawn underline beneath the Persian heading */}
+              <span className="absolute right-0 -bottom-1 text-coral/65">
+                <FlourishLine
+                  variant="underline"
+                  width={320}
+                  strokeWidth={1.8}
+                  duration={1.4}
+                  delay={0.5}
+                />
+              </span>
+            </div>
             <p className="mt-7 max-w-xl text-[17.5px] leading-[1.9] text-ink-2">
               ساده‌ترین راهِ ارتباط با ما، یکی از کانال‌های پایین است.
               برای گفت‌وگوی فنی، عددی، فروش یا همکاری — هر سه با یک پاسخِ

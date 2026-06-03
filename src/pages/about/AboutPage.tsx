@@ -3,6 +3,8 @@ import Heading from '@/components/ui/Heading'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Section from '@/components/ui/Section'
 import ArcMotif from '@/components/brand/ArcMotif'
+import FlourishLine from '@/components/brand/FlourishLine'
+import OrnamentDots from '@/components/brand/OrnamentDots'
 
 /**
  * About page.
@@ -106,13 +108,29 @@ export default function AboutPage() {
         <div className="pointer-events-none absolute -bottom-32 right-[-180px] text-sky/20">
           <ArcMotif count={5} size={640} anchor="bottom-right" />
         </div>
+        {/* Constellation of mist dots in the top-left of the hero */}
+        <div className="pointer-events-none absolute left-8 top-12 hidden text-mist/40 lg:block">
+          <OrnamentDots variant="constellation" tone="mist" opacity={0.5} width={160} />
+        </div>
         <Container className="relative py-24 sm:py-32">
           <Eyebrow tone="sky">درباره‌ی ما</Eyebrow>
           <Heading
             fa={
               <>
                 پرداخت،<br />
-                <span className="text-sky">سریع و تخصصی</span>
+                <span className="relative inline-block text-sky">
+                  سریع و تخصصی
+                  {/* Underline emphasis */}
+                  <span className="absolute left-0 right-0 -bottom-4 flex justify-center text-sky/70">
+                    <FlourishLine
+                      variant="underline"
+                      width={300}
+                      strokeWidth={1.8}
+                      duration={1.5}
+                      delay={0.6}
+                    />
+                  </span>
+                </span>
               </>
             }
             en="Payment — fast and specialist"

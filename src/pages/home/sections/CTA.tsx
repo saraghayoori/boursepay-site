@@ -3,6 +3,7 @@ import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
 import ArcMotif from '@/components/brand/ArcMotif'
 import OrnamentDots from '@/components/brand/OrnamentDots'
+import FlourishLine from '@/components/brand/FlourishLine'
 
 /**
  * Closing CTA — light page-level CTA above the dark footer.
@@ -33,7 +34,19 @@ export default function CTA() {
             <Eyebrow tone="sky">گفت‌وگوی بعدی</Eyebrow>
             <h2 className="mt-4 font-display text-[36px] font-bold leading-[1.1] text-ink sm:text-[52px]">
               یک گفت‌وگوی ۳۰ دقیقه‌ای —{' '}
-              <span className="text-indigo">با تیمِ فنیِ ما، نه فروش.</span>
+              <span className="relative inline-block text-indigo">
+                با تیمِ فنیِ ما، نه فروش.
+                {/* Underline emphasis under the key phrase */}
+                <span className="absolute left-0 right-0 -bottom-4 flex justify-center text-coral/70">
+                  <FlourishLine
+                    variant="underline"
+                    width={280}
+                    strokeWidth={1.6}
+                    duration={1.3}
+                    delay={0.3}
+                  />
+                </span>
+              </span>
             </h2>
             <p className="mt-6 max-w-xl text-[16px] leading-[1.95] text-ink-2 sm:text-[17px]">
               سناریوی شما را — صندوق، کارگزاری، یکپارچه‌سازیِ بانکی یا تجربه‌ی

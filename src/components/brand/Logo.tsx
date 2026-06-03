@@ -3,87 +3,63 @@ import { cn } from '@/lib/cn'
 interface LogoProps {
   variant?: 'light' | 'dark'
   size?: number
-  /**
-   * Legacy prop. Ignored on the light variant (the lockup PNG already
-   * contains the wordmark). Honored on the dark variant if you want to
-   * show the «boursepayment» tagline under the wordmark.
-   */
-  showTagline?: boolean
   className?: string
 }
 
 /**
  * Boorspay primary logo.
  *
- * Two surfaces, two strategies:
+ * Uses the single official lockup PNG (`/logo.png`) — Sara's
+ * mark plus the «بورس‌پی» Persian wordmark stacked underneath. The
+ * same asset is rendered on light and dark surfaces; on dark we
+ * give it a faint sky-tinted halo so it sits cleanly on navy
+ * without needing a separate white-on-dark export.
  *
- *  - LIGHT variant (header, light sections):
- *    Uses `/logo.png` — the official lockup Sara provided, which
- *    already contains the concentric-arc mark plus the «بورس‌پی»
- *    Persian wordmark stacked underneath. Because the lockup is
- *    self-contained, we render it as a single `<img>` with no extra
- *    HTML wordmark next to it.
- *
- *  - DARK variant (footer):
- *    The light lockup PNG has a navy wordmark that disappears on a
- *    dark background. Until Sara provides a dark-variant PNG, we
- *    render `/logo-dark.svg` (mark only, lighter palette) and place
- *    the «بورس‌پی» wordmark next to it as HTML text in paper-white.
- *
- * To swap in a real dark PNG later, set `markSrc.dark = '/logo-dark.png'`
- * and remove the `dark && <wordmark>` block below.
+ * No additional wordmark text is rendered next to the image — the
+ * lockup already contains the wordmark, so any extra HTML text
+ * would duplicate it.
  */
 
 // Prefix asset paths with Vite's BASE_URL so they resolve correctly
 // when the site is served under a subpath (e.g. /boursepay-site/ on
-// GitHub Pages). BASE_URL always ends with a slash, so we don't add
-// another one between it and the filename.
+// GitHub Pages). BASE_URL always ends with a slash.
 const base = import.meta.env.BASE_URL
-const markSrc = {
-  light: `${base}logo.png`,
-  dark: `${base}logo-dark.svg`,
-} as const
+const logoSrc = `${base}logo.png`
 
 export default function Logo({
   variant = 'light',
   size = 56,
-  showTagline = false,
   className,
 }: LogoProps) {
   const dark = variant === 'dark'
 
   return (
     <div
-      className={cn('inline-flex items-center gap-3', className)}
+      className={cn('inline-flex items-center', className)}
       aria-label="boursepayment · بورس‌پی"
     >
       <img
-        src={markSrc[variant]}
-        alt={dark ? '' : 'بورس‌پی'}
+        src={logoSrc}
+        alt="بورس‌پی"
         width={size}
         height={size}
-        style={{ display: 'block', objectFit: 'contain' }}
+        style={{
+          display: 'block',
+          objectFit: 'contain',
+          ...(dark
+            ? {
+                // On dark backgrounds the navy wordmark would
+                // disappear, so brighten the whole lockup and add a
+                // soft sky-tinted glow to compensate. The brand mark
+                // (blue arcs) stays recognisable; the wordmark
+                // becomes a softer ghosted variant.
+                filter:
+                  'brightness(1.15) drop-shadow(0 0 12px rgba(111,143,206,0.35))',
+              }
+            : null),
+        }}
         draggable={false}
       />
-
-      {dark && (
-        <div className="leading-tight">
-          <div
-            className="font-display font-bold tracking-tight text-paper"
-            style={{ fontSize: size * 0.46 }}
-          >
-            بورس‌پی
-          </div>
-          {showTagline && (
-            <div
-              className="font-en-body tracking-[0.18em] text-mist/85"
-              style={{ fontSize: size * 0.18, marginTop: 2 }}
-            >
-              boursepayment
-            </div>
-          )}
-        </div>
-      )}
     </div>
   )
 }

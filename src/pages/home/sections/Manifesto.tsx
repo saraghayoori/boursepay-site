@@ -3,6 +3,7 @@ import Container from '@/components/ui/Container'
 import Section from '@/components/ui/Section'
 import ArcMotif from '@/components/brand/ArcMotif'
 import OrnamentDots from '@/components/brand/OrnamentDots'
+import FlourishLine from '@/components/brand/FlourishLine'
 
 /**
  * Manifesto — a big editorial pull-quote that breaks the page rhythm.
@@ -68,7 +69,20 @@ export default function Manifesto() {
             className="mt-4 font-display text-[26px] font-medium leading-[1.7] tracking-tight text-ink sm:text-[34px]"
           >
             ما به این باور رسیدیم که پرداختِ بازارِ سرمایه{' '}
-            <span className="text-indigo">یک حوزه‌ی مستقل</span> است.{' '}
+            <span className="relative inline-block text-indigo">
+              یک حوزه‌ی مستقل
+              {/* Hand-drawn underline beneath the key phrase — draws
+                  in when the manifesto enters view */}
+              <span className="absolute left-0 right-0 -bottom-3 flex justify-center text-indigo/55">
+                <FlourishLine
+                  variant="underline"
+                  width={210}
+                  strokeWidth={1.5}
+                  duration={1.2}
+                  delay={0.35}
+                />
+              </span>
+            </span>{' '}
             <span className="text-ink-2">
               نه شعبه‌ای از پرداختِ خرد، نه پسوندی برای بانکداریِ شرکتی.
             </span>{' '}

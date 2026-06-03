@@ -4,6 +4,7 @@ import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
 import ArcMotif from '@/components/brand/ArcMotif'
 import OrnamentDots from '@/components/brand/OrnamentDots'
+import FlourishLine from '@/components/brand/FlourishLine'
 import HeroVisual from './HeroVisual'
 
 const easeOut = [0.22, 1, 0.36, 1] as const
@@ -38,6 +39,24 @@ export default function Hero() {
         className="pointer-events-none absolute top-1/3 -left-2 hidden text-indigo/35 lg:block"
       >
         <OrnamentDots variant="scatter" tone="indigo" opacity={0.55} width={220} />
+      </div>
+
+      {/* Purposeful descend curve — flows from the top-right area
+          down toward the HeroVisual card on the left. Visually
+          says "from this thought, follow into this product". */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-[42%] top-12 hidden text-sky/45 lg:block"
+      >
+        <FlourishLine
+          variant="descend"
+          width={300}
+          strokeWidth={1.1}
+          dot
+          dotTone="coral"
+          duration={2.4}
+          delay={0.8}
+        />
       </div>
 
       <Container className="relative grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-12 lg:gap-10 lg:py-36">

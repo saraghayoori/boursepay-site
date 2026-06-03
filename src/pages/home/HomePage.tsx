@@ -3,7 +3,6 @@ import Hero from './sections/Hero'
 import TrustStrip from './sections/TrustStrip'
 import HowItWorks from './sections/HowItWorks'
 import Network from './sections/Network'
-import ProductsGrid from './sections/ProductsGrid'
 import Manifesto from './sections/Manifesto'
 import Audience from './sections/Audience'
 import Testimonials from './sections/Testimonials'
@@ -100,7 +99,6 @@ export default function HomePage() {
       <TrustStrip />
       <HowItWorks />
       <Network />
-      <ProductsGrid />
       <Manifesto />
       <Audience />
       <Testimonials />

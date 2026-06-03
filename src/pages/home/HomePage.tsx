@@ -1,9 +1,12 @@
 import { useEffect, useRef } from 'react'
 import Hero from './sections/Hero'
 import TrustStrip from './sections/TrustStrip'
+import HowItWorks from './sections/HowItWorks'
+import Network from './sections/Network'
 import ProductsGrid from './sections/ProductsGrid'
 import Manifesto from './sections/Manifesto'
 import Audience from './sections/Audience'
+import Testimonials from './sections/Testimonials'
 import CTA from './sections/CTA'
 
 /**
@@ -95,9 +98,12 @@ export default function HomePage() {
       <meta name="description" content="پرداختِ سریع، امن، تخصصی برای صندوق‌ها، کارگزاری‌ها و بانک‌ها." />
       <Hero />
       <TrustStrip />
+      <HowItWorks />
+      <Network />
       <ProductsGrid />
       <Manifesto />
       <Audience />
+      <Testimonials />
       <CTA />
     </div>
   )

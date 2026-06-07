@@ -3,7 +3,6 @@ import Hero from './sections/Hero'
 import TrustStrip from './sections/TrustStrip'
 import HowItWorks from './sections/HowItWorks'
 import Network from './sections/Network'
-import FeaturedProducts from './sections/FeaturedProducts'
 import Manifesto from './sections/Manifesto'
 import Audience from './sections/Audience'
 import Testimonials from './sections/Testimonials'
@@ -68,25 +67,16 @@ function colorAt(p: number) {
 
 export default function HomePage() {
   const wrapRef = useRef<HTMLDivElement>(null)
-  const spotlightRef = useRef<HTMLDivElement>(null)
-  // Shared selection state between Network (the selector) and
-  // FeaturedProducts (the spotlight). Clicking a product chip in the
-  // Network section sets this; FeaturedProducts swaps to that product
-  // with an animated transition.
+  // Shared selection state — the active product chip in Network is
+  // also the one whose spotlight card is shown directly underneath
+  // the chip (the spotlight lives inside Network itself, no extra
+  // section + no extra scroll).
   const [selectedSlug, setSelectedSlug] = useState<ProductSlug>(
     products[0].slug,
   )
 
   const handleSelect = (slug: ProductSlug) => {
     setSelectedSlug(slug)
-    // Smooth-scroll the spotlight into view so the visitor sees the
-    // result of their click without having to scroll themselves.
-    requestAnimationFrame(() => {
-      spotlightRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
-    })
   }
 
   useEffect(() => {
@@ -121,9 +111,6 @@ export default function HomePage() {
       <TrustStrip />
       <HowItWorks />
       <Network selectedSlug={selectedSlug} onSelect={handleSelect} />
-      <div ref={spotlightRef}>
-        <FeaturedProducts selectedSlug={selectedSlug} />
-      </div>
       <Manifesto />
       <Audience />
       <Testimonials />

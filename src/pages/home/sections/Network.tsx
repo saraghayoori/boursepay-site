@@ -1,36 +1,45 @@
 import { useRef, useState } from 'react'
-import { motion, useInView } from 'motion/react'
+import { Link } from 'react-router-dom'
+import { AnimatePresence, motion, useInView } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Heading from '@/components/ui/Heading'
 import Section from '@/components/ui/Section'
-import { products, type ProductSlug } from '@/content/products'
+import {
+  products,
+  productsBySlug,
+  type ProductSlug,
+} from '@/content/products'
+import { cn } from '@/lib/cn'
 
 /**
- * Network — the home page's centrepiece visual + product selector.
+ * Network — the home page's product gateway. Everything fits in a
+ * single viewport: short header, compact diagram, and the active
+ * product's spotlight card that opens directly under its own chip.
  *
- * What it shows, in a single frame:
- *   - 21 bank dots arranged in a gentle arch across the top edge
- *   - Hairline lines flowing from each bank into the centre, where
- *     the «بورس‌پی» node sits inside a concentric-arc halo
- *   - From the centre, four lines branch out to the four product
- *     chips along the bottom edge. **Each chip is a selector** for
- *     the FeaturedProducts spotlight below — clicking a chip changes
- *     which product card is shown, and the line connecting that chip
- *     to the centre node brightens to indicate the active state.
+ * Diagram:
+ *   - 21 bank dots in a gentle arch across the top edge
+ *   - Hairline lines flowing down to a centre «بورس‌پی» node
+ *   - 4 product chips along the bottom edge — each acts as a
+ *     selector for the spotlight that sits IMMEDIATELY below
  *
- * The whole composition lives in one inline SVG so the dots, lines,
- * halo and chips share a single coordinate space and animate
- * together when the section scrolls into view. Brand-book draw
- * easing (0.16, 1, 0.3, 1) keeps the formation slow and editorial.
+ * Spotlight:
+ *   - Lives inside this same section, positioned absolutely
+ *     beneath the active chip so the card visually drops out of
+ *     the chip the visitor clicked
+ *   - A short hairline connector links the chip to the card top
+ *   - The card itself is a Link to /products#{slug} — visitor
+ *     clicks the card to open the full product page
+ *
+ * No separate "Featured Products" section below — no extra scroll
+ * required to see the result of a click.
  */
 const BANK_COUNT = 21
 const ease = [0.16, 1, 0.3, 1] as const
+const easeOut = [0.22, 1, 0.36, 1] as const
 
 interface NetworkProps {
-  /** Currently-selected product slug — drives the active-chip styling */
   selectedSlug: ProductSlug
-  /** Called when the visitor clicks a product chip */
   onSelect: (slug: ProductSlug) => void
 }
 
@@ -39,30 +48,40 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
   const inView = useInView(ref, { once: true, amount: 0.2 })
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
 
+  // Compact diagram canvas — shorter than before so the diagram +
+  // spotlight card together fit one viewport.
   const W = 1200
-  const H = 600
+  const H = 460
   const centerX = W / 2
-  const centerY = H * 0.58
+  const centerY = H * 0.55
 
-  // 21 bank dots distributed along the top edge with a slight upward
-  // arch so the row feels organic, not mechanical.
+  // 21 bank dots distributed along the top edge with a slight arch
   const banks = Array.from({ length: BANK_COUNT }, (_, i) => {
     const t = i / (BANK_COUNT - 1)
     const x = 80 + t * (W - 160)
-    const arch = Math.sin(t * Math.PI) * 14
-    const y = 70 - arch
+    const arch = Math.sin(t * Math.PI) * 10
+    const y = 50 - arch
     return { x, y }
   })
 
   // 4 product chips along the bottom edge
   const productPoints = products.map((_, i) => {
     const t = (i + 0.5) / products.length
-    return { x: 120 + t * (W - 240), y: H - 80 }
+    return { x: 120 + t * (W - 240), y: H - 60 }
   })
 
+  // Chip x position as percent of the SVG width — used to position
+  // the HTML spotlight card directly under the active chip.
+  const activeIdx = products.findIndex((p) => p.slug === selectedSlug)
+  const chipFractionLTR = (activeIdx + 0.5) / products.length
+  // The SVG renders left-to-right; HTML `left` is also left-to-right.
+  // No flip needed — chip at fraction 0.125 sits at left:12.5%.
+  const chipLeftPercent = 10 + chipFractionLTR * 80
+
   return (
-    <Section tone="none" spacing="normal">
+    <Section tone="none" spacing="tight">
       <Container className="relative">
+        {/* Compact header */}
         <div className="mx-auto max-w-2xl text-center">
           <div className="inline-flex">
             <Eyebrow>۰۳ · شبکه</Eyebrow>
@@ -74,19 +93,14 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
             align="center"
             className="mt-3"
           />
-          <p className="mx-auto mt-5 max-w-xl text-[15.5px] leading-[1.85] text-ink-2">
-            هر تراکنشی که از مشتری‌های ما عبور می‌کند، از یکی از این بانک‌ها
-            وارد می‌شود، از قلبِ بورس‌پی می‌گذرد، و در یکی از این چهار محصول
-            می‌نشیند. روی نامِ هر محصول کلیک کنید تا کارتِ کاملِ آن در پایین
-            باز شود.
-          </p>
         </div>
 
-        {/* Desktop diagram */}
-        <div className="relative mt-14 hidden md:block">
+        {/* Desktop: diagram + inline spotlight directly under the
+            active chip */}
+        <div className="relative mt-10 hidden md:block">
           <div
             aria-hidden
-            className="ambient-cool pointer-events-none absolute inset-0 opacity-50 blur-3xl"
+            className="ambient-cool pointer-events-none absolute inset-0 opacity-40 blur-3xl"
           />
 
           <svg
@@ -116,19 +130,19 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
               </linearGradient>
             </defs>
 
-            {/* Halo behind centre */}
+            {/* Halo behind centre node */}
             <motion.circle
               cx={centerX}
               cy={centerY}
-              r={150}
+              r={120}
               fill="url(#centerGlow)"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 1.4, delay: 0.6, ease }}
             />
 
-            {/* Concentric arcs — brand motif */}
-            {[180, 130, 90].map((r, i) => (
+            {/* Concentric arcs around centre node */}
+            {[150, 110, 75].map((r, i) => (
               <motion.circle
                 key={r}
                 cx={centerX}
@@ -151,7 +165,7 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
                 x1={b.x}
                 y1={b.y}
                 x2={centerX}
-                y2={centerY - 30}
+                y2={centerY - 26}
                 stroke="url(#lineFade)"
                 strokeWidth={0.7}
                 strokeLinecap="round"
@@ -165,13 +179,13 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
               />
             ))}
 
-            {/* Bank dots — pulsing halo + solid centre */}
+            {/* Bank dots — halo + solid centre, with subtle pulse */}
             {banks.map((b, i) => (
               <g key={`bank-dot-${i}`}>
                 <motion.circle
                   cx={b.x}
                   cy={b.y}
-                  r={5}
+                  r={4}
                   fill="var(--color-sky)"
                   fillOpacity={0.18}
                   initial={{ opacity: 0, scale: 0 }}
@@ -197,7 +211,7 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
                 <motion.circle
                   cx={b.x}
                   cy={b.y}
-                  r={2.5}
+                  r={2.2}
                   fill="var(--color-sky)"
                   initial={{ opacity: 0, scale: 0 }}
                   animate={inView ? { opacity: 1, scale: 1 } : {}}
@@ -210,8 +224,7 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
               </g>
             ))}
 
-            {/* Centre → product lines — highlight when product is
-                hovered OR is the currently-selected spotlight */}
+            {/* Centre → product lines */}
             {productPoints.map((p, i) => {
               const isActive = products[i].slug === selectedSlug
               const isHover = hoverIdx === i
@@ -220,9 +233,9 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
                 <motion.line
                   key={`product-line-${i}`}
                   x1={centerX}
-                  y1={centerY + 30}
+                  y1={centerY + 26}
                   x2={p.x}
-                  y2={p.y - 25}
+                  y2={p.y - 22}
                   stroke={
                     highlight ? 'url(#productLineHover)' : 'url(#productLine)'
                   }
@@ -243,19 +256,19 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
               transition={{ duration: 0.7, delay: 0.9, ease }}
             >
               <rect
-                x={centerX - 78}
-                y={centerY - 30}
-                width={156}
-                height={60}
-                rx={14}
+                x={centerX - 72}
+                y={centerY - 26}
+                width={144}
+                height={52}
+                rx={12}
                 fill="var(--color-navy-1)"
               />
               <rect
-                x={centerX - 78}
-                y={centerY - 30}
-                width={156}
-                height={60}
-                rx={14}
+                x={centerX - 72}
+                y={centerY - 26}
+                width={144}
+                height={52}
+                rx={12}
                 fill="none"
                 stroke="var(--color-sky)"
                 strokeOpacity={0.25}
@@ -263,10 +276,10 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
               />
               <text
                 x={centerX}
-                y={centerY - 4}
+                y={centerY - 3}
                 textAnchor="middle"
                 className="font-display"
-                fontSize={20}
+                fontSize={18}
                 fontWeight={700}
                 fill="var(--color-paper)"
               >
@@ -274,10 +287,10 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
               </text>
               <text
                 x={centerX}
-                y={centerY + 17}
+                y={centerY + 14}
                 textAnchor="middle"
                 className="font-en-body"
-                fontSize={9}
+                fontSize={8}
                 letterSpacing="0.22em"
                 fill="var(--color-sky)"
                 style={{ textTransform: 'uppercase' }}
@@ -286,7 +299,7 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
               </text>
             </motion.g>
 
-            {/* Product chips — selectors for the spotlight below */}
+            {/* Product chips — selectors */}
             {productPoints.map((p, i) => {
               const product = products[i]
               const isB2C = product.role === 'b2c'
@@ -319,29 +332,29 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
                   onBlur={() => setHoverIdx(null)}
                   style={{
                     cursor: 'pointer',
-                    transform: highlight ? 'translateY(-4px)' : 'translateY(0)',
+                    transform: highlight ? 'translateY(-3px)' : 'translateY(0)',
                     transition: 'transform 0.3s cubic-bezier(0.22,1,0.36,1)',
                     outline: 'none',
                   }}
                 >
-                  {/* Soft glow under active/hovered chip */}
+                  {/* Soft glow under active chip */}
                   {highlight && (
                     <rect
-                      x={p.x - 60}
-                      y={p.y - 20}
-                      width={120}
-                      height={48}
-                      rx={12}
+                      x={p.x - 54}
+                      y={p.y - 18}
+                      width={108}
+                      height={42}
+                      rx={11}
                       fill={accentColor}
                       opacity={isActive ? 0.22 : 0.16}
-                      filter="blur(10px)"
+                      filter="blur(8px)"
                     />
                   )}
                   <rect
-                    x={p.x - 56}
-                    y={p.y - 22}
-                    width={112}
-                    height={44}
+                    x={p.x - 50}
+                    y={p.y - 20}
+                    width={100}
+                    height={40}
                     rx={10}
                     fill={isActive ? accentColor : 'var(--color-paper)'}
                     stroke={accentColor}
@@ -355,9 +368,9 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
                   />
                   {isB2C && !isActive && (
                     <circle
-                      cx={p.x - 46}
-                      cy={p.y - 12}
-                      r={2.2}
+                      cx={p.x - 42}
+                      cy={p.y - 10}
+                      r={2}
                       fill="var(--color-coral)"
                     />
                   )}
@@ -366,7 +379,7 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
                     y={p.y - 1}
                     textAnchor="middle"
                     className="font-display"
-                    fontSize={16}
+                    fontSize={15}
                     fontWeight={700}
                     fill={
                       isActive
@@ -381,10 +394,10 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
                   </text>
                   <text
                     x={p.x}
-                    y={p.y + 14}
+                    y={p.y + 13}
                     textAnchor="middle"
                     className="font-en-body"
-                    fontSize={8}
+                    fontSize={7.5}
                     letterSpacing="0.18em"
                     fill={
                       isActive ? 'var(--color-paper)' : 'var(--color-ink-3)'
@@ -394,60 +407,29 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
                   >
                     {product.latin}
                   </text>
-
-                  {/* "Selected" / "Click to view" hint below the chip */}
-                  {(isActive || isHover) && (
-                    <motion.text
-                      x={p.x}
-                      y={p.y + 38}
-                      textAnchor="middle"
-                      className="font-en-body"
-                      fontSize={8}
-                      letterSpacing="0.22em"
-                      fill={accentColor}
-                      style={{ textTransform: 'uppercase' }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {isActive ? '◉ active' : 'view ↓'}
-                    </motion.text>
-                  )}
                 </motion.g>
               )
             })}
-
-            <text
-              x={W / 2}
-              y={120}
-              textAnchor="middle"
-              className="font-en-body"
-              fontSize={9}
-              letterSpacing="0.24em"
-              fill="var(--color-ink-3)"
-              style={{ textTransform: 'uppercase' }}
-            >
-              21 banking partners
-            </text>
-
-            <text
-              x={W / 2}
-              y={H - 25}
-              textAnchor="middle"
-              className="font-en-body"
-              fontSize={9}
-              letterSpacing="0.24em"
-              fill="var(--color-ink-3)"
-              style={{ textTransform: 'uppercase' }}
-            >
-              4 product surfaces · click to reveal
-            </text>
           </svg>
+
+          {/* SPOTLIGHT — positioned absolutely under the active chip.
+              The chip sits at left:chipLeftPercent% of the same
+              container the SVG fills, so this card lines up under it. */}
+          <div className="relative mt-2 min-h-[200px]">
+            <AnimatePresence mode="wait" initial={false}>
+              <SpotlightCard
+                key={selectedSlug}
+                slug={selectedSlug}
+                chipLeftPercent={chipLeftPercent}
+              />
+            </AnimatePresence>
+          </div>
         </div>
 
-        {/* Mobile fallback — same data, simpler layout */}
-        <div className="mt-12 md:hidden">
-          <div className="rounded-2xl border border-hairline bg-paper p-6">
+        {/* Mobile fallback — stacked layout with the active card
+            sitting right under the chip row */}
+        <div className="mt-8 md:hidden">
+          <div className="rounded-2xl border border-hairline bg-paper p-5">
             <div className="text-center">
               <div
                 className="font-en-body text-[9.5px] uppercase tracking-[0.22em] text-ink-3"
@@ -460,14 +442,14 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
                   <span
                     key={i}
                     aria-hidden
-                    className="h-2 w-2 rounded-full bg-sky"
+                    className="h-1.5 w-1.5 rounded-full bg-sky"
                   />
                 ))}
               </div>
             </div>
 
-            <div className="mt-6 flex justify-center text-ink-3">
-              <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
+            <div className="mt-5 flex justify-center text-ink-3">
+              <svg width="12" height="14" viewBox="0 0 14 20" fill="none">
                 <path
                   d="M7 1v14M2 11l5 5 5-5"
                   stroke="currentColor"
@@ -478,88 +460,248 @@ export default function Network({ selectedSlug, onSelect }: NetworkProps) {
               </svg>
             </div>
 
-            <div className="mt-5 relative rounded-xl bg-navy-1 px-6 py-5 text-center text-paper">
+            <div className="mt-4 mx-auto max-w-[180px] relative rounded-xl bg-navy-1 px-5 py-4 text-center text-paper">
               <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-sky/20" />
-              <div className="relative font-display text-[20px] font-bold">
+              <div className="relative font-display text-[18px] font-bold">
                 بورس‌پی
               </div>
               <div
-                className="relative mt-1 font-en-body text-[9px] uppercase tracking-[0.22em] text-sky"
+                className="relative mt-1 font-en-body text-[8.5px] uppercase tracking-[0.22em] text-sky"
                 style={{ unicodeBidi: 'isolate' }}
               >
                 payment rail
               </div>
             </div>
 
-            <div className="mt-6 flex justify-center text-ink-3">
-              <svg width="14" height="20" viewBox="0 0 14 20" fill="none">
-                <path
-                  d="M7 1v14M2 11l5 5 5-5"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              {products.map((p) => {
+                const isB2C = p.role === 'b2c'
+                const isActive = p.slug === selectedSlug
+                return (
+                  <button
+                    key={p.slug}
+                    type="button"
+                    onClick={() => onSelect(p.slug)}
+                    aria-pressed={isActive}
+                    className={cn(
+                      'group relative rounded-lg border px-2.5 py-2 text-center transition-all',
+                      isActive
+                        ? isB2C
+                          ? 'border-coral bg-coral text-paper'
+                          : 'border-indigo bg-indigo text-paper'
+                        : 'border-hairline bg-paper-2 hover:border-indigo/40',
+                    )}
+                  >
+                    {isB2C && !isActive && (
+                      <span
+                        aria-hidden
+                        className="absolute top-1.5 left-1.5 h-1 w-1 rounded-full bg-coral"
+                      />
+                    )}
+                    <div
+                      className={cn(
+                        'font-display text-[13px] font-bold',
+                        isActive ? 'text-paper' : 'text-ink',
+                      )}
+                    >
+                      {p.name}
+                    </div>
+                  </button>
+                )
+              })}
             </div>
 
-            <div className="mt-5 text-center">
-              <div
-                className="font-en-body text-[9.5px] uppercase tracking-[0.22em] text-ink-3"
-                style={{ unicodeBidi: 'isolate' }}
-              >
-                4 product surfaces — tap to reveal
-              </div>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                {products.map((p) => {
-                  const isB2C = p.role === 'b2c'
-                  const isActive = p.slug === selectedSlug
-                  return (
-                    <button
-                      key={p.slug}
-                      type="button"
-                      onClick={() => onSelect(p.slug)}
-                      aria-pressed={isActive}
-                      className={[
-                        'group relative rounded-lg border px-3 py-2.5 text-center transition-all',
-                        isActive
-                          ? isB2C
-                            ? 'border-coral bg-coral text-paper shadow-[0_10px_30px_-15px_rgba(224,116,74,0.5)]'
-                            : 'border-indigo bg-indigo text-paper shadow-[0_10px_30px_-15px_rgba(42,45,126,0.5)]'
-                          : 'border-hairline bg-paper-2 hover:border-indigo/40 hover:bg-paper hover:shadow-[0_10px_30px_-15px_rgba(10,14,46,0.3)]',
-                      ].join(' ')}
-                    >
-                      {isB2C && !isActive && (
-                        <span
-                          aria-hidden
-                          className="absolute top-1.5 left-1.5 h-1 w-1 rounded-full bg-coral"
-                        />
-                      )}
-                      <div
-                        className={[
-                          'font-display text-[14px] font-bold',
-                          isActive ? 'text-paper' : 'text-ink',
-                        ].join(' ')}
-                      >
-                        {p.name}
-                      </div>
-                      <div
-                        className={[
-                          'mt-0.5 font-en-body text-[9px] tracking-[0.18em]',
-                          isActive ? 'text-paper/80' : 'text-ink-3',
-                        ].join(' ')}
-                        style={{ unicodeBidi: 'isolate', textTransform: 'uppercase' }}
-                      >
-                        {p.latin}
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
+            {/* Mobile spotlight — directly under the chips, no extra
+                section/scroll */}
+            <div className="mt-4">
+              <AnimatePresence mode="wait" initial={false}>
+                <MobileSpotlightCard
+                  key={selectedSlug}
+                  slug={selectedSlug}
+                />
+              </AnimatePresence>
             </div>
           </div>
         </div>
       </Container>
     </Section>
+  )
+}
+
+// ---------------------------------------------------------------------
+// Desktop spotlight — absolute-positioned under the active chip
+// ---------------------------------------------------------------------
+
+interface SpotlightProps {
+  slug: ProductSlug
+  chipLeftPercent: number
+}
+
+function SpotlightCard({ slug, chipLeftPercent }: SpotlightProps) {
+  const product = productsBySlug[slug]
+  const isB2C = product.role === 'b2c'
+  const idx = products.findIndex((p) => p.slug === slug)
+
+  // Card width in pixels (must be smaller than what the chip x-pos
+  // can accommodate). Sits horizontally centred under the chip via
+  // translateX(-50%).
+  const cardWidth = 340
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -8, scale: 0.96 }}
+      transition={{ duration: 0.32, ease: easeOut }}
+      className="absolute top-0"
+      style={{
+        left: `${chipLeftPercent}%`,
+        width: cardWidth,
+        transform: 'translateX(-50%)',
+        // Clamp so the card never overflows the container edges
+        maxWidth: 'calc(100vw - 32px)',
+      }}
+    >
+      {/* Connector — thin vertical hairline from chip down to card */}
+      <div
+        aria-hidden
+        className="mx-auto -mt-3 mb-1 h-3 w-px origin-top"
+        style={{
+          background: isB2C
+            ? 'var(--color-coral)'
+            : 'var(--color-indigo)',
+          opacity: 0.7,
+        }}
+      />
+
+      <Link
+        to={`/products#${slug}`}
+        className={cn(
+          'group relative block overflow-hidden rounded-xl border bg-paper p-5 transition-all duration-300',
+          'border-hairline hover:-translate-y-1 hover:shadow-[0_28px_60px_-32px_rgba(10,14,46,0.45)]',
+          isB2C ? 'hover:border-coral/45' : 'hover:border-indigo/45',
+        )}
+      >
+        {isB2C && (
+          <span
+            aria-hidden
+            className="absolute top-3 left-3 h-1.5 w-1.5 rounded-full bg-coral"
+          />
+        )}
+
+        <div className="flex items-center justify-between gap-2">
+          <span
+            className={cn(
+              'inline-flex items-center rounded-full px-2 py-0.5',
+              'font-en-body text-[9.5px] font-semibold tracking-[0.16em] uppercase',
+              isB2C ? 'bg-coral-soft text-coral' : 'bg-mist/60 text-indigo',
+            )}
+            style={{ unicodeBidi: 'isolate' }}
+          >
+            {isB2C ? 'B2C' : 'B2B'}
+          </span>
+          <span
+            className="font-en-display text-[10.5px] font-bold tracking-[0.2em] text-ink-4"
+            style={{ unicodeBidi: 'isolate' }}
+            aria-hidden
+          >
+            0{idx + 1}
+          </span>
+        </div>
+
+        <h3 className="mt-3 font-display text-[22px] font-bold leading-none tracking-tight text-ink">
+          {product.name}
+        </h3>
+        <div
+          className="mt-1 font-en-display italic text-[12px] text-ink-3"
+          style={{ unicodeBidi: 'isolate' }}
+        >
+          {product.latin}
+        </div>
+
+        <p className="mt-3 text-[13px] leading-[1.7] text-ink-2">
+          {product.oneLiner}
+        </p>
+
+        <div className="mt-4 flex items-center justify-between border-t border-hairline-2 pt-3">
+          <span
+            className="font-en-body text-[9px] tracking-[0.22em] uppercase text-ink-3"
+            style={{ unicodeBidi: 'isolate' }}
+          >
+            full page
+          </span>
+          <span
+            className={cn(
+              'flex items-center gap-1 text-[12.5px] font-medium transition-transform group-hover:-translate-x-1',
+              isB2C ? 'text-coral' : 'text-indigo',
+            )}
+          >
+            <span>صفحه‌ی {product.name}</span>
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="rotate-180"
+            >
+              <path d="M5 12h14" />
+              <path d="M12 5l7 7-7 7" />
+            </svg>
+          </span>
+        </div>
+      </Link>
+    </motion.div>
+  )
+}
+
+// ---------------------------------------------------------------------
+// Mobile spotlight — full-width inline card
+// ---------------------------------------------------------------------
+
+function MobileSpotlightCard({ slug }: { slug: ProductSlug }) {
+  const product = productsBySlug[slug]
+  const isB2C = product.role === 'b2c'
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -6 }}
+      transition={{ duration: 0.28, ease: easeOut }}
+    >
+      <Link
+        to={`/products#${slug}`}
+        className={cn(
+          'group block rounded-xl border bg-paper p-4',
+          'border-hairline',
+          isB2C ? 'hover:border-coral/45' : 'hover:border-indigo/45',
+        )}
+      >
+        <div className="font-display text-[18px] font-bold text-ink">
+          {product.name}
+        </div>
+        <div
+          className="font-en-display italic text-[11px] text-ink-3"
+          style={{ unicodeBidi: 'isolate' }}
+        >
+          {product.latin}
+        </div>
+        <p className="mt-2 text-[12.5px] leading-[1.7] text-ink-2">
+          {product.oneLiner}
+        </p>
+        <div
+          className={cn(
+            'mt-3 inline-flex items-center gap-1 text-[12px] font-medium',
+            isB2C ? 'text-coral' : 'text-indigo',
+          )}
+        >
+          <span>صفحه‌ی {product.name} ↗</span>
+        </div>
+      </Link>
+    </motion.div>
   )
 }

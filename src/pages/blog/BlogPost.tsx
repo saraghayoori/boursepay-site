@@ -45,7 +45,7 @@ export default function BlogPost() {
       <section className="relative isolate overflow-hidden bg-cloud text-ink">
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-32 left-[-180px] text-indigo/14"
+          className="pointer-events-none absolute -top-32 left-[-180px] text-indigo/30"
         >
           <ArcMotif count={5} size={620} anchor="top-left" />
         </div>

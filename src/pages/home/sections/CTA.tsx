@@ -18,7 +18,8 @@ import { ParallelCurves } from '@/components/brand/BrandPatterns'
 export default function CTA() {
   return (
     <section className="relative isolate overflow-hidden text-ink">
-      <div className="pointer-events-none absolute -bottom-32 -left-32 text-indigo/14">
+      {/* Brand book §25: arc motif min 25% opacity, brand-spec */}
+      <div className="pointer-events-none absolute -bottom-32 -left-32 text-indigo/30">
         <ArcMotif count={5} size={620} anchor="bottom-left" dot />
       </div>
 

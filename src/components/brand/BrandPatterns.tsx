@@ -3,7 +3,7 @@ import { motion, useInView } from 'motion/react'
 import { cn } from '@/lib/cn'
 
 /**
- * Two brand-book §26 "Rhythmic Background Patterns":
+ * Brand-book §26 patterns:
  *
  *   - ParallelCurves     — three parallel quadratic curves with a dot
  *                          sitting ON each curve at its midpoint.
@@ -11,11 +11,16 @@ import { cn } from '@/lib/cn'
  *   - CornerArcsWithDots — arcs sweeping out from a chosen corner,
  *                          with a sky-tinted dot ON each arc.
  *                          Used inside cards / blocks as a "flow" mark.
+ *   - BigNumberCorner    — huge faint display-weight number in the
+ *                          corner of a card (font 64px, opacity 0.06)
+ *                          per §26-04 "Inside-card decorations". Use
+ *                          it to give stepped lists / featured rows
+ *                          rhythmic visual numbering.
  *
- * Both patterns animate the curves in with the brand-book draw
- * easing (0.16, 1, 0.3, 1). They are decorative — `pointer-events:
- * none`, `aria-hidden`. Stroke uses `currentColor` so the wrapper
- * sets the tone with text-* utilities.
+ * All patterns animate the curves in with the brand-book draw
+ * easing (0.16, 1, 0.3, 1) and are decorative (`pointer-events: none`,
+ * `aria-hidden`). Stroke uses `currentColor` so the wrapper sets
+ * the tone with text-* utilities.
  */
 
 const ease = [0.16, 1, 0.3, 1] as const
@@ -254,5 +259,90 @@ export function CornerArcsWithDots({
         ))}
       </g>
     </svg>
+  )
+}
+
+// ---------------------------------------------------------------------
+// 3. Big faint number in card corner — brand book §26-04
+// ---------------------------------------------------------------------
+
+interface BigNumberCornerProps {
+  /** Number to render (will be Persian-localised) */
+  n: number | string
+  /** Position within the parent card */
+  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+  /** Font size in px (default 64 per brand book) */
+  size?: number
+  /** Opacity (default 0.06 per brand book) */
+  opacity?: number
+  /** Colour tone for the number */
+  tone?: 'indigo' | 'navy' | 'sky'
+  className?: string
+}
+
+/**
+ * Brand-book §26-04 "Inside-card decoration · Big Number Corner".
+ * Renders a huge faint display-weight number in the chosen corner of
+ * the parent card. The parent MUST be `position: relative` and have
+ * `overflow: hidden` for the bleed.
+ *
+ * Default font-size 64px with opacity 0.06 — these are the exact
+ * specs from the brand book. The number is rendered as Persian
+ * digits via `Intl.NumberFormat('fa-IR')` so it matches the rest of
+ * the site.
+ */
+export function BigNumberCorner({
+  n,
+  position = 'top-left',
+  size = 64,
+  opacity = 0.06,
+  tone = 'indigo',
+  className,
+}: BigNumberCornerProps) {
+  const fa =
+    typeof n === 'number'
+      ? new Intl.NumberFormat('fa-IR', {
+          minimumIntegerDigits: 2,
+          useGrouping: false,
+        }).format(n)
+      : n
+
+  const positionClasses: Record<NonNullable<BigNumberCornerProps['position']>, string> = {
+    'top-left': 'top-4 left-5',
+    'top-right': 'top-4 right-5',
+    'bottom-left': 'bottom-4 left-5',
+    'bottom-right': 'bottom-4 right-5',
+  }
+
+  const toneColor =
+    tone === 'navy'
+      ? 'var(--color-navy-1)'
+      : tone === 'sky'
+      ? 'var(--color-sky)'
+      : 'var(--color-indigo)'
+
+  return (
+    <div
+      aria-hidden
+      className={cn(
+        'pointer-events-none absolute font-display font-bold leading-none tracking-tight select-none',
+        positionClasses[position],
+        className,
+      )}
+      style={{
+        fontSize: size,
+        opacity,
+        color: toneColor,
+        // Number tabular alignment per brand book §24-03
+        fontFeatureSettings: '"tnum" 1',
+        // Negative tracking matches the brand book sample (-0.04em)
+        letterSpacing: '-0.04em',
+        // Persian/Arabic numbers are wider; isolate so RTL parent
+        // doesn't reverse the number.
+        unicodeBidi: 'isolate',
+      }}
+    >
+      {fa}
+    </div>
   )
 }

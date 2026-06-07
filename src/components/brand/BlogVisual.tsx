@@ -36,7 +36,7 @@ export default function BlogVisual() {
       {/* 2 — faint arc motif top-right */}
       <div
         aria-hidden
-        className="absolute inset-0 flex items-start justify-end text-indigo/18"
+        className="absolute inset-0 flex items-start justify-end text-indigo/28"
       >
         <ArcMotif count={5} size={440} anchor="top-right" dot={false} />
       </div>

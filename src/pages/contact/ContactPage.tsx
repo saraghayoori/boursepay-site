@@ -67,7 +67,8 @@ export default function ContactPage() {
 
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-cloud text-ink">
-        <div className="pointer-events-none absolute -top-32 right-[-180px] text-indigo/15">
+        {/* Brand book §25: arc motif min 25% opacity */}
+        <div className="pointer-events-none absolute -top-32 right-[-180px] text-indigo/30">
           <ArcMotif count={5} size={620} anchor="top-right" />
         </div>
 

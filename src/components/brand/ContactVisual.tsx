@@ -35,7 +35,7 @@ export default function ContactVisual() {
       {/* 2 — faint arc motif top-left */}
       <div
         aria-hidden
-        className="absolute inset-0 flex items-start justify-start text-indigo/18"
+        className="absolute inset-0 flex items-start justify-start text-indigo/28"
       >
         <ArcMotif count={5} size={460} anchor="top-left" dot={false} />
       </div>

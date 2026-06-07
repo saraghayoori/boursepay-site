@@ -3,7 +3,10 @@ import { motion, useInView } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Section from '@/components/ui/Section'
 import Eyebrow from '@/components/ui/Eyebrow'
-import { CornerArcsWithDots } from '@/components/brand/BrandPatterns'
+import {
+  CornerArcsWithDots,
+  BigNumberCorner,
+} from '@/components/brand/BrandPatterns'
 
 /**
  * Trust strip — the second "voice" of the page.
@@ -139,21 +142,24 @@ function FactCard({ fact, index }: { fact: Fact; index: number }) {
       transition={{ duration: 0.6, delay: index * 0.08, ease: easeOut }}
       className="group relative flex flex-col overflow-hidden rounded-2xl border border-hairline bg-paper-2 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-indigo/25 hover:shadow-[0_28px_60px_-30px_rgba(10,14,46,0.4)]"
     >
-      {/* Top row — Latin index on right, sparkline on left, flex-between
-          so they never overlap regardless of card width */}
-      <div className="flex items-center justify-between">
+      {/* Brand book §26-04 — huge faint index number in the top-left
+          corner of each tile, the rhythmic visual marker for the row */}
+      <BigNumberCorner
+        n={index + 1}
+        position="top-left"
+        size={72}
+        opacity={0.07}
+        tone="indigo"
+      />
+
+      {/* Top row — sparkline only (the big corner number replaces the
+          old Latin 0X marker) */}
+      <div className="flex items-center justify-end">
         <div
           className="h-6 w-14 text-sky transition-colors group-hover:text-indigo"
           aria-hidden
         >
           <Spark variant={fact.spark} />
-        </div>
-        <div
-          className="font-en-display text-[11px] font-bold tracking-[0.2em] text-ink-4 transition-colors group-hover:text-indigo/55"
-          style={{ unicodeBidi: 'isolate' }}
-          aria-hidden
-        >
-          0{index + 1}
         </div>
       </div>
 

@@ -9,7 +9,10 @@ import Eyebrow from '@/components/ui/Eyebrow'
 import Heading from '@/components/ui/Heading'
 import Section from '@/components/ui/Section'
 import FlourishLine from '@/components/brand/FlourishLine'
-import { CornerArcsWithDots } from '@/components/brand/BrandPatterns'
+import {
+  CornerArcsWithDots,
+  BigNumberCorner,
+} from '@/components/brand/BrandPatterns'
 import { products } from '@/content/products'
 import { cn } from '@/lib/cn'
 
@@ -135,15 +138,19 @@ function ProductCard({ product, index }: ProductCardProps) {
         />
       </div>
 
-      {/* Top row: index + category */}
-      <div className="relative flex items-center justify-between">
-        <div
-          className="font-en-display text-[14px] font-bold tracking-[0.2em] text-ink-4 transition-colors group-hover:text-indigo"
-          style={{ unicodeBidi: 'isolate' }}
-          aria-hidden
-        >
-          0{index + 1}
-        </div>
+      {/* Brand book §26-04 "Big Number Corner" — huge faint
+          display-weight index in the top-left of the card */}
+      <BigNumberCorner
+        n={index + 1}
+        position="top-left"
+        size={88}
+        opacity={0.07}
+        tone="indigo"
+      />
+
+      {/* Top row: category pill + timing label (no inline index now,
+          the big corner number handles that visual job) */}
+      <div className="relative flex items-center justify-end">
         <div className="flex items-center gap-2">
           <span
             className={cn(

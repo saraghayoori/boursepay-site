@@ -109,7 +109,9 @@ export default function AboutPage() {
 
       {/* HERO — dark, with companion AboutVisual on the left side */}
       <section className="relative isolate overflow-hidden bg-navy-1 text-paper">
-        <div className="pointer-events-none absolute -bottom-32 right-[-180px] text-sky/20">
+        {/* Brand book §25: Arc motif on dark surfaces uses sky stroke
+            at 25-45% — bump opacity to brand-spec minimum */}
+        <div className="pointer-events-none absolute -bottom-32 right-[-180px] text-sky/35">
           <ArcMotif count={5} size={640} anchor="bottom-right" />
         </div>
         {/* Brand-book "corner arcs with dots" decoration top-right */}

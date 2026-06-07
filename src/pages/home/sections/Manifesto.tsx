@@ -2,8 +2,7 @@ import { motion } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Section from '@/components/ui/Section'
 import ArcMotif from '@/components/brand/ArcMotif'
-import OrnamentDots from '@/components/brand/OrnamentDots'
-import FlourishLine from '@/components/brand/FlourishLine'
+import { ParallelCurves } from '@/components/brand/BrandPatterns'
 
 /**
  * Manifesto — a big editorial pull-quote that breaks the page rhythm.
@@ -27,23 +26,29 @@ export default function Manifesto() {
           <ArcMotif count={4} size={420} anchor="bottom-right" dot={false} animate={false} />
         </div>
 
-        {/* Constellation of dots on the right side, atmospheric */}
-        <div className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 text-sky/55 md:block">
-          <OrnamentDots
-            variant="constellation"
-            tone="sky"
-            opacity={0.55}
-            width={140}
+        {/* Brand-book parallel-curves rhythmic background (low opacity)
+            — three parallel Q-curves with a dot at each midpoint.
+            Floods the section with quiet motion without competing
+            with the quote. */}
+        <div className="pointer-events-none absolute right-0 top-8 hidden text-indigo/35 lg:block">
+          <ParallelCurves
+            width={360}
+            count={3}
+            strokeWidth={1}
+            opacity={0.45}
+            dotTone="indigo"
+            duration={1.6}
           />
         </div>
-
-        {/* Trail of dots on the left side, suggesting motion into the quote */}
-        <div className="pointer-events-none absolute left-2 bottom-12 hidden md:block">
-          <OrnamentDots
-            variant="trail"
-            tone="indigo"
+        <div className="pointer-events-none absolute left-0 bottom-12 hidden text-sky/40 lg:block">
+          <ParallelCurves
+            width={300}
+            count={3}
+            strokeWidth={1}
             opacity={0.45}
-            width={160}
+            dotTone="sky"
+            duration={1.6}
+            delay={0.3}
           />
         </div>
 
@@ -69,20 +74,7 @@ export default function Manifesto() {
             className="mt-4 font-display text-[26px] font-medium leading-[1.7] tracking-tight text-ink sm:text-[34px]"
           >
             ما به این باور رسیدیم که پرداختِ بازارِ سرمایه{' '}
-            <span className="relative inline-block text-indigo">
-              یک حوزه‌ی مستقل
-              {/* Hand-drawn underline beneath the key phrase — draws
-                  in when the manifesto enters view */}
-              <span className="absolute left-0 right-0 -bottom-3 flex justify-center text-indigo/55">
-                <FlourishLine
-                  variant="underline"
-                  width={210}
-                  strokeWidth={1.5}
-                  duration={1.2}
-                  delay={0.35}
-                />
-              </span>
-            </span>{' '}
+            <span className="text-indigo">یک حوزه‌ی مستقل</span> است.{' '}
             <span className="text-ink-2">
               نه شعبه‌ای از پرداختِ خرد، نه پسوندی برای بانکداریِ شرکتی.
             </span>{' '}

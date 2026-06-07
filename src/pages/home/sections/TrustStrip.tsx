@@ -3,7 +3,7 @@ import { motion, useInView } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Section from '@/components/ui/Section'
 import Eyebrow from '@/components/ui/Eyebrow'
-import FlourishLine from '@/components/brand/FlourishLine'
+import { CornerArcsWithDots } from '@/components/brand/BrandPatterns'
 
 /**
  * Trust strip — the second "voice" of the page.
@@ -157,25 +157,29 @@ function FactCard({ fact, index }: { fact: Fact; index: number }) {
         </div>
       </div>
 
-      {/* Big number/literal — with a soft tide wave behind it */}
-      <div className="relative mt-8">
-        <span
-          aria-hidden
-          className="pointer-events-none absolute -bottom-3 right-0 text-sky/25 transition-colors duration-500 group-hover:text-indigo/35"
-        >
-          <FlourishLine
-            variant="tide"
-            width={170}
-            strokeWidth={1}
-            duration={1.4}
-            delay={0.15 + index * 0.06}
-          />
-        </span>
-        <div className="relative font-display text-[38px] font-bold leading-none tracking-tight text-ink sm:text-[44px]">
-          {fact.prefix}
-          {display}
-          {fact.suffix}
-        </div>
+      {/* Brand-book "corner arcs with dots" pattern in bottom-left
+          of each card — quiet flow motif, low opacity */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-8 -left-8 text-sky/35 transition-colors duration-500 group-hover:text-indigo/40"
+      >
+        <CornerArcsWithDots
+          anchor="bottom-left"
+          count={3}
+          size={120}
+          strokeWidth={0.9}
+          opacity={0.65}
+          dotTone="sky"
+          duration={1.4}
+          delay={0.15 + index * 0.08}
+        />
+      </div>
+
+      {/* Big number/literal */}
+      <div className="mt-8 font-display text-[38px] font-bold leading-none tracking-tight text-ink sm:text-[44px]">
+        {fact.prefix}
+        {display}
+        {fact.suffix}
       </div>
 
       {/* Persian label */}

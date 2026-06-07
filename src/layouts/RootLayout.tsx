@@ -8,11 +8,16 @@ import PageTransition from '@/components/layout/PageTransition'
 export default function RootLayout() {
   const location = useLocation()
 
-  // Scroll to top on route change — but only on real navigation, not on
-  // hash changes or initial mount.
+  // Scroll to top on route change — but ONLY when there's no hash. If
+  // the URL has a hash (e.g. /products#chabok arriving from a Network
+  // product chip click on the home page), the destination page handles
+  // its own scroll-to-anchor so the user lands on the relevant content
+  // rather than the page hero.
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
-  }, [location.pathname])
+    if (!location.hash) {
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    }
+  }, [location.pathname, location.hash])
 
   return (
     <div className="flex min-h-full flex-col">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import Container from '@/components/ui/Container'
@@ -8,6 +8,8 @@ import Pill from '@/components/ui/Pill'
 import Section from '@/components/ui/Section'
 import Button from '@/components/ui/Button'
 import ArcMotif from '@/components/brand/ArcMotif'
+import FlourishLine from '@/components/brand/FlourishLine'
+import { CornerArcsWithDots } from '@/components/brand/BrandPatterns'
 import {
   products,
   productsBySlug,
@@ -43,12 +45,16 @@ const isProductSlug = (s: string): s is ProductSlug =>
 export default function ProductsIndex() {
   const location = useLocation()
   const navigate = useNavigate()
+  const tabsRef = useRef<HTMLDivElement>(null)
 
   // Initial tab from URL hash (#chabok, #tiam, ...) — default to first.
   const hashSlug = location.hash.replace(/^#/, '')
   const initial = isProductSlug(hashSlug) ? hashSlug : products[0].slug
 
   const [activeSlug, setActiveSlug] = useState<ProductSlug>(initial)
+  /** Set after mount so we know subsequent activeSlug changes are
+   *  user-initiated tab clicks, not the initial render. */
+  const mounted = useRef(false)
 
   // Keep the hash in sync with the active tab without triggering a
   // navigation spinner. `replace: true` avoids polluting history with
@@ -72,6 +78,24 @@ export default function ProductsIndex() {
       setActiveSlug(slug)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.hash])
+
+  // When the page is opened with a hash already in the URL (e.g.
+  // arriving from a Network product chip on the home page), skip
+  // past the hero and scroll directly to the tabs section so the
+  // visitor lands on the product description, not the page intro.
+  useEffect(() => {
+    if (!location.hash) return
+    if (!tabsRef.current) return
+    // Defer to next frame so layout is settled before measuring.
+    const id = requestAnimationFrame(() => {
+      tabsRef.current?.scrollIntoView({
+        behavior: mounted.current ? 'smooth' : 'auto',
+        block: 'start',
+      })
+      mounted.current = true
+    })
+    return () => cancelAnimationFrame(id)
   }, [location.hash])
 
   const active = productsBySlug[activeSlug]
@@ -109,9 +133,10 @@ export default function ProductsIndex() {
         </Container>
       </section>
 
-      {/* TABBED PRODUCTS BROWSER */}
+      {/* TABBED PRODUCTS BROWSER — scroll target when arriving with hash */}
       <Section tone="paper" spacing="loose">
         <Container>
+          <div ref={tabsRef} className="scroll-mt-24">
           {/* Tab strip — horizontal scroll on mobile, sliding underline
               indicator via motion layoutId */}
           <div
@@ -184,18 +209,39 @@ export default function ProductsIndex() {
               transition={{ duration: 0.42, ease: easeOut }}
               className="relative mt-10 grid gap-12 rounded-2xl border border-hairline bg-paper-2 p-8 lg:grid-cols-12 sm:p-12"
             >
-              {/* Soft brand arc decoration in the far corner of the
-                  panel — quiet, matches the brand book chapter pages */}
+              {/* Brand-book "corner arcs with dots" decoration in
+                  bottom-left (each arc carries a dot at its mid-point) */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute -bottom-20 -left-20 text-indigo/8"
+                className="pointer-events-none absolute -bottom-12 -left-12 text-indigo/22"
               >
-                <ArcMotif
-                  count={4}
-                  size={320}
+                <CornerArcsWithDots
                   anchor="bottom-left"
-                  dot={false}
-                  animate={false}
+                  count={3}
+                  size={280}
+                  strokeWidth={1.1}
+                  opacity={0.6}
+                  dotTone="indigo"
+                  duration={1.6}
+                />
+              </div>
+
+              {/* Brand-book "hop" decoration in top-right corner —
+                  origin dot, soft Q-curve, halo destination */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute top-4 right-4 hidden md:block"
+              >
+                <FlourishLine
+                  variant="hop"
+                  hopShape="low-arc"
+                  width={170}
+                  strokeWidth={1.3}
+                  originTone="indigo"
+                  destTone={isB2C ? 'coral' : 'sky'}
+                  pathOpacity={0.45}
+                  duration={1.4}
+                  delay={0.3}
                 />
               </div>
 
@@ -333,6 +379,7 @@ export default function ProductsIndex() {
               </aside>
             </motion.div>
           </AnimatePresence>
+          </div>
         </Container>
       </Section>
 

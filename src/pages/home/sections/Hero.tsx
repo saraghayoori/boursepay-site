@@ -41,21 +41,25 @@ export default function Hero() {
         <OrnamentDots variant="scatter" tone="indigo" opacity={0.55} width={220} />
       </div>
 
-      {/* Purposeful descend curve — flows from the top-right area
-          down toward the HeroVisual card on the left. Visually
-          says "from this thought, follow into this product". */}
+      {/* Brand-book "hop" — solid origin dot in the upper-right text
+          area, soft Q-curve sweeping across, halo destination dot
+          landing near the HeroVisual card on the left. The
+          dot+curve+dot DNA expresses the brand's «نقطه → منحنی → نقطه»
+          motion concept directly. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute right-[42%] top-12 hidden text-sky/45 lg:block"
+        className="pointer-events-none absolute right-[36%] top-20 hidden lg:block"
       >
         <FlourishLine
-          variant="descend"
-          width={300}
-          strokeWidth={1.1}
-          dot
-          dotTone="coral"
-          duration={2.4}
-          delay={0.8}
+          variant="hop"
+          hopShape="descend"
+          width={420}
+          strokeWidth={1.4}
+          originTone="indigo"
+          destTone="coral"
+          pathOpacity={0.55}
+          duration={2.2}
+          delay={0.7}
         />
       </div>
 

@@ -3,8 +3,12 @@ import Heading from '@/components/ui/Heading'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Section from '@/components/ui/Section'
 import ArcMotif from '@/components/brand/ArcMotif'
+import AboutVisual from '@/components/brand/AboutVisual'
 import FlourishLine from '@/components/brand/FlourishLine'
-import OrnamentDots from '@/components/brand/OrnamentDots'
+import {
+  CornerArcsWithDots,
+  ParallelCurves,
+} from '@/components/brand/BrandPatterns'
 
 /**
  * About page.
@@ -103,48 +107,78 @@ export default function AboutPage() {
       <title>درباره · بورس‌پی</title>
       <meta name="description" content="بورس‌پی · شرکتی که ریل‌های پرداختِ بازار سرمایه را تخصصی ساخت." />
 
-      {/* HERO — dark */}
+      {/* HERO — dark, with companion AboutVisual on the left side */}
       <section className="relative isolate overflow-hidden bg-navy-1 text-paper">
         <div className="pointer-events-none absolute -bottom-32 right-[-180px] text-sky/20">
           <ArcMotif count={5} size={640} anchor="bottom-right" />
         </div>
-        {/* Constellation of mist dots in the top-left of the hero */}
-        <div className="pointer-events-none absolute left-8 top-12 hidden text-mist/40 lg:block">
-          <OrnamentDots variant="constellation" tone="mist" opacity={0.5} width={160} />
-        </div>
-        <Container className="relative py-24 sm:py-32">
-          <Eyebrow tone="sky">درباره‌ی ما</Eyebrow>
-          <Heading
-            fa={
-              <>
-                پرداخت،<br />
-                <span className="relative inline-block text-sky">
-                  سریع و تخصصی
-                  {/* Underline emphasis */}
-                  <span className="absolute left-0 right-0 -bottom-4 flex justify-center text-sky/70">
-                    <FlourishLine
-                      variant="underline"
-                      width={300}
-                      strokeWidth={1.8}
-                      duration={1.5}
-                      delay={0.6}
-                    />
-                  </span>
-                </span>
-              </>
-            }
-            en="Payment — fast and specialist"
-            level={1}
-            tone="paper"
-            className="mt-4 max-w-3xl"
+        {/* Brand-book "corner arcs with dots" decoration top-right */}
+        <div className="pointer-events-none absolute top-0 right-0 hidden text-sky/35 lg:block">
+          <CornerArcsWithDots
+            anchor="top-right"
+            count={4}
+            size={320}
+            strokeWidth={1.1}
+            opacity={0.5}
+            dotTone="sky"
+            duration={1.8}
           />
-          <p className="mt-8 max-w-2xl text-[17.5px] leading-[1.85] text-paper/78">
-            بورس‌پی یک شرکتِ زیرساختِ پرداخت است که فقط برای بازارِ سرمایه ساخته
-            شده. ما تسویه‌ی سریع را روی بازاری ممکن کردیم که سال‌ها با چک، مهر و
-            انتظارِ بانک سر و کار داشت. شرکت‌ها از ما می‌پرسند که چرا فقط بازارِ
-            سرمایه — جواب ساده است: چون این تنها کاری است که می‌خواهیم به‌خوبیِ
-            تمام انجامش بدهیم.
-          </p>
+        </div>
+        {/* Brand-book parallel-curves background in the bottom-left */}
+        <div className="pointer-events-none absolute left-0 bottom-8 hidden text-sky/30 lg:block">
+          <ParallelCurves
+            width={340}
+            count={4}
+            opacity={0.4}
+            dotTone="sky"
+            duration={1.6}
+            delay={0.5}
+          />
+        </div>
+
+        <Container className="relative grid items-center gap-12 py-24 sm:py-32 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <Eyebrow tone="sky">درباره‌ی ما</Eyebrow>
+            <Heading
+              fa={
+                <>
+                  پرداخت،<br />
+                  <span className="text-sky">سریع و تخصصی</span>
+                </>
+              }
+              en="Payment — fast and specialist"
+              level={1}
+              tone="paper"
+              className="mt-4 max-w-3xl"
+            />
+            <p className="mt-8 max-w-2xl text-[17.5px] leading-[1.85] text-paper/78">
+              بورس‌پی یک شرکتِ زیرساختِ پرداخت است که فقط برای بازارِ سرمایه ساخته
+              شده. ما تسویه‌ی سریع را روی بازاری ممکن کردیم که سال‌ها با چک، مهر و
+              انتظارِ بانک سر و کار داشت. شرکت‌ها از ما می‌پرسند که چرا فقط بازارِ
+              سرمایه — جواب ساده است: چون این تنها کاری است که می‌خواهیم به‌خوبیِ
+              تمام انجامش بدهیم.
+            </p>
+
+            {/* Brand-book "branch" connector — one origin (الان), three
+                destinations (محصول، مجوز، تیم) — visualises «از یک
+                اندیشه به سه بُعد می‌رسیم» */}
+            <div className="mt-10 hidden text-sky/55 lg:block">
+              <FlourishLine
+                variant="branch"
+                width={280}
+                strokeWidth={1.3}
+                originTone="indigo"
+                destTone="sky"
+                pathOpacity={0.55}
+                duration={1.6}
+                delay={0.8}
+              />
+            </div>
+          </div>
+
+          <div className="lg:col-span-5">
+            <AboutVisual />
+          </div>
         </Container>
       </section>
 

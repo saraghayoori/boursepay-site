@@ -5,8 +5,12 @@ import Eyebrow from '@/components/ui/Eyebrow'
 import Section from '@/components/ui/Section'
 import Button from '@/components/ui/Button'
 import ArcMotif from '@/components/brand/ArcMotif'
-import OrnamentDots from '@/components/brand/OrnamentDots'
+import ContactVisual from '@/components/brand/ContactVisual'
 import FlourishLine from '@/components/brand/FlourishLine'
+import {
+  CornerArcsWithDots,
+  ParallelCurves,
+} from '@/components/brand/BrandPatterns'
 import { site } from '@/content/site'
 import { cn } from '@/lib/cn'
 
@@ -67,56 +71,75 @@ export default function ContactPage() {
           <ArcMotif count={5} size={620} anchor="top-right" />
         </div>
 
-        {/* Constellation in the lower-right of the hero */}
-        <div className="pointer-events-none absolute bottom-6 right-6 hidden text-sky/45 md:block">
-          <OrnamentDots
-            variant="constellation"
-            tone="sky"
+        {/* Brand-book "corner arcs with dots" bottom-left */}
+        <div className="pointer-events-none absolute bottom-0 left-0 hidden text-sky/40 lg:block">
+          <CornerArcsWithDots
+            anchor="bottom-left"
+            count={3}
+            size={260}
+            strokeWidth={1.1}
             opacity={0.55}
-            width={150}
+            dotTone="indigo"
+            duration={1.6}
           />
         </div>
 
         <Container className="relative grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Eyebrow tone="sky">تماس</Eyebrow>
-            <div className="relative mt-4 inline-block">
-              <Heading
-                fa="بیایید گفت‌وگو کنیم."
-                en="Let's talk"
-                level={1}
-              />
-              {/* Hand-drawn underline beneath the Persian heading */}
-              <span className="absolute right-0 -bottom-1 text-coral/65">
-                <FlourishLine
-                  variant="underline"
-                  width={320}
-                  strokeWidth={1.8}
-                  duration={1.4}
-                  delay={0.5}
-                />
-              </span>
-            </div>
+            <Heading
+              fa="بیایید گفت‌وگو کنیم."
+              en="Let's talk"
+              level={1}
+              className="mt-4"
+            />
             <p className="mt-7 max-w-xl text-[17.5px] leading-[1.9] text-ink-2">
               ساده‌ترین راهِ ارتباط با ما، یکی از کانال‌های پایین است.
               برای گفت‌وگوی فنی، عددی، فروش یا همکاری — هر سه با یک پاسخِ
               مشترک: ظرفِ یک روزِ کاری برمی‌گردیم.
             </p>
-          </div>
 
-          {/* What to expect — light card */}
-          <div className="lg:col-span-5">
-            <div className="rounded-2xl border border-hairline bg-paper p-7">
-              <Eyebrow tone="accent">پاسخی که از ما می‌گیرید</Eyebrow>
-              <ul className="mt-5 space-y-4 text-[14px] text-ink-2">
-                <Bullet>پاسخ از یک نفرِ مشخص، نه فرمِ خودکار</Bullet>
-                <Bullet>اگر فنی نوشته‌اید، مهندسِ زمینه‌تان پاسخ می‌دهد</Bullet>
-                <Bullet>پیشنهادِ روشن، با مرزِ مشخصِ «بله/خیر»</Bullet>
-                <Bullet>هیچ ایمیلِ مارکتینگیِ ناخواسته بعدش نمی‌گیرید</Bullet>
-              </ul>
+            {/* Brand-book "converge" connector — three channel sources
+                (email, whatsapp, demo) → one destination (you). Quiet
+                mirror of the ContactVisual on the right. */}
+            <div className="mt-9 hidden text-indigo/55 lg:block">
+              <FlourishLine
+                variant="converge"
+                width={280}
+                strokeWidth={1.3}
+                originTone="indigo"
+                destTone="coral"
+                pathOpacity={0.5}
+                duration={1.6}
+                delay={0.7}
+              />
+            </div>
+
+            {/* What to expect — moved below as a smaller chip row so the
+                visual on the right has its own breathing room */}
+            <div className="mt-9 grid gap-3 sm:grid-cols-2">
+              <Bullet>پاسخ از یک نفرِ مشخص، نه فرمِ خودکار</Bullet>
+              <Bullet>اگر فنی نوشته‌اید، مهندسِ زمینه‌تان پاسخ می‌دهد</Bullet>
+              <Bullet>پیشنهادِ روشن، با مرزِ مشخصِ «بله/خیر»</Bullet>
+              <Bullet>هیچ ایمیلِ مارکتینگیِ ناخواسته نمی‌گیرید</Bullet>
             </div>
           </div>
+
+          <div className="lg:col-span-5">
+            <ContactVisual />
+          </div>
         </Container>
+
+        {/* Parallel-curves background at the bottom of the hero */}
+        <div className="pointer-events-none absolute -bottom-2 right-12 hidden text-sky/35 lg:block">
+          <ParallelCurves
+            width={400}
+            count={3}
+            opacity={0.4}
+            dotTone="sky"
+            delay={0.5}
+          />
+        </div>
       </section>
 
       {/* CHANNELS */}

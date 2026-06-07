@@ -2,8 +2,8 @@ import Container from '@/components/ui/Container'
 import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
 import ArcMotif from '@/components/brand/ArcMotif'
-import OrnamentDots from '@/components/brand/OrnamentDots'
 import FlourishLine from '@/components/brand/FlourishLine'
+import { ParallelCurves } from '@/components/brand/BrandPatterns'
 
 /**
  * Closing CTA — light page-level CTA above the dark footer.
@@ -22,9 +22,38 @@ export default function CTA() {
         <ArcMotif count={5} size={620} anchor="bottom-left" dot />
       </div>
 
-      {/* Scatter of dots in the top-left, atmospheric weight balance */}
-      <div className="pointer-events-none absolute left-12 top-4 hidden text-sky/40 md:block">
-        <OrnamentDots variant="scatter" tone="sky" opacity={0.5} width={180} />
+      {/* Brand-book "hop" connector — origin dot near the section
+          eyebrow area on the right, soft Q-curve sweeping left, halo
+          destination dot landing near the CTA button area. Visually
+          says: "from the invitation, follow into the action." */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-[18%] top-16 hidden lg:block"
+      >
+        <FlourishLine
+          variant="hop"
+          hopShape="descend"
+          width={360}
+          strokeWidth={1.3}
+          originTone="indigo"
+          destTone="coral"
+          pathOpacity={0.5}
+          duration={1.8}
+          delay={0.4}
+        />
+      </div>
+
+      {/* Parallel-curves background pattern in the bottom-left */}
+      <div className="pointer-events-none absolute left-4 bottom-10 hidden text-sky/30 lg:block">
+        <ParallelCurves
+          width={320}
+          count={3}
+          strokeWidth={1}
+          opacity={0.45}
+          dotTone="sky"
+          duration={1.6}
+          delay={0.3}
+        />
       </div>
 
       <Container className="relative py-24 sm:py-32">
@@ -34,19 +63,7 @@ export default function CTA() {
             <Eyebrow tone="sky">گفت‌وگوی بعدی</Eyebrow>
             <h2 className="mt-4 font-display text-[36px] font-bold leading-[1.1] text-ink sm:text-[52px]">
               یک گفت‌وگوی ۳۰ دقیقه‌ای —{' '}
-              <span className="relative inline-block text-indigo">
-                با تیمِ فنیِ ما، نه فروش.
-                {/* Underline emphasis under the key phrase */}
-                <span className="absolute left-0 right-0 -bottom-4 flex justify-center text-coral/70">
-                  <FlourishLine
-                    variant="underline"
-                    width={280}
-                    strokeWidth={1.6}
-                    duration={1.3}
-                    delay={0.3}
-                  />
-                </span>
-              </span>
+              <span className="text-indigo">با تیمِ فنیِ ما، نه فروش.</span>
             </h2>
             <p className="mt-6 max-w-xl text-[16px] leading-[1.95] text-ink-2 sm:text-[17px]">
               سناریوی شما را — صندوق، کارگزاری، یکپارچه‌سازیِ بانکی یا تجربه‌ی

@@ -4,8 +4,11 @@ import Heading from '@/components/ui/Heading'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Section from '@/components/ui/Section'
 import ArcMotif from '@/components/brand/ArcMotif'
-import OrnamentDots from '@/components/brand/OrnamentDots'
-import FlourishLine from '@/components/brand/FlourishLine'
+import BlogVisual from '@/components/brand/BlogVisual'
+import {
+  CornerArcsWithDots,
+  ParallelCurves,
+} from '@/components/brand/BrandPatterns'
 import { blogPosts, formatPostDate } from '@/lib/blog'
 
 export default function BlogIndex() {
@@ -22,35 +25,46 @@ export default function BlogIndex() {
         >
           <ArcMotif count={5} size={620} anchor="top-right" />
         </div>
-        <div
-          aria-hidden
-          className="pointer-events-none absolute bottom-6 left-6 hidden text-sky/45 md:block"
-        >
-          <OrnamentDots variant="constellation" tone="sky" opacity={0.55} width={150} />
+        {/* Brand-book "corner arcs with dots" bottom-left */}
+        <div className="pointer-events-none absolute bottom-0 left-0 hidden text-sky/45 lg:block">
+          <CornerArcsWithDots
+            anchor="bottom-left"
+            count={3}
+            size={240}
+            strokeWidth={1.1}
+            opacity={0.55}
+            dotTone="indigo"
+          />
+        </div>
+        {/* Parallel-curves background pattern in upper-left */}
+        <div className="pointer-events-none absolute top-12 left-2 hidden text-indigo/30 lg:block">
+          <ParallelCurves
+            width={280}
+            count={3}
+            opacity={0.4}
+            dotTone="indigo"
+            delay={0.4}
+          />
         </div>
 
-        <Container size="narrow" className="relative py-24 sm:py-32">
-          <Eyebrow tone="sky">۰۲ · بلاگ</Eyebrow>
-          <div className="relative mt-4 inline-block">
+        <Container className="relative grid items-center gap-12 py-24 sm:py-32 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <Eyebrow tone="sky">۰۲ · بلاگ</Eyebrow>
             <Heading
               fa="یادداشت‌ها"
               en="Field notes"
               level={1}
+              className="mt-4"
             />
-            <span className="absolute right-0 -bottom-1 text-coral/65">
-              <FlourishLine
-                variant="underline"
-                width={240}
-                strokeWidth={1.6}
-                duration={1.3}
-                delay={0.4}
-              />
-            </span>
+            <p className="mt-9 max-w-xl text-[16.5px] leading-[1.85] text-ink-2">
+              تصمیم‌های فنی، روایت‌های مشتری‌ها و آنچه از ساختنِ ریل‌های پرداختِ
+              بازار سرمایه می‌آموزیم.
+            </p>
           </div>
-          <p className="mt-9 max-w-2xl text-[16.5px] leading-[1.85] text-ink-2">
-            تصمیم‌های فنی، روایت‌های مشتری‌ها و آنچه از ساختنِ ریل‌های پرداختِ
-            بازار سرمایه می‌آموزیم.
-          </p>
+
+          <div className="lg:col-span-5">
+            <BlogVisual />
+          </div>
         </Container>
       </section>
 

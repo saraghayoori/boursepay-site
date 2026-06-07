@@ -1,26 +1,23 @@
 import { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { motion, useInView } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Heading from '@/components/ui/Heading'
 import Section from '@/components/ui/Section'
-import { products } from '@/content/products'
+import { products, type ProductSlug } from '@/content/products'
 
 /**
- * Network — the home page's centrepiece visual + product gateway.
+ * Network — the home page's centrepiece visual + product selector.
  *
  * What it shows, in a single frame:
  *   - 21 bank dots arranged in a gentle arch across the top edge
  *   - Hairline lines flowing from each bank into the centre, where
  *     the «بورس‌پی» node sits inside a concentric-arc halo
  *   - From the centre, four lines branch out to the four product
- *     chips along the bottom edge. **Each chip is clickable** and
- *     navigates to the matching tab on /products.
- *
- * On hover, the active product chip lifts subtly and its in-bound
- * line brightens, so the diagram doubles as a product launcher,
- * not just a decoration.
+ *     chips along the bottom edge. **Each chip is a selector** for
+ *     the FeaturedProducts spotlight below — clicking a chip changes
+ *     which product card is shown, and the line connecting that chip
+ *     to the centre node brightens to indicate the active state.
  *
  * The whole composition lives in one inline SVG so the dots, lines,
  * halo and chips share a single coordinate space and animate
@@ -30,10 +27,16 @@ import { products } from '@/content/products'
 const BANK_COUNT = 21
 const ease = [0.16, 1, 0.3, 1] as const
 
-export default function Network() {
+interface NetworkProps {
+  /** Currently-selected product slug — drives the active-chip styling */
+  selectedSlug: ProductSlug
+  /** Called when the visitor clicks a product chip */
+  onSelect: (slug: ProductSlug) => void
+}
+
+export default function Network({ selectedSlug, onSelect }: NetworkProps) {
   const ref = useRef<SVGSVGElement>(null)
   const inView = useInView(ref, { once: true, amount: 0.2 })
-  const navigate = useNavigate()
   const [hoverIdx, setHoverIdx] = useState<number | null>(null)
 
   const W = 1200
@@ -74,7 +77,8 @@ export default function Network() {
           <p className="mx-auto mt-5 max-w-xl text-[15.5px] leading-[1.85] text-ink-2">
             هر تراکنشی که از مشتری‌های ما عبور می‌کند، از یکی از این بانک‌ها
             وارد می‌شود، از قلبِ بورس‌پی می‌گذرد، و در یکی از این چهار محصول
-            می‌نشیند. روی هر محصول کلیک کنید تا واردِ آن شوید.
+            می‌نشیند. روی نامِ هر محصول کلیک کنید تا کارتِ کاملِ آن در پایین
+            باز شود.
           </p>
         </div>
 
@@ -206,9 +210,12 @@ export default function Network() {
               </g>
             ))}
 
-            {/* Centre → product lines — highlight when product hovered */}
+            {/* Centre → product lines — highlight when product is
+                hovered OR is the currently-selected spotlight */}
             {productPoints.map((p, i) => {
+              const isActive = products[i].slug === selectedSlug
               const isHover = hoverIdx === i
+              const highlight = isActive || isHover
               return (
                 <motion.line
                   key={`product-line-${i}`}
@@ -217,9 +224,9 @@ export default function Network() {
                   x2={p.x}
                   y2={p.y - 25}
                   stroke={
-                    isHover ? 'url(#productLineHover)' : 'url(#productLine)'
+                    highlight ? 'url(#productLineHover)' : 'url(#productLine)'
                   }
-                  strokeWidth={isHover ? 1.6 : 1.1}
+                  strokeWidth={highlight ? 1.8 : 1.1}
                   strokeLinecap="round"
                   initial={{ pathLength: 0, opacity: 0 }}
                   animate={inView ? { pathLength: 1, opacity: 1 } : {}}
@@ -279,25 +286,31 @@ export default function Network() {
               </text>
             </motion.g>
 
-            {/* Product chips — interactive, clickable */}
+            {/* Product chips — selectors for the spotlight below */}
             {productPoints.map((p, i) => {
               const product = products[i]
               const isB2C = product.role === 'b2c'
+              const isActive = product.slug === selectedSlug
               const isHover = hoverIdx === i
+              const highlight = isActive || isHover
+              const accentColor = isB2C
+                ? 'var(--color-coral)'
+                : 'var(--color-indigo)'
               return (
                 <motion.g
                   key={`product-node-${i}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.6, delay: 2 + i * 0.12, ease }}
-                  role="link"
+                  role="button"
                   tabIndex={0}
-                  aria-label={`صفحه‌ی ${product.name}`}
-                  onClick={() => navigate(`/products#${product.slug}`)}
+                  aria-label={`نمایش کارتِ ${product.name}`}
+                  aria-pressed={isActive}
+                  onClick={() => onSelect(product.slug)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault()
-                      navigate(`/products#${product.slug}`)
+                      onSelect(product.slug)
                     }
                   }}
                   onMouseEnter={() => setHoverIdx(i)}
@@ -306,21 +319,21 @@ export default function Network() {
                   onBlur={() => setHoverIdx(null)}
                   style={{
                     cursor: 'pointer',
-                    transform: isHover ? 'translateY(-4px)' : 'translateY(0)',
+                    transform: highlight ? 'translateY(-4px)' : 'translateY(0)',
                     transition: 'transform 0.3s cubic-bezier(0.22,1,0.36,1)',
                     outline: 'none',
                   }}
                 >
-                  {/* Chip shadow when hovered */}
-                  {isHover && (
+                  {/* Soft glow under active/hovered chip */}
+                  {highlight && (
                     <rect
                       x={p.x - 60}
                       y={p.y - 20}
                       width={120}
                       height={48}
                       rx={12}
-                      fill="var(--color-indigo)"
-                      opacity={0.18}
+                      fill={accentColor}
+                      opacity={isActive ? 0.22 : 0.16}
                       filter="blur(10px)"
                     />
                   )}
@@ -330,17 +343,17 @@ export default function Network() {
                     width={112}
                     height={44}
                     rx={10}
-                    fill="var(--color-paper)"
-                    stroke={
-                      isB2C ? 'var(--color-coral)' : 'var(--color-indigo)'
+                    fill={isActive ? accentColor : 'var(--color-paper)'}
+                    stroke={accentColor}
+                    strokeOpacity={
+                      isActive ? 1 : highlight ? 0.85 : isB2C ? 0.45 : 0.3
                     }
-                    strokeOpacity={isHover ? 0.8 : isB2C ? 0.45 : 0.25}
-                    strokeWidth={isHover ? 1.4 : 1}
+                    strokeWidth={isActive ? 1.6 : highlight ? 1.4 : 1}
                     style={{
                       transition: 'all 0.25s ease',
                     }}
                   />
-                  {isB2C && (
+                  {isB2C && !isActive && (
                     <circle
                       cx={p.x - 46}
                       cy={p.y - 12}
@@ -355,7 +368,13 @@ export default function Network() {
                     className="font-display"
                     fontSize={16}
                     fontWeight={700}
-                    fill={isHover ? 'var(--color-indigo)' : 'var(--color-ink)'}
+                    fill={
+                      isActive
+                        ? 'var(--color-paper)'
+                        : highlight
+                        ? accentColor
+                        : 'var(--color-ink)'
+                    }
                     style={{ transition: 'fill 0.25s ease' }}
                   >
                     {product.name}
@@ -367,28 +386,31 @@ export default function Network() {
                     className="font-en-body"
                     fontSize={8}
                     letterSpacing="0.18em"
-                    fill="var(--color-ink-3)"
+                    fill={
+                      isActive ? 'var(--color-paper)' : 'var(--color-ink-3)'
+                    }
+                    fillOpacity={isActive ? 0.8 : 1}
                     style={{ textTransform: 'uppercase' }}
                   >
                     {product.latin}
                   </text>
 
-                  {/* "Click to enter" hint when hovered */}
-                  {isHover && (
+                  {/* "Selected" / "Click to view" hint below the chip */}
+                  {(isActive || isHover) && (
                     <motion.text
                       x={p.x}
-                      y={p.y + 36}
+                      y={p.y + 38}
                       textAnchor="middle"
                       className="font-en-body"
                       fontSize={8}
                       letterSpacing="0.22em"
-                      fill="var(--color-indigo)"
+                      fill={accentColor}
                       style={{ textTransform: 'uppercase' }}
-                      initial={{ opacity: 0, y: p.y + 32 }}
-                      animate={{ opacity: 1, y: p.y + 36 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
                       transition={{ duration: 0.2 }}
                     >
-                      open ↗
+                      {isActive ? '◉ active' : 'view ↓'}
                     </motion.text>
                   )}
                 </motion.g>
@@ -418,7 +440,7 @@ export default function Network() {
               fill="var(--color-ink-3)"
               style={{ textTransform: 'uppercase' }}
             >
-              4 product surfaces · click to explore
+              4 product surfaces · click to reveal
             </text>
           </svg>
         </div>
@@ -486,29 +508,46 @@ export default function Network() {
                 className="font-en-body text-[9.5px] uppercase tracking-[0.22em] text-ink-3"
                 style={{ unicodeBidi: 'isolate' }}
               >
-                4 product surfaces — tap to enter
+                4 product surfaces — tap to reveal
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {products.map((p) => {
                   const isB2C = p.role === 'b2c'
+                  const isActive = p.slug === selectedSlug
                   return (
                     <button
                       key={p.slug}
                       type="button"
-                      onClick={() => navigate(`/products#${p.slug}`)}
-                      className="group relative rounded-lg border border-hairline bg-paper-2 px-3 py-2.5 text-center transition-all hover:border-indigo/40 hover:bg-paper hover:shadow-[0_10px_30px_-15px_rgba(10,14,46,0.3)]"
+                      onClick={() => onSelect(p.slug)}
+                      aria-pressed={isActive}
+                      className={[
+                        'group relative rounded-lg border px-3 py-2.5 text-center transition-all',
+                        isActive
+                          ? isB2C
+                            ? 'border-coral bg-coral text-paper shadow-[0_10px_30px_-15px_rgba(224,116,74,0.5)]'
+                            : 'border-indigo bg-indigo text-paper shadow-[0_10px_30px_-15px_rgba(42,45,126,0.5)]'
+                          : 'border-hairline bg-paper-2 hover:border-indigo/40 hover:bg-paper hover:shadow-[0_10px_30px_-15px_rgba(10,14,46,0.3)]',
+                      ].join(' ')}
                     >
-                      {isB2C && (
+                      {isB2C && !isActive && (
                         <span
                           aria-hidden
                           className="absolute top-1.5 left-1.5 h-1 w-1 rounded-full bg-coral"
                         />
                       )}
-                      <div className="font-display text-[14px] font-bold text-ink">
+                      <div
+                        className={[
+                          'font-display text-[14px] font-bold',
+                          isActive ? 'text-paper' : 'text-ink',
+                        ].join(' ')}
+                      >
                         {p.name}
                       </div>
                       <div
-                        className="mt-0.5 font-en-body text-[9px] tracking-[0.18em] text-ink-3"
+                        className={[
+                          'mt-0.5 font-en-body text-[9px] tracking-[0.18em]',
+                          isActive ? 'text-paper/80' : 'text-ink-3',
+                        ].join(' ')}
                         style={{ unicodeBidi: 'isolate', textTransform: 'uppercase' }}
                       >
                         {p.latin}

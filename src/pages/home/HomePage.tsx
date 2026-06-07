@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Hero from './sections/Hero'
 import TrustStrip from './sections/TrustStrip'
 import HowItWorks from './sections/HowItWorks'
@@ -8,6 +8,7 @@ import Manifesto from './sections/Manifesto'
 import Audience from './sections/Audience'
 import Testimonials from './sections/Testimonials'
 import CTA from './sections/CTA'
+import { products, type ProductSlug } from '@/content/products'
 
 /**
  * Scroll-driven page background — Mercury-style ambient shift that
@@ -67,6 +68,26 @@ function colorAt(p: number) {
 
 export default function HomePage() {
   const wrapRef = useRef<HTMLDivElement>(null)
+  const spotlightRef = useRef<HTMLDivElement>(null)
+  // Shared selection state between Network (the selector) and
+  // FeaturedProducts (the spotlight). Clicking a product chip in the
+  // Network section sets this; FeaturedProducts swaps to that product
+  // with an animated transition.
+  const [selectedSlug, setSelectedSlug] = useState<ProductSlug>(
+    products[0].slug,
+  )
+
+  const handleSelect = (slug: ProductSlug) => {
+    setSelectedSlug(slug)
+    // Smooth-scroll the spotlight into view so the visitor sees the
+    // result of their click without having to scroll themselves.
+    requestAnimationFrame(() => {
+      spotlightRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    })
+  }
 
   useEffect(() => {
     let raf = 0
@@ -99,8 +120,10 @@ export default function HomePage() {
       <Hero />
       <TrustStrip />
       <HowItWorks />
-      <Network />
-      <FeaturedProducts />
+      <Network selectedSlug={selectedSlug} onSelect={handleSelect} />
+      <div ref={spotlightRef}>
+        <FeaturedProducts selectedSlug={selectedSlug} />
+      </div>
       <Manifesto />
       <Audience />
       <Testimonials />

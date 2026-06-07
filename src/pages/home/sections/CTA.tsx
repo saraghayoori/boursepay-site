@@ -1,9 +1,6 @@
 import Container from '@/components/ui/Container'
 import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
-import ArcMotif from '@/components/brand/ArcMotif'
-import FlourishLine from '@/components/brand/FlourishLine'
-import { ParallelCurves } from '@/components/brand/BrandPatterns'
 
 /**
  * Closing CTA — light page-level CTA above the dark footer.
@@ -18,45 +15,6 @@ import { ParallelCurves } from '@/components/brand/BrandPatterns'
 export default function CTA() {
   return (
     <section className="relative isolate overflow-hidden text-ink">
-      {/* Brand book §25: arc motif min 25% opacity, brand-spec */}
-      <div className="pointer-events-none absolute -bottom-32 -left-32 text-indigo/30">
-        <ArcMotif count={5} size={620} anchor="bottom-left" dot />
-      </div>
-
-      {/* Brand-book "hop" connector — origin dot near the section
-          eyebrow area on the right, soft Q-curve sweeping left, halo
-          destination dot landing near the CTA button area. Visually
-          says: "from the invitation, follow into the action." */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute right-[18%] top-16 hidden lg:block"
-      >
-        <FlourishLine
-          variant="hop"
-          hopShape="descend"
-          width={360}
-          strokeWidth={1.3}
-          originTone="indigo"
-          destTone="coral"
-          pathOpacity={0.5}
-          duration={1.8}
-          delay={0.4}
-        />
-      </div>
-
-      {/* Parallel-curves background pattern in the bottom-left */}
-      <div className="pointer-events-none absolute left-4 bottom-10 hidden text-sky/30 lg:block">
-        <ParallelCurves
-          width={320}
-          count={3}
-          strokeWidth={1}
-          opacity={0.45}
-          dotTone="sky"
-          duration={1.6}
-          delay={0.3}
-        />
-      </div>
-
       <Container className="relative py-24 sm:py-32">
         <div className="grid items-center gap-12 lg:grid-cols-12">
           {/* Primary column (RTL = right) */}

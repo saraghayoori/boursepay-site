@@ -3,10 +3,7 @@ import { motion, useInView } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Section from '@/components/ui/Section'
 import Eyebrow from '@/components/ui/Eyebrow'
-import {
-  CornerArcsWithDots,
-  BigNumberCorner,
-} from '@/components/brand/BrandPatterns'
+import { BigNumberCorner } from '@/components/brand/BrandPatterns'
 
 /**
  * Trust strip — the second "voice" of the page.
@@ -161,24 +158,6 @@ function FactCard({ fact, index }: { fact: Fact; index: number }) {
         >
           <Spark variant={fact.spark} />
         </div>
-      </div>
-
-      {/* Brand-book "corner arcs with dots" pattern in bottom-left
-          of each card — quiet flow motif, low opacity */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-8 -left-8 text-sky/35 transition-colors duration-500 group-hover:text-indigo/40"
-      >
-        <CornerArcsWithDots
-          anchor="bottom-left"
-          count={3}
-          size={120}
-          strokeWidth={0.9}
-          opacity={0.65}
-          dotTone="sky"
-          duration={1.4}
-          delay={0.15 + index * 0.08}
-        />
       </div>
 
       {/* Big number/literal */}

@@ -2,13 +2,7 @@ import Container from '@/components/ui/Container'
 import Heading from '@/components/ui/Heading'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Section from '@/components/ui/Section'
-import ArcMotif from '@/components/brand/ArcMotif'
 import AboutVisual from '@/components/brand/AboutVisual'
-import FlourishLine from '@/components/brand/FlourishLine'
-import {
-  CornerArcsWithDots,
-  ParallelCurves,
-} from '@/components/brand/BrandPatterns'
 
 /**
  * About page.
@@ -109,35 +103,6 @@ export default function AboutPage() {
 
       {/* HERO — dark, with companion AboutVisual on the left side */}
       <section className="relative isolate overflow-hidden bg-navy-1 text-paper">
-        {/* Brand book §25: Arc motif on dark surfaces uses sky stroke
-            at 25-45% — bump opacity to brand-spec minimum */}
-        <div className="pointer-events-none absolute -bottom-32 right-[-180px] text-sky/35">
-          <ArcMotif count={5} size={640} anchor="bottom-right" />
-        </div>
-        {/* Brand-book "corner arcs with dots" decoration top-right */}
-        <div className="pointer-events-none absolute top-0 right-0 hidden text-sky/35 lg:block">
-          <CornerArcsWithDots
-            anchor="top-right"
-            count={4}
-            size={320}
-            strokeWidth={1.1}
-            opacity={0.5}
-            dotTone="sky"
-            duration={1.8}
-          />
-        </div>
-        {/* Brand-book parallel-curves background in the bottom-left */}
-        <div className="pointer-events-none absolute left-0 bottom-8 hidden text-sky/30 lg:block">
-          <ParallelCurves
-            width={340}
-            count={4}
-            opacity={0.4}
-            dotTone="sky"
-            duration={1.6}
-            delay={0.5}
-          />
-        </div>
-
         <Container className="relative grid items-center gap-12 py-24 sm:py-32 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Eyebrow tone="sky">درباره‌ی ما</Eyebrow>
@@ -161,21 +126,6 @@ export default function AboutPage() {
               تمام انجامش بدهیم.
             </p>
 
-            {/* Brand-book "branch" connector — one origin (الان), three
-                destinations (محصول، مجوز، تیم) — visualises «از یک
-                اندیشه به سه بُعد می‌رسیم» */}
-            <div className="mt-10 hidden text-sky/55 lg:block">
-              <FlourishLine
-                variant="branch"
-                width={280}
-                strokeWidth={1.3}
-                originTone="indigo"
-                destTone="sky"
-                pathOpacity={0.55}
-                duration={1.6}
-                delay={0.8}
-              />
-            </div>
           </div>
 
           <div className="lg:col-span-5">
@@ -287,9 +237,6 @@ export default function AboutPage() {
 
       {/* PERSONA — single editorial block */}
       <section className="relative isolate overflow-hidden bg-navy-1 text-paper">
-        <div className="pointer-events-none absolute -bottom-32 -left-32 text-sky/14">
-          <ArcMotif count={4} size={520} anchor="bottom-left" dot animate={false} />
-        </div>
         <Container size="narrow" className="relative py-24 sm:py-28">
           <Eyebrow tone="sky">شخصیتِ برند</Eyebrow>
           <Heading

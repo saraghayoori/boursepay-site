@@ -8,11 +8,7 @@ import Container from '@/components/ui/Container'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Heading from '@/components/ui/Heading'
 import Section from '@/components/ui/Section'
-import FlourishLine from '@/components/brand/FlourishLine'
-import {
-  CornerArcsWithDots,
-  BigNumberCorner,
-} from '@/components/brand/BrandPatterns'
+import { BigNumberCorner } from '@/components/brand/BrandPatterns'
 import { products } from '@/content/products'
 import { cn } from '@/lib/cn'
 
@@ -98,45 +94,6 @@ function ProductCard({ product, index }: ProductCardProps) {
           className="absolute top-5 left-5 z-10 h-2 w-2 rounded-full bg-coral"
         />
       )}
-
-      {/* Brand-book corner-arcs-with-dots decoration in bottom-left,
-          revealed on hover */}
-      <div
-        aria-hidden
-        className={cn(
-          'pointer-events-none absolute -bottom-10 -left-10 text-sky/30 transition-opacity duration-500',
-          'opacity-60 group-hover:opacity-100 group-hover:text-indigo/40',
-        )}
-      >
-        <CornerArcsWithDots
-          anchor="bottom-left"
-          count={3}
-          size={180}
-          strokeWidth={1}
-          opacity={0.7}
-          dotTone={isB2C ? 'coral' : 'sky'}
-          duration={1.4}
-          delay={0.2 + index * 0.08}
-        />
-      </div>
-
-      {/* Brand-book hop in top-right corner — proper dot+curve+halo DNA */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-4 right-4"
-      >
-        <FlourishLine
-          variant="hop"
-          hopShape="low-arc"
-          width={130}
-          strokeWidth={1.2}
-          originTone="indigo"
-          destTone={isB2C ? 'coral' : 'sky'}
-          pathOpacity={0.4}
-          duration={1.3}
-          delay={0.4 + index * 0.08}
-        />
-      </div>
 
       {/* Brand book §26-04 "Big Number Corner" — huge faint
           display-weight index in the top-left of the card */}

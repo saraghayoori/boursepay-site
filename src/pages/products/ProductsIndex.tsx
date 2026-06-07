@@ -7,9 +7,6 @@ import Eyebrow from '@/components/ui/Eyebrow'
 import Pill from '@/components/ui/Pill'
 import Section from '@/components/ui/Section'
 import Button from '@/components/ui/Button'
-import ArcMotif from '@/components/brand/ArcMotif'
-import FlourishLine from '@/components/brand/FlourishLine'
-import { CornerArcsWithDots } from '@/components/brand/BrandPatterns'
 import {
   products,
   productsBySlug,
@@ -108,12 +105,6 @@ export default function ProductsIndex() {
 
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-cloud text-ink">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-32 left-[-200px] text-indigo/14"
-        >
-          <ArcMotif count={5} size={680} anchor="top-left" />
-        </div>
         <Container className="relative py-24 sm:py-32">
           <Eyebrow tone="sky" bare>۰۴ · معماری محصول</Eyebrow>
           <Heading
@@ -209,42 +200,6 @@ export default function ProductsIndex() {
               transition={{ duration: 0.42, ease: easeOut }}
               className="relative mt-10 grid gap-12 rounded-2xl border border-hairline bg-paper-2 p-8 lg:grid-cols-12 sm:p-12"
             >
-              {/* Brand-book "corner arcs with dots" decoration in
-                  bottom-left (each arc carries a dot at its mid-point) */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -bottom-12 -left-12 text-indigo/22"
-              >
-                <CornerArcsWithDots
-                  anchor="bottom-left"
-                  count={3}
-                  size={280}
-                  strokeWidth={1.1}
-                  opacity={0.6}
-                  dotTone="indigo"
-                  duration={1.6}
-                />
-              </div>
-
-              {/* Brand-book "hop" decoration in top-right corner —
-                  origin dot, soft Q-curve, halo destination */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute top-4 right-4 hidden md:block"
-              >
-                <FlourishLine
-                  variant="hop"
-                  hopShape="low-arc"
-                  width={170}
-                  strokeWidth={1.3}
-                  originTone="indigo"
-                  destTone={isB2C ? 'coral' : 'sky'}
-                  pathOpacity={0.45}
-                  duration={1.4}
-                  delay={0.3}
-                />
-              </div>
-
               {/* Primary column (RTL → right): name, copy, pain point,
                   description + detail, CTAs */}
               <div className="relative lg:col-span-7">
@@ -461,9 +416,6 @@ export default function ProductsIndex() {
               to="/products#chabok"
               className="group relative block overflow-hidden rounded-2xl bg-navy-1 px-8 py-7 text-paper transition-colors hover:bg-navy-2"
             >
-              <div className="pointer-events-none absolute -bottom-12 -left-12 text-sky/20">
-                <ArcMotif count={4} size={220} anchor="bottom-left" dot={false} animate={false} />
-              </div>
               <div className="relative flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
                 <div>
                   <div

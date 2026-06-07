@@ -3,7 +3,6 @@ import { MDXProvider } from '@mdx-js/react'
 import Container from '@/components/ui/Container'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Section from '@/components/ui/Section'
-import ArcMotif from '@/components/brand/ArcMotif'
 import OrnamentDots from '@/components/brand/OrnamentDots'
 import { getPostBySlug, formatPostDate, blogPosts } from '@/lib/blog'
 import { mdxComponents } from './mdxComponents'
@@ -41,14 +40,8 @@ export default function BlogPost() {
       <title>{post.title} · بلاگ بورس‌پی</title>
       <meta name="description" content={post.excerpt} />
 
-      {/* HERO — light, with brand arc + dots */}
+      {/* HERO */}
       <section className="relative isolate overflow-hidden bg-cloud text-ink">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-32 left-[-180px] text-indigo/30"
-        >
-          <ArcMotif count={5} size={620} anchor="top-left" />
-        </div>
         <div
           aria-hidden
           className="pointer-events-none absolute bottom-6 right-6 hidden text-sky/40 md:block"

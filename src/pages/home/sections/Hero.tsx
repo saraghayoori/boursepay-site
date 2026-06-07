@@ -2,9 +2,7 @@ import { motion } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Button from '@/components/ui/Button'
 import Eyebrow from '@/components/ui/Eyebrow'
-import ArcMotif from '@/components/brand/ArcMotif'
 import OrnamentDots from '@/components/brand/OrnamentDots'
-import FlourishLine from '@/components/brand/FlourishLine'
 import HeroVisual from './HeroVisual'
 
 const easeOut = [0.22, 1, 0.36, 1] as const
@@ -24,14 +22,6 @@ export default function Hero() {
         className="dot-grid-soft dot-mask-radial pointer-events-none absolute inset-0"
       />
 
-      {/* Layer 3 — faint brand arc, far corner */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-32 right-[-200px] hidden text-indigo/12 sm:block"
-      >
-        <ArcMotif count={5} size={620} anchor="top-right" dot={false} />
-      </div>
-
       {/* Scatter of dots on the far-left mid-height, atmospheric
           without competing for attention */}
       <div
@@ -39,28 +29,6 @@ export default function Hero() {
         className="pointer-events-none absolute top-1/3 -left-2 hidden text-indigo/35 lg:block"
       >
         <OrnamentDots variant="scatter" tone="indigo" opacity={0.55} width={220} />
-      </div>
-
-      {/* Brand-book "hop" — solid origin dot in the upper-right text
-          area, soft Q-curve sweeping across, halo destination dot
-          landing near the HeroVisual card on the left. The
-          dot+curve+dot DNA expresses the brand's «نقطه → منحنی → نقطه»
-          motion concept directly. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute right-[36%] top-20 hidden lg:block"
-      >
-        <FlourishLine
-          variant="hop"
-          hopShape="descend"
-          width={420}
-          strokeWidth={1.4}
-          originTone="indigo"
-          destTone="coral"
-          pathOpacity={0.55}
-          duration={2.2}
-          delay={0.7}
-        />
       </div>
 
       <Container className="relative grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-12 lg:gap-10 lg:py-36">

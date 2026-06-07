@@ -3,12 +3,7 @@ import Container from '@/components/ui/Container'
 import Heading from '@/components/ui/Heading'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Section from '@/components/ui/Section'
-import ArcMotif from '@/components/brand/ArcMotif'
 import BlogVisual from '@/components/brand/BlogVisual'
-import {
-  CornerArcsWithDots,
-  ParallelCurves,
-} from '@/components/brand/BrandPatterns'
 import { blogPosts, formatPostDate } from '@/lib/blog'
 
 export default function BlogIndex() {
@@ -19,34 +14,6 @@ export default function BlogIndex() {
 
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-cloud text-ink">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-32 right-[-180px] text-indigo/30"
-        >
-          <ArcMotif count={5} size={620} anchor="top-right" />
-        </div>
-        {/* Brand-book "corner arcs with dots" bottom-left */}
-        <div className="pointer-events-none absolute bottom-0 left-0 hidden text-sky/45 lg:block">
-          <CornerArcsWithDots
-            anchor="bottom-left"
-            count={3}
-            size={240}
-            strokeWidth={1.1}
-            opacity={0.55}
-            dotTone="indigo"
-          />
-        </div>
-        {/* Parallel-curves background pattern in upper-left */}
-        <div className="pointer-events-none absolute top-12 left-2 hidden text-indigo/30 lg:block">
-          <ParallelCurves
-            width={280}
-            count={3}
-            opacity={0.4}
-            dotTone="indigo"
-            delay={0.4}
-          />
-        </div>
-
         <Container className="relative grid items-center gap-12 py-24 sm:py-32 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Eyebrow tone="sky">۰۲ · بلاگ</Eyebrow>

@@ -1,5 +1,4 @@
 import { motion } from 'motion/react'
-import ArcMotif from '@/components/brand/ArcMotif'
 
 /**
  * Hero illustration — the colorful "Drivewealth-style" layered composition.
@@ -23,14 +22,6 @@ export default function HeroVisual() {
         aria-hidden
         className="ambient-warm absolute inset-[-12%] rounded-full opacity-70 blur-3xl"
       />
-
-      {/* 2 — faint arc motif signature */}
-      <div
-        aria-hidden
-        className="absolute inset-0 flex items-center justify-center text-indigo/15"
-      >
-        <ArcMotif count={5} size={460} anchor="bottom-right" dot={false} />
-      </div>
 
       {/* 3 — main payment card */}
       <motion.div

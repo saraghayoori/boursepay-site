@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import Container from '@/components/ui/Container'
 import Logo from '@/components/brand/Logo'
 import Eyebrow from '@/components/ui/Eyebrow'
-import ArcMotif from '@/components/brand/ArcMotif'
 import { site } from '@/content/site'
 import { products } from '@/content/products'
 
@@ -30,11 +29,6 @@ export default function Footer() {
             'linear-gradient(135deg, #1b1f66 0%, #0a0e2e 55%, #0a0e2e 100%)',
         }}
       />
-
-      {/* Layer 2 — concentric brand arcs in the bottom-left corner */}
-      <div className="pointer-events-none absolute -bottom-28 -left-28 text-sky/22">
-        <ArcMotif count={5} size={520} anchor="bottom-left" dot animate={false} />
-      </div>
 
       <Container className="relative grid gap-12 py-16 md:grid-cols-12">
         <div className="md:col-span-5">

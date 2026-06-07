@@ -1,5 +1,4 @@
 import { motion } from 'motion/react'
-import ArcMotif from '@/components/brand/ArcMotif'
 
 /**
  * Hero illustration for the Blog index page.
@@ -32,14 +31,6 @@ export default function BlogVisual() {
             'radial-gradient(50% 60% at 75% 70%, rgba(224,116,74,0.16), transparent 70%)',
         }}
       />
-
-      {/* 2 — faint arc motif top-right */}
-      <div
-        aria-hidden
-        className="absolute inset-0 flex items-start justify-end text-indigo/28"
-      >
-        <ArcMotif count={5} size={440} anchor="top-right" dot={false} />
-      </div>
 
       {/* 3a — back stack card (tilted far) */}
       <motion.div

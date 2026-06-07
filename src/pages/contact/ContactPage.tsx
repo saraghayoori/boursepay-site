@@ -4,13 +4,7 @@ import Heading from '@/components/ui/Heading'
 import Eyebrow from '@/components/ui/Eyebrow'
 import Section from '@/components/ui/Section'
 import Button from '@/components/ui/Button'
-import ArcMotif from '@/components/brand/ArcMotif'
 import ContactVisual from '@/components/brand/ContactVisual'
-import FlourishLine from '@/components/brand/FlourishLine'
-import {
-  CornerArcsWithDots,
-  ParallelCurves,
-} from '@/components/brand/BrandPatterns'
 import { site } from '@/content/site'
 import { cn } from '@/lib/cn'
 
@@ -67,24 +61,6 @@ export default function ContactPage() {
 
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-cloud text-ink">
-        {/* Brand book §25: arc motif min 25% opacity */}
-        <div className="pointer-events-none absolute -top-32 right-[-180px] text-indigo/30">
-          <ArcMotif count={5} size={620} anchor="top-right" />
-        </div>
-
-        {/* Brand-book "corner arcs with dots" bottom-left */}
-        <div className="pointer-events-none absolute bottom-0 left-0 hidden text-sky/40 lg:block">
-          <CornerArcsWithDots
-            anchor="bottom-left"
-            count={3}
-            size={260}
-            strokeWidth={1.1}
-            opacity={0.55}
-            dotTone="indigo"
-            duration={1.6}
-          />
-        </div>
-
         <Container className="relative grid items-center gap-12 py-20 sm:py-28 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Eyebrow tone="sky">تماس</Eyebrow>
@@ -100,22 +76,6 @@ export default function ContactPage() {
               مشترک: ظرفِ یک روزِ کاری برمی‌گردیم.
             </p>
 
-            {/* Brand-book "converge" connector — three channel sources
-                (email, whatsapp, demo) → one destination (you). Quiet
-                mirror of the ContactVisual on the right. */}
-            <div className="mt-9 hidden text-indigo/55 lg:block">
-              <FlourishLine
-                variant="converge"
-                width={280}
-                strokeWidth={1.3}
-                originTone="indigo"
-                destTone="coral"
-                pathOpacity={0.5}
-                duration={1.6}
-                delay={0.7}
-              />
-            </div>
-
             {/* What to expect — moved below as a smaller chip row so the
                 visual on the right has its own breathing room */}
             <div className="mt-9 grid gap-3 sm:grid-cols-2">
@@ -130,17 +90,6 @@ export default function ContactPage() {
             <ContactVisual />
           </div>
         </Container>
-
-        {/* Parallel-curves background at the bottom of the hero */}
-        <div className="pointer-events-none absolute -bottom-2 right-12 hidden text-sky/35 lg:block">
-          <ParallelCurves
-            width={400}
-            count={3}
-            opacity={0.4}
-            dotTone="sky"
-            delay={0.5}
-          />
-        </div>
       </section>
 
       {/* CHANNELS */}
@@ -254,9 +203,6 @@ export default function ContactPage() {
 
       {/* CLOSING — dark strip */}
       <section className="relative isolate overflow-hidden bg-navy-1 text-paper">
-        <div className="pointer-events-none absolute -bottom-32 -left-32 text-sky/14">
-          <ArcMotif count={5} size={520} anchor="bottom-left" dot animate={false} />
-        </div>
         <Container className="relative py-20 sm:py-24">
           <div className="mx-auto max-w-2xl text-center">
             <Eyebrow tone="sky" className="justify-center">جمع‌بندی</Eyebrow>

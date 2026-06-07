@@ -1,8 +1,6 @@
 import { motion } from 'motion/react'
 import Container from '@/components/ui/Container'
 import Section from '@/components/ui/Section'
-import ArcMotif from '@/components/brand/ArcMotif'
-import { ParallelCurves } from '@/components/brand/BrandPatterns'
 
 /**
  * Manifesto — a big editorial pull-quote that breaks the page rhythm.
@@ -21,37 +19,6 @@ export default function Manifesto() {
   return (
     <Section tone="none" spacing="loose">
       <Container size="narrow">
-        {/* Faint arc, far corner, no animation */}
-        <div className="pointer-events-none absolute -bottom-20 right-[-100px] hidden text-indigo/8 sm:block">
-          <ArcMotif count={4} size={420} anchor="bottom-right" dot={false} animate={false} />
-        </div>
-
-        {/* Brand-book parallel-curves rhythmic background (low opacity)
-            — three parallel Q-curves with a dot at each midpoint.
-            Floods the section with quiet motion without competing
-            with the quote. */}
-        <div className="pointer-events-none absolute right-0 top-8 hidden text-indigo/35 lg:block">
-          <ParallelCurves
-            width={360}
-            count={3}
-            strokeWidth={1}
-            opacity={0.45}
-            dotTone="indigo"
-            duration={1.6}
-          />
-        </div>
-        <div className="pointer-events-none absolute left-0 bottom-12 hidden text-sky/40 lg:block">
-          <ParallelCurves
-            width={300}
-            count={3}
-            strokeWidth={1}
-            opacity={0.45}
-            dotTone="sky"
-            duration={1.6}
-            delay={0.3}
-          />
-        </div>
-
         <div className="relative mx-auto max-w-3xl text-center">
           {/* The giant opening quotation glyph, in the brand serif */}
           <motion.div

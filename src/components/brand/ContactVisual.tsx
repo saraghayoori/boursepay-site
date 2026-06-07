@@ -1,5 +1,4 @@
 import { motion } from 'motion/react'
-import ArcMotif from '@/components/brand/ArcMotif'
 
 /**
  * Hero illustration for the Contact page.
@@ -31,14 +30,6 @@ export default function ContactVisual() {
             'radial-gradient(50% 60% at 25% 70%, rgba(224,116,74,0.18), transparent 70%)',
         }}
       />
-
-      {/* 2 — faint arc motif top-left */}
-      <div
-        aria-hidden
-        className="absolute inset-0 flex items-start justify-start text-indigo/28"
-      >
-        <ArcMotif count={5} size={460} anchor="top-left" dot={false} />
-      </div>
 
       {/* 3 — main message card (centred) */}
       <motion.div

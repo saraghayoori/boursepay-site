@@ -1,5 +1,4 @@
 import { motion } from 'motion/react'
-import ArcMotif from '@/components/brand/ArcMotif'
 
 /**
  * Hero illustration for the About page.
@@ -32,14 +31,6 @@ export default function AboutVisual() {
             'radial-gradient(50% 60% at 75% 65%, rgba(42,45,126,0.22), transparent 70%)',
         }}
       />
-
-      {/* 2 — faint arc motif from the bottom-right corner */}
-      <div
-        aria-hidden
-        className="absolute inset-0 flex items-end justify-end text-indigo/22"
-      >
-        <ArcMotif count={5} size={440} anchor="bottom-right" dot={false} />
-      </div>
 
       {/* 3 — main navy charter card */}
       <motion.div

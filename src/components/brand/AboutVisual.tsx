@@ -1,183 +1,124 @@
 import { motion } from 'motion/react'
 
 /**
- * Hero illustration for the About page.
+ * About hero visual — a vertical company-timeline.
  *
- * Composition (back to front):
- *   1. Soft mist + indigo ambient blob, blurred
- *   2. Faint brand arcs from the bottom-right corner
- *   3. Central "navy charter card" — a dark tilted card with the
- *      company name lockup and a sky underline, the editorial
- *      equivalent of a company seal
- *   4. Floating coral "license" badge — top-right, tilted slightly,
- *      proof-of-permit visual cue
- *   5. Floating mist "team" chip card — bottom-left, with a row of
- *      monogram avatars representing the team
- *   6. Three atmospheric dots
+ * Concept: «از کجا شروع کردیم تا اینجا». Brand book §26-02 «چند مرحله»
+ * pattern applied as the page hero — a vertical navy line with five
+ * year-station dots running top-to-bottom, each labelled. The current
+ * year sits at the bottom with a sky-coloured halo (the brand book's
+ * destination dot), so the eye follows the company's journey from
+ * its founding down to «اینجاییم».
  *
- * Same DNA as the home HeroVisual but assembled differently —
- * different cards, different angles, different colour weights.
+ * Distinct from every other hero visual on the site: no floating
+ * cards, no badges — it's all line + dots + typography in one
+ * editorial composition.
  */
+
+interface Station {
+  year: string
+  label: string
+  current?: boolean
+}
+
+const stations: Station[] = [
+  { year: '۱۴۰۰', label: 'شروع از یک سؤال' },
+  { year: '۱۴۰۱', label: 'نخستین سه بانک' },
+  { year: '۱۴۰۲', label: 'گرفتنِ مجوزِ تخصصی' },
+  { year: '۱۴۰۳', label: 'پنجاه صندوقِ نهادی' },
+  { year: '۱۴۰۴', label: 'اینجاییم', current: true },
+]
+
+const ease = [0.22, 1, 0.36, 1] as const
+
 export default function AboutVisual() {
   return (
-    <div className="relative aspect-square w-full max-w-[520px] mx-auto">
-      {/* 1 — ambient blob, cool */}
+    <div className="relative mx-auto w-full max-w-[480px] py-4">
+      {/* Vertical timeline line — navy with sky tint at the bottom */}
       <div
         aria-hidden
-        className="absolute inset-[-12%] rounded-full opacity-65 blur-3xl"
+        className="absolute right-[27%] top-6 bottom-6 w-px"
         style={{
           background:
-            'radial-gradient(55% 60% at 30% 35%, rgba(111,143,206,0.32), transparent 70%),' +
-            'radial-gradient(50% 60% at 75% 65%, rgba(42,45,126,0.22), transparent 70%)',
+            'linear-gradient(to bottom, var(--color-indigo) 0%, var(--color-indigo) 65%, var(--color-sky) 100%)',
+          opacity: 0.55,
         }}
       />
 
-      {/* 3 — main navy charter card */}
-      <motion.div
-        initial={{ y: 0, rotate: 2 }}
-        animate={{ y: [0, -10, 0], rotate: 2 }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[20%] left-[8%] right-[8%] aspect-[1.4] rounded-3xl shadow-[0_30px_80px_-20px_rgba(10,14,46,0.5)]"
-      >
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-navy-2 via-navy-1 to-navy-1" />
-        {/* glossy sheen */}
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-paper/0 via-paper/0 to-paper/10" />
-        {/* card content */}
-        <div className="absolute inset-7 flex flex-col justify-between text-paper">
-          <div className="flex items-start justify-between">
-            <div>
+      <ol className="relative space-y-6">
+        {stations.map((s, i) => (
+          <motion.li
+            key={s.year}
+            initial={{ opacity: 0, x: 18 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.5, delay: i * 0.12, ease }}
+            className="relative flex items-center gap-5"
+            style={{ paddingRight: '21%' }}
+          >
+            {/* Station dot — solid for past, sky-haloed for current */}
+            <span
+              aria-hidden
+              className="absolute right-[27%] z-10 -translate-x-1/2 flex h-4 w-4 items-center justify-center"
+              style={{ marginRight: '-0.5px' }}
+            >
+              {s.current ? (
+                <>
+                  <span className="absolute inset-0 rounded-full bg-sky opacity-30 animate-ping" />
+                  <span className="relative h-3 w-3 rounded-full bg-sky" />
+                </>
+              ) : (
+                <span className="h-2.5 w-2.5 rounded-full bg-indigo" />
+              )}
+            </span>
+
+            {/* Year label on the right of the line (RTL primary) */}
+            <div
+              className={`font-en-display text-[15px] font-bold tracking-[0.08em] ${
+                s.current ? 'text-sky' : 'text-ink-3'
+              }`}
+              style={{
+                unicodeBidi: 'isolate',
+                position: 'absolute',
+                right: '5%',
+                width: '17%',
+                textAlign: 'right',
+              }}
+            >
+              {s.year}
+            </div>
+
+            {/* Description on the left of the line */}
+            <div className="flex-1 pr-2">
               <div
-                className="font-en-body text-[9.5px] tracking-[0.24em] uppercase text-sky"
-                style={{ unicodeBidi: 'isolate' }}
+                className={`font-display ${
+                  s.current
+                    ? 'text-[20px] font-bold text-ink'
+                    : 'text-[15px] font-semibold text-ink-2'
+                }`}
               >
-                company · charter
+                {s.label}
               </div>
-              <div className="mt-2 font-display text-[22px] font-bold leading-tight">
-                بورس‌پی
-              </div>
-              <div className="mt-3 h-px w-12 bg-sky" />
+              {s.current && (
+                <div
+                  className="mt-1 font-en-body text-[10px] tracking-[0.22em] uppercase text-sky"
+                  style={{ unicodeBidi: 'isolate' }}
+                >
+                  now · ۱۴۰۴
+                </div>
+              )}
             </div>
-            <div className="flex flex-col items-end gap-1">
-              <span
-                className="rounded-full border border-sky/30 px-2.5 py-0.5 font-en-body text-[9px] tracking-[0.18em] uppercase text-sky"
-                style={{ unicodeBidi: 'isolate' }}
-              >
-                est ۱۴۰۰
-              </span>
-            </div>
-          </div>
+          </motion.li>
+        ))}
+      </ol>
 
-          <div className="flex items-end justify-between">
-            <div className="space-y-1.5">
-              <div className="text-[11px] leading-tight text-paper/70">
-                مأموریت
-              </div>
-              <div className="font-display text-[13px] font-semibold leading-snug">
-                ریلِ تخصصیِ بازارِ سرمایه
-              </div>
-            </div>
-            <div
-              className="font-en-body text-[8px] tracking-[0.22em] uppercase text-paper/45 text-right"
-              style={{ unicodeBidi: 'isolate' }}
-            >
-              capital
-              <br />
-              markets
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* 4 — floating license / permit badge */}
-      <motion.div
-        initial={{ y: 0, rotate: -4 }}
-        animate={{ y: [0, -10, 0], rotate: -4 }}
-        transition={{ duration: 6.2, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[6%] right-[2%]"
+      {/* Top label */}
+      <div
+        className="mb-5 flex justify-end pl-[30%] -mt-2 font-en-body text-[9.5px] tracking-[0.24em] uppercase text-ink-4"
+        style={{ unicodeBidi: 'isolate' }}
       >
-        <div className="relative rounded-2xl bg-gradient-to-br from-coral-2 to-coral px-4 py-3 text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_24px_50px_-18px_rgba(224,116,74,0.55)]">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-1.5 rounded-xl border border-paper/22"
-          />
-          <div className="relative">
-            <div
-              className="font-en-body text-[8.5px] tracking-[0.26em] uppercase text-paper/90"
-              style={{ unicodeBidi: 'isolate' }}
-            >
-              license
-            </div>
-            <div className="mt-1 font-display text-[15px] font-bold leading-tight">
-              مجوزِ تخصصی
-            </div>
-            <div
-              className="mt-1.5 font-en-body text-[8.5px] tracking-[0.2em] uppercase text-paper/80"
-              style={{ unicodeBidi: 'isolate' }}
-            >
-              sec ↗
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* 5 — floating mist "team" chip card */}
-      <motion.div
-        initial={{ y: 0 }}
-        animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 6.5, delay: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-[6%] left-[0%] rounded-2xl border border-hairline bg-paper p-4 shadow-[0_22px_60px_-22px_rgba(10,14,46,0.3)]"
-      >
-        <div className="flex items-center -space-x-2 [direction:ltr]">
-          {['A', 'M', 'S', 'R'].map((m, i) => {
-            const tones = [
-              'bg-indigo text-paper',
-              'bg-sky text-navy-1',
-              'bg-coral text-paper',
-              'bg-emerald text-paper',
-            ]
-            return (
-              <span
-                key={m}
-                className={`flex h-7 w-7 items-center justify-center rounded-full border-2 border-paper font-display text-[10.5px] font-bold ${tones[i]}`}
-              >
-                {m}
-              </span>
-            )
-          })}
-        </div>
-        <div
-          className="mt-3 font-en-body text-[8.5px] tracking-[0.2em] uppercase text-ink-3"
-          style={{ unicodeBidi: 'isolate' }}
-        >
-          founding team
-        </div>
-        <div className="font-display text-[13px] font-bold text-ink">
-          ۴ نفر، یک ایده
-        </div>
-      </motion.div>
-
-      {/* 6 — atmospheric floating dots */}
-      <motion.div
-        aria-hidden
-        initial={{ y: 0 }}
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 5, delay: 0.3, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[40%] right-[6%] h-3 w-3 rounded-full bg-sky"
-      />
-      <motion.div
-        aria-hidden
-        initial={{ y: 0 }}
-        animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 6, delay: 0.9, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-[44%] right-[18%] h-2 w-2 rounded-full bg-coral"
-      />
-      <motion.div
-        aria-hidden
-        initial={{ y: 0 }}
-        animate={{ y: [0, -5, 0] }}
-        transition={{ duration: 5.5, delay: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[52%] left-[14%] h-2.5 w-2.5 rounded-full bg-indigo"
-      />
+        company timeline
+      </div>
     </div>
   )
 }

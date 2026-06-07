@@ -1,209 +1,281 @@
 import { motion } from 'motion/react'
 
 /**
- * Hero illustration for the Contact page.
+ * Contact hero visual — a three-channel "convergence" diagram.
  *
- * Composition:
- *   1. Soft warm ambient blob, blurred
- *   2. Brand arc motif from top-left corner
- *   3. Central message card (sky gradient) with a live "preparing
- *      reply" indicator and a sample inbound message
- *   4. Three floating channel chips at staggered positions
- *      (email/whatsapp/sales), each a different brand colour
- *   5. Floating timer card showing "ظرف ۱ روز کاری"
- *   6. Atmospheric dots
+ * Concept: «سه کانال، یک پاسخ». A central navy node («شما») sits
+ * dead-centre. Three channel nodes — email, whatsapp, demo — orbit
+ * around it at fixed angles, each in its own brand colour. Hairline
+ * connectors run from each channel to the centre, and a small pulse
+ * dot travels along each connector to indicate the channel is "live."
  *
- * The three channel chips visualize the three ways to reach the
- * team — same content as the Channels section below but in
- * floating-card form for the hero.
+ * Distinct from About (vertical timeline) and Blog (editorial cover):
+ * this is a radial diagram — a tiny hub-and-spoke that visualises
+ * "incoming connections."
+ *
+ * Pure SVG, no card decks, no floating chips.
  */
-export default function ContactVisual() {
+
+const ease = [0.22, 1, 0.36, 1] as const
+
+interface Channel {
+  /** Persian label inside the node */
+  label: string
+  /** Latin sub-label below the node */
+  sub: string
+  /** Angle in degrees from centre (0 = right, going counter-clockwise) */
+  angle: number
+  /** Brand colour for fill + connector */
+  tone: 'indigo' | 'emerald' | 'coral'
+  /** Single-character icon glyph */
+  glyph: 'mail' | 'chat' | 'play'
+  /** Pulse delay offset (seconds) so the three don't strobe together */
+  delay: number
+}
+
+const channels: Channel[] = [
+  { label: 'ایمیل', sub: 'EMAIL', angle: 135, tone: 'indigo', glyph: 'mail', delay: 0 },
+  { label: 'واتساپ', sub: 'WHATSAPP', angle: 45, tone: 'emerald', glyph: 'chat', delay: 0.4 },
+  { label: 'دمو', sub: 'DEMO', angle: 270, tone: 'coral', glyph: 'play', delay: 0.8 },
+]
+
+const toneColor = (t: Channel['tone']) =>
+  t === 'indigo'
+    ? 'var(--color-indigo)'
+    : t === 'emerald'
+    ? 'var(--color-emerald)'
+    : 'var(--color-coral)'
+
+function Glyph({ name }: { name: Channel['glyph'] }) {
+  if (name === 'mail') {
+    return (
+      <g fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+        <rect x={-7} y={-5} width={14} height={10} rx={1.5} />
+        <path d="M -7 -4 L 0 1 L 7 -4" />
+      </g>
+    )
+  }
+  if (name === 'chat') {
+    return (
+      <g fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M -6 -4 L 6 -4 A 2 2 0 0 1 8 -2 L 8 3 A 2 2 0 0 1 6 5 L -3 5 L -7 8 L -7 -2 A 2 2 0 0 1 -5 -4 Z" />
+      </g>
+    )
+  }
+  // play
   return (
-    <div className="relative aspect-square w-full max-w-[520px] mx-auto">
-      {/* 1 — ambient blob, warm */}
-      <div
-        aria-hidden
-        className="absolute inset-[-12%] rounded-full opacity-70 blur-3xl"
-        style={{
-          background:
-            'radial-gradient(55% 60% at 65% 40%, rgba(111,143,206,0.28), transparent 70%),' +
-            'radial-gradient(50% 60% at 25% 70%, rgba(224,116,74,0.18), transparent 70%)',
-        }}
-      />
+    <g fill="currentColor">
+      <path d="M -4 -5 L 5 0 L -4 5 Z" />
+    </g>
+  )
+}
 
-      {/* 3 — main message card (centred) */}
-      <motion.div
-        initial={{ y: 0, rotate: -2 }}
-        animate={{ y: [0, -10, 0], rotate: -2 }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[24%] left-[10%] right-[10%] aspect-[1.5] rounded-3xl shadow-[0_30px_80px_-20px_rgba(42,45,126,0.4)]"
+export default function ContactVisual() {
+  // Canvas: 360 × 320 with centre at (180, 160). Channel nodes sit on
+  // a 110-px radius around the centre.
+  const W = 360
+  const H = 320
+  const cx = W / 2
+  const cy = H / 2
+  const R = 110
+
+  const points = channels.map((c) => {
+    const rad = (c.angle * Math.PI) / 180
+    return { ...c, x: cx + Math.cos(rad) * R, y: cy - Math.sin(rad) * R }
+  })
+
+  return (
+    <div className="relative mx-auto w-full max-w-[420px]">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="h-auto w-full"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-label="کانال‌های ارتباطیِ بورس‌پی"
       >
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-sky via-blue to-indigo" />
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-paper/0 via-paper/0 to-paper/15" />
-        <div className="absolute inset-6 flex flex-col justify-between text-paper">
-          <div className="flex items-start justify-between">
-            <div
-              className="font-en-body text-[9.5px] tracking-[0.24em] uppercase text-paper/80"
-              style={{ unicodeBidi: 'isolate' }}
-            >
-              new message
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="relative flex h-2 w-2">
-                <motion.span
-                  initial={{ opacity: 0.4, scale: 1 }}
-                  animate={{ opacity: [0.4, 1, 0.4], scale: [1, 1.6, 1] }}
-                  transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute inline-flex h-full w-full rounded-full bg-emerald"
-                />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald" />
-              </span>
-              <span
-                className="font-en-body text-[8.5px] tracking-[0.18em] uppercase text-paper/80"
-                style={{ unicodeBidi: 'isolate' }}
-              >
-                live
-              </span>
-            </div>
-          </div>
+        {/* Soft glow behind the centre node */}
+        <defs>
+          <radialGradient id="contactCenterGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--color-sky)" stopOpacity="0.35" />
+            <stop offset="65%" stopColor="var(--color-sky)" stopOpacity="0.05" />
+            <stop offset="100%" stopColor="var(--color-sky)" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <motion.circle
+          cx={cx}
+          cy={cy}
+          r={90}
+          fill="url(#contactCenterGlow)"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, delay: 0.3, ease }}
+        />
 
-          <div>
-            <div className="font-display text-[14px] font-semibold text-paper">
-              «سلام، می‌خواهیم درباره‌ی تیام صحبت کنیم.»
-            </div>
-            <div
-              className="mt-3 font-en-body text-[8.5px] tracking-[0.2em] uppercase text-paper/55"
-              style={{ unicodeBidi: 'isolate' }}
-            >
-              from · سارا · صندوق راهبر
-            </div>
-          </div>
-        </div>
-      </motion.div>
+        {/* Connector lines + travelling pulse dots */}
+        {points.map((p) => (
+          <g key={`conn-${p.label}`}>
+            <motion.line
+              x1={cx}
+              y1={cy}
+              x2={p.x}
+              y2={p.y}
+              stroke={toneColor(p.tone)}
+              strokeWidth={1.2}
+              strokeOpacity={0.55}
+              strokeLinecap="round"
+              strokeDasharray="3 4"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ duration: 1.1, delay: 0.4 + p.delay * 0.5, ease }}
+            />
+            {/* Pulse dot travelling from channel node toward centre */}
+            <motion.circle
+              r={3}
+              fill={toneColor(p.tone)}
+              initial={{ opacity: 0 }}
+              animate={{
+                cx: [p.x, cx],
+                cy: [p.y, cy],
+                opacity: [0, 1, 1, 0],
+              }}
+              transition={{
+                duration: 2.2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: 1 + p.delay,
+                times: [0, 0.1, 0.85, 1],
+              }}
+            />
+          </g>
+        ))}
 
-      {/* 4a — email chip (top-right) */}
-      <motion.div
-        initial={{ y: 0, rotate: 3 }}
-        animate={{ y: [0, -10, 0], rotate: 3 }}
-        transition={{ duration: 6.2, delay: 0.5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[4%] right-[4%] rounded-xl border border-hairline bg-paper px-4 py-3 shadow-[0_18px_45px_-18px_rgba(10,14,46,0.3)]"
-      >
-        <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo/12 text-indigo">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="5" width="18" height="14" rx="2" />
-              <path d="M3 7l9 6 9-6" />
-            </svg>
-          </span>
-          <div>
-            <div
-              className="font-en-body text-[8px] tracking-[0.2em] uppercase text-ink-3"
-              style={{ unicodeBidi: 'isolate' }}
-            >
-              email
-            </div>
-            <div className="font-display text-[11.5px] font-bold text-ink">
-              hello@
-            </div>
-          </div>
-        </div>
-      </motion.div>
+        {/* Centre node — «شما» */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.6, ease }}
+        >
+          <rect
+            x={cx - 44}
+            y={cy - 28}
+            width={88}
+            height={56}
+            rx={12}
+            fill="var(--color-navy-1)"
+          />
+          <rect
+            x={cx - 44}
+            y={cy - 28}
+            width={88}
+            height={56}
+            rx={12}
+            fill="none"
+            stroke="var(--color-sky)"
+            strokeOpacity={0.3}
+            strokeWidth={1}
+          />
+          <text
+            x={cx}
+            y={cy - 3}
+            textAnchor="middle"
+            className="font-display"
+            fontSize={17}
+            fontWeight={700}
+            fill="var(--color-paper)"
+          >
+            تیمِ ما
+          </text>
+          <text
+            x={cx}
+            y={cy + 14}
+            textAnchor="middle"
+            className="font-en-body"
+            fontSize={8}
+            letterSpacing="0.22em"
+            fill="var(--color-sky)"
+            style={{ textTransform: 'uppercase' }}
+          >
+            ready
+          </text>
+          {/* Tiny live indicator */}
+          <circle cx={cx + 36} cy={cy - 20} r={3} fill="var(--color-emerald)">
+            <animate
+              attributeName="opacity"
+              values="0.4;1;0.4"
+              dur="1.6s"
+              repeatCount="indefinite"
+            />
+          </circle>
+        </motion.g>
 
-      {/* 4b — whatsapp chip (bottom-right) */}
-      <motion.div
-        initial={{ y: 0, rotate: -3 }}
-        animate={{ y: [0, -8, 0], rotate: -3 }}
-        transition={{ duration: 6.5, delay: 1.0, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-[8%] right-[8%] rounded-xl border border-emerald/30 bg-paper px-4 py-3 shadow-[0_18px_45px_-18px_rgba(31,138,91,0.35)]"
-      >
-        <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald/12 text-emerald">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-            </svg>
-          </span>
-          <div>
-            <div
-              className="font-en-body text-[8px] tracking-[0.2em] uppercase text-ink-3"
-              style={{ unicodeBidi: 'isolate' }}
+        {/* Channel nodes */}
+        {points.map((p, i) => (
+          <motion.g
+            key={`ch-${p.label}`}
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.5,
+              delay: 0.9 + i * 0.12,
+              ease,
+            }}
+          >
+            <rect
+              x={p.x - 36}
+              y={p.y - 26}
+              width={72}
+              height={52}
+              rx={10}
+              fill="var(--color-paper)"
+              stroke={toneColor(p.tone)}
+              strokeOpacity={0.55}
+              strokeWidth={1.1}
+            />
+            <g
+              transform={`translate(${p.x}, ${p.y - 8})`}
+              style={{ color: toneColor(p.tone) }}
             >
-              whatsapp
-            </div>
-            <div className="font-display text-[11.5px] font-bold text-ink">
-              فوری
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* 4c — sales / demo chip (left mid) */}
-      <motion.div
-        initial={{ y: 0, rotate: 2 }}
-        animate={{ y: [0, -12, 0], rotate: 2 }}
-        transition={{ duration: 6.8, delay: 1.7, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[42%] left-[-2%] rounded-xl border border-coral/30 bg-paper px-4 py-3 shadow-[0_18px_45px_-18px_rgba(224,116,74,0.35)]"
-      >
-        <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-coral/14 text-coral">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 12h4l3-9 4 18 3-9h4" />
-            </svg>
-          </span>
-          <div>
-            <div
-              className="font-en-body text-[8px] tracking-[0.2em] uppercase text-ink-3"
-              style={{ unicodeBidi: 'isolate' }}
+              <Glyph name={p.glyph} />
+            </g>
+            <text
+              x={p.x}
+              y={p.y + 14}
+              textAnchor="middle"
+              className="font-display"
+              fontSize={11}
+              fontWeight={700}
+              fill="var(--color-ink)"
             >
-              demo
-            </div>
-            <div className="font-display text-[11.5px] font-bold text-ink">
-              ۳۰ دقیقه
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* 5 — floating timer card (bottom-left) */}
-      <motion.div
-        initial={{ y: 0 }}
-        animate={{ y: [0, -7, 0] }}
-        transition={{ duration: 5.5, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute bottom-[2%] left-[8%] rounded-2xl bg-navy-1 px-4 py-3 text-paper shadow-[0_22px_55px_-22px_rgba(10,14,46,0.55)]"
-      >
-        <div className="flex items-center gap-2.5">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sky">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 7v5l3 2" />
-          </svg>
-          <div>
-            <div
-              className="font-en-body text-[8.5px] tracking-[0.2em] uppercase text-sky"
-              style={{ unicodeBidi: 'isolate' }}
+              {p.label}
+            </text>
+            <text
+              x={p.x}
+              y={p.y + 24}
+              textAnchor="middle"
+              className="font-en-body"
+              fontSize={7}
+              letterSpacing="0.2em"
+              fill="var(--color-ink-3)"
+              style={{ textTransform: 'uppercase' }}
             >
-              response
-            </div>
-            <div className="font-display text-[12px] font-bold">
-              ظرف ۱ روزِ کاری
-            </div>
-          </div>
-        </div>
-      </motion.div>
+              {p.sub}
+            </text>
+          </motion.g>
+        ))}
 
-      {/* 6 — atmospheric dots */}
-      <motion.div
-        aria-hidden
-        initial={{ y: 0 }}
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 5, delay: 0.3, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[20%] left-[6%] h-3 w-3 rounded-full bg-sky"
-      />
-      <motion.div
-        aria-hidden
-        initial={{ y: 0 }}
-        animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 6, delay: 1.1, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-[60%] right-[24%] h-2 w-2 rounded-full bg-coral"
-      />
+        {/* Bottom caption */}
+        <text
+          x={W / 2}
+          y={H - 10}
+          textAnchor="middle"
+          className="font-en-body"
+          fontSize={9}
+          letterSpacing="0.24em"
+          fill="var(--color-ink-3)"
+          style={{ textTransform: 'uppercase' }}
+        >
+          three channels · one team
+        </text>
+      </svg>
     </div>
   )
 }

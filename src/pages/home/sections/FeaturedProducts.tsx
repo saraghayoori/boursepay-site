@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import Container from '@/components/ui/Container'
-import Eyebrow from '@/components/ui/Eyebrow'
-import Heading from '@/components/ui/Heading'
 import Section from '@/components/ui/Section'
 import { BigNumberCorner } from '@/components/brand/BrandPatterns'
 import {
@@ -13,26 +11,20 @@ import {
 import { cn } from '@/lib/cn'
 
 /**
- * FeaturedProducts — spotlight card for the currently-selected
- * product from the Network section above.
+ * FeaturedProducts — concise spotlight card that opens downward from
+ * the matching product name in the Network section above.
  *
  * Behaviour:
- *   - Takes a `selectedSlug` prop (lifted to HomePage). Whichever
- *     product the visitor clicked in the Network section determines
- *     which card is shown.
- *   - The card swaps with an animated transition (fade + lift) when
- *     the selection changes.
- *   - The card itself is a React Router `Link` to /products#slug, so
- *     clicking the card takes the visitor to the full product page
- *     tab. Inner CTA reinforces this with a clear "صفحه‌ی X →" call.
+ *   - No section header. The card *is* the section — it picks up
+ *     visually where the Network's product chip leaves off.
+ *   - Opens with a "drawer reveal": clip-path inset(0 0 100% 0) →
+ *     inset(0 0 0% 0), combined with a small downward translate and
+ *     opacity, so the card appears to drop out of the chip above.
+ *   - The whole card is a Link to /products#slug.
  *
- * Layout:
- *   - A single big spotlight card (no 2×2 grid). Takes full width of
- *     the container.
- *   - Big number corner decoration with the product's index.
- *   - Persian name + Latin · kicker · one-liner on the right (RTL
- *     primary), B2B/B2C pill + timing badge + audience block on
- *     the left. CTA strip at the bottom.
+ * Content is intentionally minimal: pill + timing, big name +
+ * Latin/kicker, one-liner, CTA strip. Pain point, audience and
+ * highlights are reserved for the full /products page.
  */
 const easeOut = [0.22, 1, 0.36, 1] as const
 
@@ -45,41 +37,70 @@ export default function FeaturedProducts({ selectedSlug }: FeaturedProductsProps
   const activeIdx = products.findIndex((p) => p.slug === selectedSlug)
   const isB2C = active.role === 'b2c'
 
+  // Where along the row the active chip sits (0 → far-right in RTL,
+  // 1 → far-left). Used to anchor the connector + transform-origin
+  // so the card visually "opens" out of the active chip.
+  const chipPosition = (activeIdx + 0.5) / products.length
+  // SVG coords match the Network diagram: viewBox 1200 wide, chips
+  // spaced from x=120 to x=W-120 (see Network.tsx). Translate that
+  // into a percent for transform-origin.
+  const originXPercent = 100 - (10 + chipPosition * 80)
+
   return (
-    <Section tone="none" spacing="normal">
+    <Section tone="none" spacing="tight">
       <Container className="relative">
-        <div className="grid items-end gap-8 md:grid-cols-12">
-          <div className="md:col-span-7">
-            <Eyebrow>۰۴ · محصولِ انتخاب‌شده</Eyebrow>
-            <Heading
-              fa="کارتِ محصول"
-              en="Spotlight card"
-              level={2}
-              className="mt-3"
-            />
-            <p className="mt-5 max-w-xl text-[15.5px] leading-[1.85] text-ink-2">
-              نامِ هر محصول را در بخشِ شبکه‌ی بالا که می‌زنید، کارتِ کاملش
-              همین‌جا باز می‌شود. روی کارت کلیک کنید تا واردِ صفحه‌ی همان
-              محصول شوید.
-            </p>
-          </div>
+        {/* Connector — a thin vertical hairline that drops from the
+            chip position above into the top edge of the card */}
+        <div
+          aria-hidden
+          className="relative h-10 -mt-4"
+        >
+          <motion.div
+            key={`connector-${active.slug}`}
+            className={cn(
+              'absolute top-0 h-full w-px',
+              isB2C ? 'bg-coral/60' : 'bg-indigo/60',
+            )}
+            style={{ left: `${originXPercent}%` }}
+            initial={{ scaleY: 0, opacity: 0 }}
+            animate={{ scaleY: 1, opacity: 1 }}
+            transition={{ duration: 0.28, ease: easeOut }}
+            // Origin top so it grows down out of the chip
+            // (transform: scaleY around top)
+          >
+            <span className="block h-full w-full origin-top" />
+          </motion.div>
         </div>
 
-        {/* Spotlight card — swaps with AnimatePresence when slug changes */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={active.slug}
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.42, ease: easeOut }}
-            className="mt-10"
+            initial={{
+              clipPath: 'inset(0 0 100% 0)',
+              opacity: 0,
+              y: -12,
+            }}
+            animate={{
+              clipPath: 'inset(0 0 0% 0)',
+              opacity: 1,
+              y: 0,
+            }}
+            exit={{
+              clipPath: 'inset(0 0 100% 0)',
+              opacity: 0,
+              y: -8,
+            }}
+            transition={{ duration: 0.5, ease: easeOut }}
+            style={{
+              // Subtle: card visually unfolds out of the chip column
+              transformOrigin: `${originXPercent}% top`,
+            }}
           >
             <Link
               to={`/products#${active.slug}`}
               className={cn(
                 'group relative block overflow-hidden rounded-3xl border bg-paper p-8 transition-all duration-300 sm:p-12',
-                'border-hairline hover:-translate-y-1 hover:shadow-[0_44px_100px_-50px_rgba(10,14,46,0.55)]',
+                'border-hairline hover:-translate-y-1 hover:shadow-[0_40px_90px_-50px_rgba(10,14,46,0.5)]',
                 isB2C ? 'hover:border-coral/40' : 'hover:border-indigo/40',
               )}
             >
@@ -87,8 +108,8 @@ export default function FeaturedProducts({ selectedSlug }: FeaturedProductsProps
               <BigNumberCorner
                 n={activeIdx + 1}
                 position="top-left"
-                size={120}
-                opacity={0.07}
+                size={112}
+                opacity={0.06}
                 tone={isB2C ? 'navy' : 'indigo'}
               />
 
@@ -100,107 +121,41 @@ export default function FeaturedProducts({ selectedSlug }: FeaturedProductsProps
                 />
               )}
 
-              <div className="relative grid items-start gap-10 lg:grid-cols-12">
-                {/* Primary column (RTL → right): name, copy, CTA */}
-                <div className="lg:col-span-7">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={cn(
-                        'inline-flex items-center rounded-full px-2.5 py-0.5',
-                        'font-en-body text-[10.5px] font-semibold tracking-[0.16em] uppercase',
-                        isB2C
-                          ? 'bg-coral-soft text-coral'
-                          : 'bg-mist/60 text-indigo',
-                      )}
-                      style={{ unicodeBidi: 'isolate' }}
-                    >
-                      {isB2C ? 'B2C' : 'B2B'} · {active.category}
-                    </span>
-                    <span
-                      className="font-en-body text-[10.5px] tracking-[0.18em] uppercase text-ink-3"
-                      style={{ unicodeBidi: 'isolate' }}
-                    >
-                      {active.timing}
-                    </span>
-                  </div>
-
-                  <h3 className="mt-7 font-display text-[48px] font-bold leading-none tracking-tight text-ink sm:text-[68px]">
-                    {active.name}
-                  </h3>
-                  <div
-                    className="mt-3 font-en-display italic text-[16px] text-ink-3 sm:text-[18px]"
+              <div className="relative">
+                <div className="flex items-center gap-2">
+                  <span
+                    className={cn(
+                      'inline-flex items-center rounded-full px-2.5 py-0.5',
+                      'font-en-body text-[10.5px] font-semibold tracking-[0.16em] uppercase',
+                      isB2C
+                        ? 'bg-coral-soft text-coral'
+                        : 'bg-mist/60 text-indigo',
+                    )}
                     style={{ unicodeBidi: 'isolate' }}
                   >
-                    {active.latin} · {active.kicker}
-                  </div>
-
-                  <p className="mt-7 max-w-xl text-[16px] leading-[1.9] text-ink-2 sm:text-[18px]">
-                    {active.oneLiner}
-                  </p>
-
-                  {active.painPoint && (
-                    <div className="mt-7 max-w-xl border-r-2 border-accent/45 bg-cloud/85 px-5 py-4">
-                      <div
-                        className="font-en-body text-[10px] uppercase tracking-[0.22em] text-accent/80"
-                        style={{ unicodeBidi: 'isolate' }}
-                      >
-                        the problem we solve
-                      </div>
-                      <p className="mt-2 font-display text-[15.5px] font-medium leading-[1.7] text-ink sm:text-[17px]">
-                        «{active.painPoint}»
-                      </p>
-                    </div>
-                  )}
+                    {isB2C ? 'B2C' : 'B2B'} · {active.category}
+                  </span>
+                  <span
+                    className="font-en-body text-[10.5px] tracking-[0.18em] uppercase text-ink-3"
+                    style={{ unicodeBidi: 'isolate' }}
+                  >
+                    {active.timing}
+                  </span>
                 </div>
 
-                {/* Secondary column (RTL → left): audience + top 3 highlights */}
-                <aside className="lg:col-span-5">
-                  <div className="rounded-2xl border border-hairline bg-paper-2 p-6">
-                    <div
-                      className="font-en-body text-[10.5px] font-medium tracking-[0.2em] uppercase text-sky"
-                      style={{ unicodeBidi: 'isolate' }}
-                    >
-                      audience
-                    </div>
-                    <div className="mt-2 font-display text-[15px] font-bold text-ink">
-                      مخاطبِ این محصول
-                    </div>
-                    <p className="mt-3 text-[14px] leading-[1.75] text-ink-2">
-                      {active.audience}
-                    </p>
-                  </div>
+                <h3 className="mt-7 font-display text-[48px] font-bold leading-none tracking-tight text-ink sm:text-[68px]">
+                  {active.name}
+                </h3>
+                <div
+                  className="mt-3 font-en-display italic text-[16px] text-ink-3 sm:text-[18px]"
+                  style={{ unicodeBidi: 'isolate' }}
+                >
+                  {active.latin} · {active.kicker}
+                </div>
 
-                  <div className="mt-5">
-                    <div
-                      className="font-en-body text-[10.5px] font-medium tracking-[0.2em] uppercase text-ink-3"
-                      style={{ unicodeBidi: 'isolate' }}
-                    >
-                      highlights
-                    </div>
-                    <ul className="mt-3 space-y-2">
-                      {active.highlights.slice(0, 3).map((h) => (
-                        <li
-                          key={h}
-                          className="flex items-start gap-3 text-[13.5px] leading-[1.7] text-ink-2"
-                        >
-                          <span
-                            className={cn(
-                              'mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full',
-                              isB2C
-                                ? 'bg-coral/12 text-coral'
-                                : 'bg-indigo/12 text-indigo',
-                            )}
-                          >
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M5 12l4 4 10-10" />
-                            </svg>
-                          </span>
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </aside>
+                <p className="mt-6 max-w-2xl text-[16px] leading-[1.9] text-ink-2 sm:text-[18px]">
+                  {active.oneLiner}
+                </p>
               </div>
 
               {/* Footer CTA strip */}

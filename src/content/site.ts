@@ -6,11 +6,8 @@ export const site = {
   description: 'ریل‌های پرداختِ بازار سرمایه',
   contact: {
     email: 'hello@boursepayment.com',
-    whatsapp: '+989123456789',
+    info: 'info@Boursepayment.com',
     sales: 'sales@boursepayment.com',
-  },
-  social: {
-    linkedin: 'https://linkedin.com/company/boursepayment',
-    twitter: '',
+    phone: '02142883',
   },
 }

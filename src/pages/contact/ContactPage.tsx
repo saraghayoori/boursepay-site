@@ -14,7 +14,7 @@ import { cn } from '@/lib/cn'
  * Variety map:
  *  1. Hero — light, two-column: copy on the right, "what to expect"
  *     check-list on the left. Different from the home Hero.
- *  2. Channels — three cards (email / whatsapp / sales) with hover
+ *  2. Channels — three cards (phone / email / sales) with hover
  *     accents, each a different brand color (accent / emerald / coral)
  *     so the row feels lively, not uniform.
  *  3. FAQ — accordion-style collapsibles. New shape on the page.
@@ -46,18 +46,15 @@ const faqs: FaqItem[] = [
   },
   {
     q: 'پشتیبانیِ شما به چه صورت است؟',
-    a: 'برای مشتریانِ نهادی، یک کانالِ مستقیمِ شِت با مهندسِ پشتیبان و یک SLA رسمی داریم. برای محصولِ B2C (کارتِ هدیه)، پاسخگوی ایمیل و واتساپ در ساعاتِ کاری هستیم.',
+    a: 'برای مشتریانِ نهادی، یک مهندسِ پشتیبانِ مشخص و یک SLA رسمی داریم. در بقیه‌ی موارد، در ساعاتِ کاری پاسخگوی تلفن و ایمیل هستیم.',
   },
 ]
 
 export default function ContactPage() {
-  const whatsApp = site.contact.whatsapp.replace(/\D/g, '')
-  const whatsAppUrl = `https://wa.me/${whatsApp}`
-
   return (
     <>
       <title>تماس · بورس‌پی</title>
-      <meta name="description" content="با تیمِ بورس‌پی گفت‌وگو کنید — درخواست دمو، فروش، یا سوال فنی." />
+      <meta name="description" content="با تیمِ بورس‌پی در تماس باشید — تلفن و ایمیل." />
 
       {/* HERO */}
       <section className="relative isolate overflow-hidden bg-cloud text-ink">
@@ -71,9 +68,9 @@ export default function ContactPage() {
               className="mt-4"
             />
             <p className="mt-7 max-w-xl text-[17.5px] leading-[1.9] text-ink-2">
-              ساده‌ترین راهِ ارتباط با ما، یکی از کانال‌های پایین است.
-              برای گفت‌وگوی فنی، عددی، فروش یا همکاری — هر سه با یک پاسخِ
-              مشترک: ظرفِ یک روزِ کاری برمی‌گردیم.
+              ساده‌ترین راهِ ارتباط با ما، تلفن یا ایمیل است.
+              برای گفت‌وگوی فنی، عددی، فروش یا همکاری — پاسخ یکی است:
+              ظرفِ یک روزِ کاری برمی‌گردیم.
             </p>
 
             {/* What to expect — moved below as a smaller chip row so the
@@ -104,9 +101,33 @@ export default function ContactPage() {
           />
 
           <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {/* Email */}
+            {/* Phone */}
             <a
-              href={`mailto:${site.contact.email}`}
+              href={`tel:${site.contact.phone}`}
+              className="group rounded-2xl border border-hairline bg-paper-2 p-7 transition-all hover:border-emerald/40 hover:shadow-[0_18px_50px_-30px_rgba(31,138,91,0.4)]"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald/10 text-emerald">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+              </div>
+              <div className="mt-5 font-display text-[20px] font-bold text-ink">
+                تلفن
+              </div>
+              <div
+                className="mt-1 font-en-body text-[14.5px] text-ink-2 group-hover:text-emerald"
+                style={{ unicodeBidi: 'isolate' }}
+              >
+                {site.contact.phone}
+              </div>
+              <p className="mt-3 text-[13.5px] leading-[1.75] text-ink-3">
+                در ساعاتِ کاری، مستقیم با تیمِ ما صحبت کنید.
+              </p>
+            </a>
+
+            {/* Email — general */}
+            <a
+              href={`mailto:${site.contact.info}`}
               className="group rounded-2xl border border-hairline bg-paper-2 p-7 transition-all hover:border-accent/40 hover:shadow-[0_18px_50px_-30px_rgba(10,14,46,0.4)]"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent">
@@ -122,40 +143,14 @@ export default function ContactPage() {
                 className="mt-1 font-en-body text-[14.5px] text-ink-2 group-hover:text-accent"
                 style={{ unicodeBidi: 'isolate' }}
               >
-                {site.contact.email}
+                {site.contact.info}
               </div>
               <p className="mt-3 text-[13.5px] leading-[1.75] text-ink-3">
                 برای سوال‌های فنی، یکپارچه‌سازی، یا مستندات.
               </p>
             </a>
 
-            {/* WhatsApp */}
-            <a
-              href={whatsAppUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="group rounded-2xl border border-hairline bg-paper-2 p-7 transition-all hover:border-emerald/40 hover:shadow-[0_18px_50px_-30px_rgba(31,138,91,0.4)]"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald/10 text-emerald">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                </svg>
-              </div>
-              <div className="mt-5 font-display text-[20px] font-bold text-ink">
-                واتساپ
-              </div>
-              <div
-                className="mt-1 font-en-body text-[14.5px] text-ink-2 group-hover:text-emerald"
-                style={{ unicodeBidi: 'isolate' }}
-              >
-                {site.contact.whatsapp}
-              </div>
-              <p className="mt-3 text-[13.5px] leading-[1.75] text-ink-3">
-                پاسخِ سریع، در ساعاتِ کاری.
-              </p>
-            </a>
-
-            {/* Sales */}
+            {/* Sales / Demo */}
             <a
               href={`mailto:${site.contact.sales}?subject=${encodeURIComponent('درخواست دمو · بورس‌پی')}`}
               className="group rounded-2xl border border-hairline bg-paper-2 p-7 transition-all hover:border-coral/40 hover:shadow-[0_18px_50px_-30px_rgba(224,116,74,0.4)]"
@@ -166,7 +161,7 @@ export default function ContactPage() {
                 </svg>
               </div>
               <div className="mt-5 font-display text-[20px] font-bold text-ink">
-                درخواستِ دمو
+                فروش و دمو
               </div>
               <div
                 className="mt-1 font-en-body text-[14.5px] text-ink-2 group-hover:text-coral"

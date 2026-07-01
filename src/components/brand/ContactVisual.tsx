@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
  * Contact hero visual — a three-channel "convergence" diagram.
  *
  * Concept: «سه کانال، یک تیم». A central navy node («تیمِ ما») sits
- * dead-centre. Three channel nodes — email, whatsapp, demo — orbit
+ * dead-centre. Three channel nodes — phone, email, demo — orbit
  * around it on a dashed ring, each in its own brand colour. Hairline
  * connectors run from each channel to the centre, and a small pulse
  * dot travels along each connector to indicate the channel is "live."
@@ -28,14 +28,14 @@ interface Channel {
   /** Brand colour for fill + connector */
   tone: 'indigo' | 'emerald' | 'coral'
   /** Single-character icon glyph */
-  glyph: 'mail' | 'chat' | 'play'
+  glyph: 'mail' | 'phone' | 'play'
   /** Pulse delay offset (seconds) so the three don't strobe together */
   delay: number
 }
 
 const channels: Channel[] = [
   { label: 'ایمیل', sub: 'EMAIL', angle: 135, tone: 'indigo', glyph: 'mail', delay: 0 },
-  { label: 'واتساپ', sub: 'WHATSAPP', angle: 45, tone: 'emerald', glyph: 'chat', delay: 0.4 },
+  { label: 'تلفن', sub: 'PHONE', angle: 45, tone: 'emerald', glyph: 'phone', delay: 0.4 },
   { label: 'دمو', sub: 'DEMO', angle: 270, tone: 'coral', glyph: 'play', delay: 0.8 },
 ]
 
@@ -55,10 +55,10 @@ function Glyph({ name }: { name: Channel['glyph'] }) {
       </g>
     )
   }
-  if (name === 'chat') {
+  if (name === 'phone') {
     return (
       <g fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M -6 -4 L 6 -4 A 2 2 0 0 1 8 -2 L 8 3 A 2 2 0 0 1 6 5 L -3 5 L -7 8 L -7 -2 A 2 2 0 0 1 -5 -4 Z" />
+        <path d="M 8 4.5 v 2 a 1.5 1.5 0 0 1 -1.6 1.5 A 13 13 0 0 1 -6.5 -2 A 1.5 1.5 0 0 1 -5 -3.6 h 2 a 1.5 1.5 0 0 1 1.5 1.3 c 0.1 0.7 0.3 1.4 0.5 2 a 1.5 1.5 0 0 1 -0.34 1.55 l -0.9 0.9 a 12 12 0 0 0 4.5 4.5 l 0.9 -0.9 a 1.5 1.5 0 0 1 1.55 -0.34 c 0.66 0.24 1.35 0.42 2 0.52 A 1.5 1.5 0 0 1 8 4.5 Z" />
       </g>
     )
   }

@@ -234,27 +234,6 @@ export default function AboutPage() {
           </ol>
         </Container>
       </Section>
-
-      {/* PERSONA — single editorial block */}
-      <section className="relative isolate overflow-hidden bg-navy-1 text-paper">
-        <Container size="narrow" className="relative py-24 sm:py-28">
-          <Eyebrow tone="sky">شخصیتِ برند</Eyebrow>
-          <Heading
-            fa="۳۴ ساله · رسمیِ راحت"
-            en="34 years old · formally relaxed"
-            level={2}
-            tone="paper"
-            className="mt-3"
-          />
-          <p className="mt-8 text-[17px] leading-[1.95] text-paper/78">
-            ما نه یک استارت‌آپِ سر و صداگو هستیم، نه یک شرکتِ بزرگ و کند. جایی
-            میانِ این دو — جدی، آرام، دقیق. در گفت‌وگو با مشتری، شریک می‌نشینیم
-            نه فروشنده. در کارِ روزانه، با اعتماد به نفسِ بی‌سر و صدا کارمان را
-            انجام می‌دهیم. اگر شما بخواهید لحنِ ما را در یک کلمه توصیف کنید،
-            احتمالاً می‌گویید: <span className="text-sky font-medium">حرفه‌ای</span>.
-          </p>
-        </Container>
-      </section>
     </>
   )
 }

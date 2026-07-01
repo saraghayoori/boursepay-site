@@ -3,17 +3,17 @@ import { motion } from 'motion/react'
 /**
  * Contact hero visual — a three-channel "convergence" diagram.
  *
- * Concept: «سه کانال، یک پاسخ». A central navy node («شما») sits
+ * Concept: «سه کانال، یک تیم». A central navy node («تیمِ ما») sits
  * dead-centre. Three channel nodes — email, whatsapp, demo — orbit
- * around it at fixed angles, each in its own brand colour. Hairline
+ * around it on a dashed ring, each in its own brand colour. Hairline
  * connectors run from each channel to the centre, and a small pulse
  * dot travels along each connector to indicate the channel is "live."
  *
- * Distinct from About (vertical timeline) and Blog (editorial cover):
- * this is a radial diagram — a tiny hub-and-spoke that visualises
- * "incoming connections."
+ * Distinct from About (concentric arcs): this is a radial hub — a
+ * tiny hub-and-spoke that visualises "incoming connections."
  *
- * Pure SVG, no card decks, no floating chips.
+ * Boxes are sized generously around their labels (with a soft drop
+ * shadow) so nothing ever feels cramped. Pure SVG, no card decks.
  */
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -71,13 +71,20 @@ function Glyph({ name }: { name: Channel['glyph'] }) {
 }
 
 export default function ContactVisual() {
-  // Canvas: 360 × 320 with centre at (180, 160). Channel nodes sit on
-  // a 110-px radius around the centre.
-  const W = 360
-  const H = 320
+  // Canvas: 400 × 380 with centre at (200, 186). Channel nodes sit on
+  // a 128-px radius around the centre — enough room that the generous
+  // node boxes never collide with the hub.
+  const W = 400
+  const H = 380
   const cx = W / 2
-  const cy = H / 2
-  const R = 110
+  const cy = 186
+  const R = 128
+
+  // Node box dimensions — comfortably larger than their text.
+  const chW = 96
+  const chH = 66
+  const cW = 116
+  const cH = 74
 
   const points = channels.map((c) => {
     const rad = (c.angle * Math.PI) / 180
@@ -85,29 +92,49 @@ export default function ContactVisual() {
   })
 
   return (
-    <div className="relative mx-auto w-full max-w-[420px]">
+    <div className="relative mx-auto w-full max-w-[440px]">
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="h-auto w-full"
         xmlns="http://www.w3.org/2000/svg"
         aria-label="کانال‌های ارتباطیِ بورس‌پی"
       >
-        {/* Soft glow behind the centre node */}
         <defs>
           <radialGradient id="contactCenterGlow" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="var(--color-sky)" stopOpacity="0.35" />
             <stop offset="65%" stopColor="var(--color-sky)" stopOpacity="0.05" />
             <stop offset="100%" stopColor="var(--color-sky)" stopOpacity="0" />
           </radialGradient>
+          {/* Soft drop shadow that lifts every box off the page */}
+          <filter id="contactShadow" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="7" stdDeviation="9" floodColor="#0a0e2e" floodOpacity="0.13" />
+          </filter>
         </defs>
+
+        {/* Soft glow behind the centre node */}
         <motion.circle
           cx={cx}
           cy={cy}
-          r={90}
+          r={104}
           fill="url(#contactCenterGlow)"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.3, ease }}
+        />
+
+        {/* Dashed orbit ring the channels sit on */}
+        <motion.circle
+          cx={cx}
+          cy={cy}
+          r={R}
+          fill="none"
+          stroke="var(--color-ink-3)"
+          strokeOpacity={0.22}
+          strokeWidth={1}
+          strokeDasharray="2 6"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, delay: 0.5, ease }}
         />
 
         {/* Connector lines + travelling pulse dots */}
@@ -120,7 +147,7 @@ export default function ContactVisual() {
               y2={p.y}
               stroke={toneColor(p.tone)}
               strokeWidth={1.2}
-              strokeOpacity={0.55}
+              strokeOpacity={0.5}
               strokeLinecap="round"
               strokeDasharray="3 4"
               initial={{ pathLength: 0, opacity: 0 }}
@@ -148,65 +175,6 @@ export default function ContactVisual() {
           </g>
         ))}
 
-        {/* Centre node — «شما» */}
-        <motion.g
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.6, ease }}
-        >
-          <rect
-            x={cx - 44}
-            y={cy - 28}
-            width={88}
-            height={56}
-            rx={12}
-            fill="var(--color-navy-1)"
-          />
-          <rect
-            x={cx - 44}
-            y={cy - 28}
-            width={88}
-            height={56}
-            rx={12}
-            fill="none"
-            stroke="var(--color-sky)"
-            strokeOpacity={0.3}
-            strokeWidth={1}
-          />
-          <text
-            x={cx}
-            y={cy - 3}
-            textAnchor="middle"
-            className="font-display"
-            fontSize={17}
-            fontWeight={700}
-            fill="var(--color-paper)"
-          >
-            تیمِ ما
-          </text>
-          <text
-            x={cx}
-            y={cy + 14}
-            textAnchor="middle"
-            className="font-en-body"
-            fontSize={8}
-            letterSpacing="0.22em"
-            fill="var(--color-sky)"
-            style={{ textTransform: 'uppercase' }}
-          >
-            ready
-          </text>
-          {/* Tiny live indicator */}
-          <circle cx={cx + 36} cy={cy - 20} r={3} fill="var(--color-emerald)">
-            <animate
-              attributeName="opacity"
-              values="0.4;1;0.4"
-              dur="1.6s"
-              repeatCount="indefinite"
-            />
-          </circle>
-        </motion.g>
-
         {/* Channel nodes */}
         {points.map((p, i) => (
           <motion.g
@@ -220,28 +188,29 @@ export default function ContactVisual() {
             }}
           >
             <rect
-              x={p.x - 36}
-              y={p.y - 26}
-              width={72}
-              height={52}
-              rx={10}
+              x={p.x - chW / 2}
+              y={p.y - chH / 2}
+              width={chW}
+              height={chH}
+              rx={16}
               fill="var(--color-paper)"
               stroke={toneColor(p.tone)}
-              strokeOpacity={0.55}
-              strokeWidth={1.1}
+              strokeOpacity={0.5}
+              strokeWidth={1.2}
+              filter="url(#contactShadow)"
             />
             <g
-              transform={`translate(${p.x}, ${p.y - 8})`}
+              transform={`translate(${p.x}, ${p.y - 13})`}
               style={{ color: toneColor(p.tone) }}
             >
               <Glyph name={p.glyph} />
             </g>
             <text
               x={p.x}
-              y={p.y + 14}
+              y={p.y + 12}
               textAnchor="middle"
               className="font-display"
-              fontSize={11}
+              fontSize={13}
               fontWeight={700}
               fill="var(--color-ink)"
             >
@@ -252,8 +221,8 @@ export default function ContactVisual() {
               y={p.y + 24}
               textAnchor="middle"
               className="font-en-body"
-              fontSize={7}
-              letterSpacing="0.2em"
+              fontSize={7.5}
+              letterSpacing="0.18em"
               fill="var(--color-ink-3)"
               style={{ textTransform: 'uppercase' }}
             >
@@ -262,10 +231,70 @@ export default function ContactVisual() {
           </motion.g>
         ))}
 
+        {/* Centre node — «تیمِ ما» (drawn last so it sits above the spokes) */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.6, ease }}
+        >
+          <rect
+            x={cx - cW / 2}
+            y={cy - cH / 2}
+            width={cW}
+            height={cH}
+            rx={16}
+            fill="var(--color-navy-1)"
+            filter="url(#contactShadow)"
+          />
+          <rect
+            x={cx - cW / 2}
+            y={cy - cH / 2}
+            width={cW}
+            height={cH}
+            rx={16}
+            fill="none"
+            stroke="var(--color-sky)"
+            strokeOpacity={0.3}
+            strokeWidth={1}
+          />
+          <text
+            x={cx}
+            y={cy - 4}
+            textAnchor="middle"
+            className="font-display"
+            fontSize={19}
+            fontWeight={700}
+            fill="var(--color-paper)"
+          >
+            تیمِ ما
+          </text>
+          <text
+            x={cx}
+            y={cy + 16}
+            textAnchor="middle"
+            className="font-en-body"
+            fontSize={8}
+            letterSpacing="0.22em"
+            fill="var(--color-sky)"
+            style={{ textTransform: 'uppercase' }}
+          >
+            ready
+          </text>
+          {/* Tiny live indicator */}
+          <circle cx={cx + cW / 2 - 14} cy={cy - cH / 2 + 14} r={3.2} fill="var(--color-emerald)">
+            <animate
+              attributeName="opacity"
+              values="0.4;1;0.4"
+              dur="1.6s"
+              repeatCount="indefinite"
+            />
+          </circle>
+        </motion.g>
+
         {/* Bottom caption */}
         <text
           x={W / 2}
-          y={H - 10}
+          y={H - 12}
           textAnchor="middle"
           className="font-en-body"
           fontSize={9}

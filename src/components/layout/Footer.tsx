@@ -75,31 +75,9 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/blog" className="text-paper/85 transition-colors hover:text-sky">
-                بلاگ
-              </Link>
-            </li>
-            <li>
               <Link to="/contact" className="text-paper/85 transition-colors hover:text-sky">
                 تماس
               </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div className="md:col-span-2">
-          <Eyebrow tone="sky">شبکه‌ها</Eyebrow>
-          <ul className="mt-5 space-y-3 text-[14.5px]">
-            <li>
-              <a
-                href={site.social.linkedin}
-                target="_blank"
-                rel="noreferrer"
-                className="font-en-body text-paper/85 transition-colors hover:text-sky"
-                style={{ unicodeBidi: 'isolate' }}
-              >
-                LinkedIn
-              </a>
             </li>
           </ul>
         </div>

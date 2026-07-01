@@ -5,7 +5,6 @@ import HowItWorks from './sections/HowItWorks'
 import Network from './sections/Network'
 import Manifesto from './sections/Manifesto'
 import Audience from './sections/Audience'
-import Testimonials from './sections/Testimonials'
 import CTA from './sections/CTA'
 import { products, type ProductSlug } from '@/content/products'
 
@@ -113,7 +112,6 @@ export default function HomePage() {
       <Network selectedSlug={selectedSlug} onSelect={handleSelect} />
       <Manifesto />
       <Audience />
-      <Testimonials />
       <CTA />
     </div>
   )

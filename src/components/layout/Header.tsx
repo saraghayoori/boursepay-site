@@ -10,7 +10,6 @@ import { cn } from '@/lib/cn'
 const links = [
   { to: '/', label: 'خانه' },
   { to: '/products', label: 'محصولات' },
-  { to: '/blog', label: 'بلاگ' },
   { to: '/about', label: 'درباره' },
   { to: '/contact', label: 'تماس' },
 ] as const

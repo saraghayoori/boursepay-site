@@ -1,124 +1,190 @@
 import { motion } from 'motion/react'
 
 /**
- * About hero visual — a vertical company-timeline.
+ * About hero visual — «موجِ پرداخت».
  *
- * Concept: «از کجا شروع کردیم تا اینجا». Brand book §26-02 «چند مرحله»
- * pattern applied as the page hero — a vertical navy line with five
- * year-station dots running top-to-bottom, each labelled. The current
- * year sits at the bottom with a sky-coloured halo (the brand book's
- * destination dot), so the eye follows the company's journey from
- * its founding down to «اینجاییم».
+ * Concept: a single core node (بورس‌پی) sending concentric arcs of
+ * reach outward — the brand-book arc motif rendered large. Each arc
+ * carries one of the three brand pillars (سریع · امن · تخصصی), so the
+ * graphic *means* something without asserting any dated facts. A pulse
+ * travels the widest arc to signal live movement.
  *
- * Distinct from every other hero visual on the site: no floating
- * cards, no badges — it's all line + dots + typography in one
- * editorial composition.
+ * Built for the dark navy hero: sky arcs, paper labels, coral + emerald
+ * accents. Deliberately distinct from every other hero on the site —
+ * no timeline, no floating cards, no hub-and-spoke. Just a core, three
+ * expanding arcs, and light.
  */
-
-interface Station {
-  year: string
-  label: string
-  current?: boolean
-}
-
-const stations: Station[] = [
-  { year: '۱۴۰۰', label: 'شروع از یک سؤال' },
-  { year: '۱۴۰۱', label: 'نخستین سه بانک' },
-  { year: '۱۴۰۲', label: 'گرفتنِ مجوزِ تخصصی' },
-  { year: '۱۴۰۳', label: 'پنجاه صندوقِ نهادی' },
-  { year: '۱۴۰۴', label: 'اینجاییم', current: true },
-]
 
 const ease = [0.22, 1, 0.36, 1] as const
 
+const W = 440
+const H = 420
+const CX = 322
+const CY = 298
+
+interface Ring {
+  r: number
+  label: string
+  sub: string
+  delay: number
+}
+
+const rings: Ring[] = [
+  { r: 96, label: 'سریع', sub: 'FAST', delay: 0.15 },
+  { r: 158, label: 'امن', sub: 'SECURE', delay: 0.4 },
+  { r: 220, label: 'تخصصی', sub: 'SPECIALIST', delay: 0.65 },
+]
+
+/** Quarter arc opening into the upper-left quadrant of the core. */
+const arcPath = (r: number) =>
+  `M ${CX} ${CY - r} A ${r} ${r} 0 0 0 ${CX - r} ${CY}`
+
+/** Marker point at ~135° on the arc (upper-left). */
+const marker = (r: number) => ({
+  x: CX - r * 0.7071,
+  y: CY - r * 0.7071,
+})
+
 export default function AboutVisual() {
   return (
-    <div className="relative mx-auto w-full max-w-[480px] py-4">
-      {/* Vertical timeline line — navy with sky tint at the bottom */}
-      <div
-        aria-hidden
-        className="absolute right-[27%] top-6 bottom-6 w-px"
-        style={{
-          background:
-            'linear-gradient(to bottom, var(--color-indigo) 0%, var(--color-indigo) 65%, var(--color-sky) 100%)',
-          opacity: 0.55,
-        }}
-      />
-
-      <ol className="relative space-y-6">
-        {stations.map((s, i) => (
-          <motion.li
-            key={s.year}
-            initial={{ opacity: 0, x: 18 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.5, delay: i * 0.12, ease }}
-            className="relative flex items-center gap-5"
-            style={{ paddingRight: '21%' }}
-          >
-            {/* Station dot — solid for past, sky-haloed for current */}
-            <span
-              aria-hidden
-              className="absolute right-[27%] z-10 -translate-x-1/2 flex h-4 w-4 items-center justify-center"
-              style={{ marginRight: '-0.5px' }}
-            >
-              {s.current ? (
-                <>
-                  <span className="absolute inset-0 rounded-full bg-sky opacity-30 animate-ping" />
-                  <span className="relative h-3 w-3 rounded-full bg-sky" />
-                </>
-              ) : (
-                <span className="h-2.5 w-2.5 rounded-full bg-indigo" />
-              )}
-            </span>
-
-            {/* Year label on the right of the line (RTL primary) */}
-            <div
-              className={`font-en-display text-[15px] font-bold tracking-[0.08em] ${
-                s.current ? 'text-sky' : 'text-ink-3'
-              }`}
-              style={{
-                unicodeBidi: 'isolate',
-                position: 'absolute',
-                right: '5%',
-                width: '17%',
-                textAlign: 'right',
-              }}
-            >
-              {s.year}
-            </div>
-
-            {/* Description on the left of the line */}
-            <div className="flex-1 pr-2">
-              <div
-                className={`font-display ${
-                  s.current
-                    ? 'text-[20px] font-bold text-ink'
-                    : 'text-[15px] font-semibold text-ink-2'
-                }`}
-              >
-                {s.label}
-              </div>
-              {s.current && (
-                <div
-                  className="mt-1 font-en-body text-[10px] tracking-[0.22em] uppercase text-sky"
-                  style={{ unicodeBidi: 'isolate' }}
-                >
-                  now · ۱۴۰۴
-                </div>
-              )}
-            </div>
-          </motion.li>
-        ))}
-      </ol>
-
-      {/* Top label */}
-      <div
-        className="mb-5 flex justify-end pl-[30%] -mt-2 font-en-body text-[9.5px] tracking-[0.24em] uppercase text-ink-4"
-        style={{ unicodeBidi: 'isolate' }}
+    <div className="relative mx-auto w-full max-w-[480px]">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="h-auto w-full"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-label="موجِ پرداختِ بورس‌پی — سریع، امن، تخصصی"
       >
-        company timeline
-      </div>
+        <defs>
+          <radialGradient id="aboutGlowSky" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--color-sky)" stopOpacity="0.4" />
+            <stop offset="70%" stopColor="var(--color-sky)" stopOpacity="0.04" />
+            <stop offset="100%" stopColor="var(--color-sky)" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="aboutGlowIndigo" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--color-indigo)" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="var(--color-indigo)" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="aboutArc" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="var(--color-sky)" />
+            <stop offset="100%" stopColor="var(--color-indigo)" />
+          </linearGradient>
+        </defs>
+
+        {/* Depth glows */}
+        <circle cx={CX} cy={CY} r={150} fill="url(#aboutGlowIndigo)" />
+        <motion.circle
+          cx={marker(220).x}
+          cy={marker(220).y}
+          r={120}
+          fill="url(#aboutGlowSky)"
+          initial={{ opacity: 0, scale: 0.7 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.3, delay: 0.3, ease }}
+        />
+
+        {/* Concentric pillar arcs */}
+        {rings.map((ring) => {
+          const m = marker(ring.r)
+          return (
+            <g key={ring.label}>
+              <motion.path
+                d={arcPath(ring.r)}
+                fill="none"
+                stroke="url(#aboutArc)"
+                strokeWidth={1.4}
+                strokeLinecap="round"
+                strokeOpacity={0.6}
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 1.2, delay: ring.delay, ease }}
+              />
+
+              {/* Pillar marker dot + label sitting on the arc */}
+              <motion.g
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: ring.delay + 0.7, ease }}
+              >
+                <circle cx={m.x} cy={m.y} r={4.5} fill="var(--color-sky)" />
+                <circle cx={m.x} cy={m.y} r={9} fill="none" stroke="var(--color-sky)" strokeOpacity={0.35} strokeWidth={1} />
+                <text
+                  x={m.x - 16}
+                  y={m.y - 2}
+                  textAnchor="end"
+                  className="font-display"
+                  fontSize={16}
+                  fontWeight={700}
+                  fill="var(--color-paper)"
+                >
+                  {ring.label}
+                </text>
+                <text
+                  x={m.x - 16}
+                  y={m.y + 11}
+                  textAnchor="end"
+                  className="font-en-body"
+                  fontSize={7.5}
+                  letterSpacing="0.24em"
+                  fill="var(--color-sky)"
+                  style={{ textTransform: 'uppercase' }}
+                >
+                  {ring.sub}
+                </text>
+              </motion.g>
+            </g>
+          )
+        })}
+
+        {/* Travelling pulse along the widest arc — signals "live" */}
+        <circle r={3} fill="var(--color-coral)">
+          <animateMotion dur="3.2s" repeatCount="indefinite" path={arcPath(220)} keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.4 0 0.2 1" />
+          <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.2s" repeatCount="indefinite" />
+        </circle>
+
+        {/* Core node — بورس‌پی */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.2, ease }}
+        >
+          <circle cx={CX} cy={CY} r={40} fill="var(--color-navy-1)" />
+          <circle cx={CX} cy={CY} r={40} fill="none" stroke="var(--color-sky)" strokeOpacity={0.4} strokeWidth={1} />
+          <circle cx={CX} cy={CY} r={40} fill="none" stroke="var(--color-sky)" strokeOpacity={0.12} strokeWidth={10}>
+            <animate attributeName="r" values="40;52;40" dur="3s" repeatCount="indefinite" />
+            <animate attributeName="stroke-opacity" values="0.18;0;0.18" dur="3s" repeatCount="indefinite" />
+          </circle>
+          <text
+            x={CX}
+            y={CY + 5}
+            textAnchor="middle"
+            className="font-display"
+            fontSize={16}
+            fontWeight={700}
+            fill="var(--color-paper)"
+          >
+            بورس‌پی
+          </text>
+          {/* live dot */}
+          <circle cx={CX + 30} cy={CY - 26} r={3.2} fill="var(--color-emerald)">
+            <animate attributeName="opacity" values="0.4;1;0.4" dur="1.6s" repeatCount="indefinite" />
+          </circle>
+        </motion.g>
+
+        {/* Bottom caption */}
+        <text
+          x={W - 24}
+          y={H - 14}
+          textAnchor="end"
+          className="font-en-body"
+          fontSize={9}
+          letterSpacing="0.24em"
+          fill="var(--color-paper)"
+          fillOpacity={0.45}
+          style={{ textTransform: 'uppercase' }}
+        >
+          one core · three pillars
+        </text>
+      </svg>
     </div>
   )
 }

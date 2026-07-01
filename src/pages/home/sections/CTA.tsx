@@ -22,12 +22,11 @@ export default function CTA() {
             <Eyebrow tone="sky">گفت‌وگوی بعدی</Eyebrow>
             <h2 className="mt-4 font-display text-[36px] font-bold leading-[1.1] text-ink sm:text-[52px]">
               یک گفت‌وگوی ۳۰ دقیقه‌ای —{' '}
-              <span className="text-indigo">با تیمِ فنیِ ما، نه فروش.</span>
+              <span className="text-indigo">با تیمِ فنیِ ما.</span>
             </h2>
             <p className="mt-6 max-w-xl text-[16px] leading-[1.95] text-ink-2 sm:text-[17px]">
               سناریوی شما را — صندوق، کارگزاری، یکپارچه‌سازیِ بانکی یا تجربه‌ی
-              کاربری — می‌نشینیم بررسی می‌کنیم. اگر ابزارِ ما برای کارِ شما مناسب
-              نباشد، با صراحت می‌گوییم.
+              کاربری — بررسی می‌کنیم و با هم می‌بینیم که از کجا می‌شود شروع کرد.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Button

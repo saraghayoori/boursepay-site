@@ -37,13 +37,20 @@ export default function Footer() {
             بورس‌پی · ریل‌های پرداختِ بازار سرمایه. تسویه‌ی سریع، تخصصی، با مجوز
             سازمان بورس.
           </p>
-          <div className="mt-6 flex flex-wrap items-center gap-3 text-[13px] text-paper/60">
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-paper/60">
             <a
-              href={`mailto:${site.contact.email}`}
+              href={`tel:${site.contact.phone}`}
               className="font-en-body transition-colors hover:text-sky"
               style={{ unicodeBidi: 'isolate' }}
             >
-              {site.contact.email}
+              {site.contact.phone}
+            </a>
+            <a
+              href={`mailto:${site.contact.info}`}
+              className="font-en-body transition-colors hover:text-sky"
+              style={{ unicodeBidi: 'isolate' }}
+            >
+              {site.contact.info}
             </a>
           </div>
         </div>
